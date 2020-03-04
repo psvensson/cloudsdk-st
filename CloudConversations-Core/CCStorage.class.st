@@ -13,7 +13,7 @@ CCStorage class >> createZipFileOf: aDictionary [
 	| archive |
 	archive := ZipArchive new.
 	aDictionary
-		keysAndValuesDo: [ :key :value | archive addString: value as: key ].
+		keysAndValuesDo: [ :key :value | archive addDeflateString: value as: key ].
 	^ ByteArray streamContents: [:strm | archive writeTo: strm]. 
 ]
 

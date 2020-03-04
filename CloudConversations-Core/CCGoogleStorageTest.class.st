@@ -38,9 +38,9 @@ CCGoogleStorageTest >> testUploadStorage [
 	self assert: status equals: true.
 	storage := CCGoogleStorage with: connection.
 	files := Dictionary new.
-	files at: #Dockerfile put: 'ding dong, the withc is dead'.
+	files at: #Dockerfile put: 'ding dong, the witch is dead'.
 	zipfile := CCStorage createZipFileOf: files.	
-	result :=storage upload: zipfile asString as: 'smol_test.zip'.
+	result := storage upload: zipfile  as: 'smoller_test.zip'.
 	Transcript show:'storage upload result: ',result asString;cr.
 	self assert: result size > 0 equals: true
 ]

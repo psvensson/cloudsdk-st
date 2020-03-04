@@ -64,12 +64,14 @@ CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
 	| value |
 	client headerAt: 'Authorization' put: 'Bearer ',token.
 	client headerAt: 'Accept' put: '*/*'.
-	 "headerAt: 'Content-Type' put: 'application/json';"
+	client headerAt: 'Content-Type' put: 'application/zip'.
 	"client contentReader: [ :entity | NeoJSONReader fromString: entity contents ]."
 		"request setBearerAuthentication: token;"
-	value := file .	
+	value := ReadStream on: file .	
 	client url: url; 
-		addPart: (ZnMimePart readFrom: value );
+		"addPart: (ZnMimePart readFrom: value );"
+		addPart: (ZnMimePart fieldName: fileName value: file);
+		headerAt: 'Content-Type' put: 'application/zip';
 		post.
 	^ client contents
 ]
