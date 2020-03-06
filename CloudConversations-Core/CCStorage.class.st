@@ -7,14 +7,26 @@ Class {
 	#category : #'CloudConversations-Core-Storage'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #generating }
 CCStorage class >> createZipFileOf: aDictionary [
 	"The dictionary is assumed to have the structure of #fileName->#fileContentString"
+
 	| archive |
 	archive := ZipArchive new.
 	aDictionary
-		keysAndValuesDo: [ :key :value | archive addDeflateString: value as: key ].
-	^ ByteArray streamContents: [:strm | archive writeTo: strm]. 
+		keysAndValuesDo:
+			[ :key :value | archive addDeflateString: value withInternetLineEndings as: key ].
+	^ ByteArray streamContents: [ :strm | archive writeTo: strm ]
+]
+
+{ #category : #generating }
+CCStorage class >> createZipFileOfFilenames: anArray [
+	"The dictionary is assumed to have the structure of #fileName->#fileContentString"
+
+	| archive |
+	archive := ZipArchive new.
+	anArray do: [ :value | archive addFile: value asFileReference ].
+	^ ByteArray streamContents: [ :strm | archive writeTo: strm ]
 ]
 
 { #category : #'instance creation' }

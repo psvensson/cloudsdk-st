@@ -18,7 +18,6 @@ CCTemplate >> asString [
 
 { #category : #accessing }
 CCTemplate >> content [
-	content isNil ifTrue: [ self regenerateContent  ].
 	^ content
 ]
 
@@ -50,10 +49,19 @@ CCTemplate >> dependenciesPartDockerfile [
 ]
 
 { #category : #accessing }
+CCTemplate >> dumpAsFiles [
+	'Dockerfile' asFileReference
+		writeStreamDo: [ :stream | stream << self content ].
+	'load.st' asFileReference
+		writeStreamDo: [ :stream | stream << self loadFile ]	
+]
+
+{ #category : #accessing }
 CCTemplate >> firstPartDockerfile [
 	^ '######################################
 # Based on Ubuntu image
 ######################################
+USER root
 FROM ubuntu
 
 ######################################
@@ -97,7 +105,21 @@ CCTemplate >> imagePackages: anObject [
 CCTemplate >> initialize [
 	imagePackages := OrderedCollection new.
 	dependencies := OrderedCollection new.
+	self regenerateContent .
 	loadingContent := ''
+]
+
+{ #category : #accessing }
+CCTemplate >> loadFile [
+	| loadfile depStr |
+	depStr := dependencies isEmpty
+		ifTrue: [ '' ]
+		ifFalse: [ dependencies do: [ :each | each installString ] ].
+	loadfile := depStr
+		,
+			'ZnServer startDefaultOn: 8080.
+SmalltalkImage current snapshot: true andQuit: true'.
+	^ loadfile
 ]
 
 { #category : #accessing }
@@ -124,8 +146,51 @@ CCTemplate >> name: anObject [
 
 { #category : #accessing }
 CCTemplate >> regenerateContent [
-	content := self firstPartDockerfile , self dependenciesPartDockerfile
-		, self secondPartDockerfile
+	content := "self firstPartDockerfile , self dependenciesPartDockerfile
+		, self secondPartDockerfile"
+		'######################################
+# Based on Ubuntu image
+######################################
+FROM ubuntu
+
+######################################
+# Basic project infos
+######################################
+LABEL maintainer="Your Name"
+
+######################################
+# Update Ubuntu apt and install some tools
+######################################
+RUN  apt-get update \
+  && apt-get install -y wget \
+  && apt-get install -y git \
+  && apt-get install -y unzip \
+  && rm -rf /var/lib/apt/lists/*
+
+######################################
+# Have an own directory for the tool
+######################################
+RUN mkdir webapp
+WORKDIR webapp
+
+######################################
+# Download Pharo using Zeroconf & start script
+######################################
+RUN wget -O- https://get.pharo.org/64/70+vm | bash
+
+COPY load.st load.st
+
+RUN ./pharo Pharo.image load.st
+
+######################################
+# Expose port 8080 of Zinc outside the container
+######################################
+EXPOSE 8080
+
+######################################
+# Finally run headless as server
+######################################
+CMD ./pharo --headless Pharo.image --no-quit'
 ]
 
 { #category : #accessing }
@@ -141,4 +206,13 @@ EXPOSE 8080
 # Finally run headless as server
 ######################################
 CMD ./pharo --headless Pharo.image --no-quit'
+]
+
+{ #category : #accessing }
+CCTemplate >> zipArchiveForBuild [
+	| dict |
+	dict := Dictionary new.
+	dict at: #Dockerfile put: self content.
+	dict at: 'load.st' put: self loadFile .
+	^ CCStorage createZipFileOf: dict
 ]

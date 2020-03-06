@@ -66,8 +66,8 @@ CCGithubLookup >> installStringForItem: item [
 	html_url := item at: #html_url.
 	s := html_url substrings: '/'.
 	repoDir := self getSourceDirForItem: item.
-	^ 'RUN ./pharo --headless Pharo.image eval --save "Metacello new repository: ''github://',(s at:3) , '/' , (s at: 4),'/', repoDir, '''; baseline: ''',
-	(s at: 4), '''; load. "'
+	^ 'Metacello new repository: ''github://',(s at:3) , '/' , (s at: 4),'/', repoDir, '''; baseline: ''',
+	(s at: 4), '''; load. '
 ]
 
 { #category : #accessing }
