@@ -9,7 +9,8 @@ Class {
 	#instVars : [
 		'certificate',
 		'cloudType',
-		'name'
+		'name',
+		'jsonStringCertificate'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -42,6 +43,7 @@ CCServiceAccount >> certificate: anObject [
 { #category : #accessing }
 CCServiceAccount >> certificateAsJSONString: aString [
 	| reader |
+	jsonStringCertificate := aString .
 	reader := [ :string | (NeoJSONReader on: string readStream) next ].
 	certificate := reader value: aString .
 	name := self projectId
@@ -60,6 +62,16 @@ CCServiceAccount >> cloudType: anObject [
 { #category : #accessing }
 CCServiceAccount >> icon [
 	^ CCImages iconFrom: cloudType 
+]
+
+{ #category : #accessing }
+CCServiceAccount >> jsonStringCertificate [
+	^ jsonStringCertificate
+]
+
+{ #category : #accessing }
+CCServiceAccount >> jsonStringCertificate: anObject [
+	jsonStringCertificate := anObject
 ]
 
 { #category : #accessing }

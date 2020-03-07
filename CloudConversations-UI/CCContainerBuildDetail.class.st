@@ -1,5 +1,5 @@
 Class {
-	#name : #CCContainerDetail,
+	#name : #CCContainerBuildDetail,
 	#superclass : #ScrollPane,
 	#instVars : [
 		'container',
@@ -9,7 +9,7 @@ Class {
 }
 
 { #category : #accessing }
-CCContainerDetail >> actionsRow [
+CCContainerBuildDetail >> actionsRow [
 	| row deleteContainerButton deployContainerButton |
 	row := Morph new.	
 	row
@@ -38,7 +38,7 @@ CCContainerDetail >> actionsRow [
 ]
 
 { #category : #accessing }
-CCContainerDetail >> addContainerPropsAndValueTo: aMorph [
+CCContainerBuildDetail >> addContainerPropsAndValueTo: aMorph [
 	container props keysAndValuesDo: [ :key : value |
 		| row |
 		row := self containerPropertyRow: key value: value.
@@ -46,27 +46,27 @@ CCContainerDetail >> addContainerPropsAndValueTo: aMorph [
 ]
 
 { #category : #accessing }
-CCContainerDetail >> allContainers [
+CCContainerBuildDetail >> allContainers [
 	^ allContainers
 ]
 
 { #category : #accessing }
-CCContainerDetail >> allContainers: anObject [
+CCContainerBuildDetail >> allContainers: anObject [
 	allContainers := anObject
 ]
 
 { #category : #accessing }
-CCContainerDetail >> container [
+CCContainerBuildDetail >> container [
 	^ container
 ]
 
 { #category : #accessing }
-CCContainerDetail >> container: anObject [
+CCContainerBuildDetail >> container: anObject [
 	container := anObject
 ]
 
 { #category : #accessing }
-CCContainerDetail >> containerPropertyRow: prop value: val [
+CCContainerBuildDetail >> containerPropertyRow: prop value: val [
 	| propline method valstr |
 	propline := TextMorph new.
 	method := prop asSymbol .
@@ -80,17 +80,17 @@ CCContainerDetail >> containerPropertyRow: prop value: val [
 ]
 
 { #category : #accessing }
-CCContainerDetail >> deleteContainer [
+CCContainerBuildDetail >> deleteContainer [
 	Transcript show:'delte container (unimplemented)';cr.
 ]
 
 { #category : #accessing }
-CCContainerDetail >> deployContainer [
+CCContainerBuildDetail >> deployContainer [
 	Transcript show:'deploycontainer (unimplemented)';cr.
 ]
 
 { #category : #accessing }
-CCContainerDetail >> initialize [
+CCContainerBuildDetail >> initialize [
 	super initialize .
 	self		
 		layoutPolicy: TableLayout new;
@@ -109,7 +109,7 @@ CCContainerDetail >> initialize [
 ]
 
 { #category : #accessing }
-CCContainerDetail >> showContainer [	
+CCContainerBuildDetail >> showContainer [	
 	self removeAllMorphs.
 	self addMorph: self actionsRow .
 	container isNil

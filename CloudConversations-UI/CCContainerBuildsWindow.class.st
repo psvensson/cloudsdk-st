@@ -1,5 +1,5 @@
 Class {
-	#name : #CCContainersWindow,
+	#name : #CCContainerBuildsWindow,
 	#superclass : #PanelMorph,
 	#instVars : [
 		'account',
@@ -15,28 +15,28 @@ Class {
 }
 
 { #category : #accessing }
-CCContainersWindow class >> savedContainers [
+CCContainerBuildsWindow class >> savedContainers [
 	^ savedContainers
 ]
 
 { #category : #accessing }
-CCContainersWindow class >> savedContainers: anObject [
+CCContainerBuildsWindow class >> savedContainers: anObject [
 	savedContainers := anObject
 ]
 
 { #category : #accessing }
-CCContainersWindow >> account [
+CCContainerBuildsWindow >> account [
 	^ account
 ]
 
 { #category : #accessing }
-CCContainersWindow >> account: anObject [
+CCContainerBuildsWindow >> account: anObject [
 	account := anObject.
 	self getContainerListFromCloud
 ]
 
 { #category : #accessing }
-CCContainersWindow >> containerSelected: aContainerIndex [
+CCContainerBuildsWindow >> containerSelected: aContainerIndex [
 	|  aContainer |
 	selectedContainerIndex := aContainerIndex .
 	containerList selectionIndex: aContainerIndex .
@@ -46,17 +46,17 @@ CCContainersWindow >> containerSelected: aContainerIndex [
 ]
 
 { #category : #accessing }
-CCContainersWindow >> containers [
+CCContainerBuildsWindow >> containers [
 	^ containers
 ]
 
 { #category : #accessing }
-CCContainersWindow >> containers: anObject [
+CCContainerBuildsWindow >> containers: anObject [
 	containers := anObject
 ]
 
 { #category : #services }
-CCContainersWindow >> getContainerListFromCloud [
+CCContainerBuildsWindow >> getContainerListFromCloud [
 	| connection status result list |
 	connection := CCMainController getConnectionForAccount: account .
 	status := connection connect .
@@ -75,7 +75,7 @@ CCContainersWindow >> getContainerListFromCloud [
 ]
 
 { #category : #accessing }
-CCContainersWindow >> getContainerObjectFrom: cdict [
+CCContainerBuildsWindow >> getContainerObjectFrom: cdict [
 	| container |
 	container := CCContainer new.
 	cdict
@@ -104,7 +104,7 @@ CCContainersWindow >> getContainerObjectFrom: cdict [
 ]
 
 { #category : #accessing }
-CCContainersWindow >> getTableCollectionForContainer: aContainer [
+CCContainerBuildsWindow >> getTableCollectionForContainer: aContainer [
 	| collection |
 	collection := OrderedCollection new.
 	aContainer props keysAndValuesDo: [  :key :value |
@@ -117,15 +117,19 @@ CCContainersWindow >> getTableCollectionForContainer: aContainer [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initialize [
+CCContainerBuildsWindow >> initialize [
+	| title |
 	super initialize.
 	self initializeLayout.
 	self initializeContainerList.
-	self initializeTable 
+	self initializeTable .
+	title := TextMorph new.
+	title contents: 'Result of Docker Container builds'.
+	self addMorph: title.
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initializeContainerList [
+CCContainerBuildsWindow >> initializeContainerList [
 	containerList := PluggableIconListMorph new.
 	containerList
 		color: Color gray;
@@ -142,7 +146,7 @@ CCContainersWindow >> initializeContainerList [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initializeLayout [
+CCContainerBuildsWindow >> initializeLayout [
 	self
 		layoutPolicy: ProportionalLayout new;
 		"wrapCentering: #topLeft;"
@@ -161,8 +165,8 @@ CCContainersWindow >> initializeLayout [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initializeTable [
-	table := CCContainerDetail new.
+CCContainerBuildsWindow >> initializeTable [
+	table := CCContainerBuildDetail new.
 	table
 		top: 35.
 		"left: 250"
@@ -170,6 +174,6 @@ CCContainersWindow >> initializeTable [
 ]
 
 { #category : #services }
-CCContainersWindow >> selectedContainerIndex [
+CCContainerBuildsWindow >> selectedContainerIndex [
 	^ selectedContainerIndex
 ]

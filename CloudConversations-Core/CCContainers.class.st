@@ -7,7 +7,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'containers',
-		'connection'
+		'connection',
+		'dockerRegistry'
 	],
 	#category : #'CloudConversations-Core-Containers'
 }
@@ -27,7 +28,9 @@ CCContainers >> connection [
 
 { #category : #accessing }
 CCContainers >> connection: anObject [
-	connection := anObject
+	
+	connection := anObject.
+	self initializeRegistry
 ]
 
 { #category : #accessing }
@@ -49,5 +52,10 @@ CCContainers >> createContainerForTemplate: aTemplate [
 { #category : #accessing }
 CCContainers >> delete: aContainerId [
 	"Delete the container according to the specific id on the cloud provider"
+	self subclassResponsibility 
+]
+
+{ #category : #accessing }
+CCContainers >> initializeRegistry [
 	self subclassResponsibility 
 ]

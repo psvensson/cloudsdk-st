@@ -18,6 +18,15 @@ CCGoogleContainers >> createContainerForTemplate: aTemplate [
 ]
 
 { #category : #accessing }
+CCGoogleContainers >> initializeRegistry [
+	| sa url |
+	sa := connection serviceAccount.
+	url := 'https://gcr.io/' , 'foobar'.
+	
+	dockerRegistry := DockerRegistry url: url username: 'json_key' password: sa jsonStringCertificate.
+]
+
+{ #category : #accessing }
 CCGoogleContainers >> list [ 
 	"list all containers present on the cloud provider"
 	"GET https://cloudbuild.googleapis.com/v1/projects/{projectId}/builds"
@@ -28,6 +37,21 @@ CCGoogleContainers >> list [
 	"Transcript show: url;cr."
 	result := connection secureJSONCallTo: url.
 	^ (result contents) at: #builds
+]
+
+{ #category : #accessing }
+CCGoogleContainers >> listContainers [
+"This can happen;
+
+Cloud Resource Manager API has not been used in project 973408038350 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/overview?project=973408038350 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+"
+	| projectId url |
+	projectId := connection serviceAccount projectId.
+	"url := 'https://gcr.io/v2/',projectId."
+	url := 'https://gcr.io/v2/_catalog'.
+	Transcript show:'listContainers url=',url;cr.
+	
+	^ connection secureJSONCallTo: url
 ]
 
 { #category : #accessing }

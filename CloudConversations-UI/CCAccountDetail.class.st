@@ -149,7 +149,7 @@ CCAccountDetail >> showAccount [
 { #category : #accessing }
 CCAccountDetail >> showContainers [
 	| cw |
-	cw := CCContainersWindow new.
+	cw := CCContainerBuildsWindow new.
 	cw openInWindow.
 	cw account: account 
 ]

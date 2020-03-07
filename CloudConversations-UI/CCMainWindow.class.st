@@ -1,5 +1,9 @@
 "
 I am the main window of Cloud Conversation which hold all other UI elements.
+--------
+The following Google Cloud APIs need to be enabled on a project for this to work;
+1. https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/
+
 "
 Class {
 	#name : #CCMainWindow,

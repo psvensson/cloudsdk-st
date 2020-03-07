@@ -40,7 +40,7 @@ CCGoogleContainersTest >> testList [
 	status := connection connect .
 	self assert: status equals: true.
 	containers := CCGoogleContainers with: connection.
-	result := containers list.
-	self assert: (result at: 'nextPageToken') isEmpty equals: false.
+	result := containers listContainers.
+	self assert: (result at: 'repository') isEmpty equals: false.
 	
 ]
