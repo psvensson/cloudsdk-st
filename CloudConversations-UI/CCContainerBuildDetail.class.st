@@ -9,35 +9,6 @@ Class {
 }
 
 { #category : #accessing }
-CCContainerBuildDetail >> actionsRow [
-	| row deleteContainerButton deployContainerButton |
-	row := Morph new.	
-	row
-		color: (Color gray darker );
-		layoutPolicy: RowLayout new;
-		listDirection: #leftToRight;
-		cellInset: 6 @ 5;
-		layoutInset: 5 @ 5;
-		hResizing: #spaceFill.
-	deleteContainerButton := SimpleButtonMorph
-		newWithLabel: 'Delete Container'.
-	deleteContainerButton
-		color: Color red;
-		target: self;
-		actionSelector: #deleteContainer.
-	deployContainerButton := SimpleButtonMorph
-		newWithLabel: 'Deploy Container'.
-	deployContainerButton
-		color: Color green darker darker;
-		target: self;
-		actionSelector: #deployContainer.
-	
-	row addMorph: deleteContainerButton .
-	row addMorph: deployContainerButton .
-	^ row
-]
-
-{ #category : #accessing }
 CCContainerBuildDetail >> addContainerPropsAndValueTo: aMorph [
 	container props keysAndValuesDo: [ :key : value |
 		| row |
@@ -80,16 +51,6 @@ CCContainerBuildDetail >> containerPropertyRow: prop value: val [
 ]
 
 { #category : #accessing }
-CCContainerBuildDetail >> deleteContainer [
-	Transcript show:'delte container (unimplemented)';cr.
-]
-
-{ #category : #accessing }
-CCContainerBuildDetail >> deployContainer [
-	Transcript show:'deploycontainer (unimplemented)';cr.
-]
-
-{ #category : #accessing }
 CCContainerBuildDetail >> initialize [
 	super initialize .
 	self		
@@ -109,14 +70,12 @@ CCContainerBuildDetail >> initialize [
 ]
 
 { #category : #accessing }
-CCContainerBuildDetail >> showContainer [	
+CCContainerBuildDetail >> showContainer [
 	self removeAllMorphs.
-	self addMorph: self actionsRow .
 	container isNil
 		ifFalse: [ self addContainerPropsAndValueTo: self ]
-		ifTrue: [ 
-			| text |
+		ifTrue: [ | text |
 			text := TextMorph new.
 			text contents: 'No Container Selected'.
-			self addMorph: text  ]
+			self addMorph: text ]
 ]

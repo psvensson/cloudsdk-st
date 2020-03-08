@@ -34,13 +34,24 @@ CCGoogleContainersTest >> testCreate [
 
 { #category : #tests }
 CCGoogleContainersTest >> testList [
-	| serviceAccount status connection containers result |
-	serviceAccount := CCServiceAccount withCertificateAsJSONString: certificateString .	
-	connection := CCGoogleConnection with: serviceAccount .
-	status := connection connect .
+	| serviceAccount status connection containers result repositories |
+	serviceAccount := CCServiceAccount
+		withCertificateAsJSONString: certificateString.
+	connection := CCGoogleConnection with: serviceAccount.
+	status := connection connect.
 	self assert: status equals: true.
 	containers := CCGoogleContainers with: connection.
 	result := containers listContainers.
-	self assert: (result at: 'repository') isEmpty equals: false.
-	
+	self assert: (result at: 'repositories') isEmpty equals: false.
+	repositories := result at: #repositories.
+	repositories
+		do: [ :each |
+			| tags digest name manifest |
+			tags := containers listRepositoryTags: each. 
+			tags inspect.
+			digest := (tags at: #manifest) keys first.
+			name := tags at: #name.
+			"manifest := containers getContainerManifestByName: name andReference: digest.
+			manifest inspect."
+			Transcript show: name,' -> ',digest;cr ]
 ]

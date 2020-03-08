@@ -18,6 +18,15 @@ CCGoogleContainers >> createContainerForTemplate: aTemplate [
 ]
 
 { #category : #accessing }
+CCGoogleContainers >> getContainerManifestByName: aRepositoryName andReference: aReference [
+	| projectId url |
+	projectId := connection serviceAccount projectId.
+	url := 'https://gcr.io/v2/',aRepositoryName,'/manifests/',aReference .
+	Transcript show:'getContainerManifestByReference url=',url;cr.	
+	^ connection secureJSONCallTo: url
+]
+
+{ #category : #accessing }
 CCGoogleContainers >> initializeRegistry [
 	| sa url |
 	sa := connection serviceAccount.
@@ -51,6 +60,15 @@ Cloud Resource Manager API has not been used in project 973408038350 before or i
 	url := 'https://gcr.io/v2/_catalog'.
 	Transcript show:'listContainers url=',url;cr.
 	
+	^ connection secureJSONCallTo: url
+]
+
+{ #category : #accessing }
+CCGoogleContainers >> listRepositoryTags: aRepositoryName [
+	| projectId url |
+	projectId := connection serviceAccount projectId.
+	url := 'https://gcr.io/v2/',aRepositoryName,'/tags/list'.
+	Transcript show:'listRepositoryTags url=',url;cr.	
 	^ connection secureJSONCallTo: url
 ]
 

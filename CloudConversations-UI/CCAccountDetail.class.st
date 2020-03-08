@@ -20,31 +20,39 @@ CCAccountDetail >> account: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> actionsRow [
-	| showContainersButton showDeploymentsButton row |
+	| showContainersButton showDeploymentsButton row showContainerbuildsButton |
 	row := Morph new.	
 	row
 		color: (Color gray);
 		layoutPolicy: RowLayout new;
-		listDirection: #leftToRight;
+		listDirection: #topToBottom;
 		cellInset: 6 @ 0;
 		layoutInset: 5 @ 5;
 		top: 10;
 		hResizing: #spaceFill.
+	showContainerbuildsButton := SimpleButtonMorph
+		newWithLabel: 'Build results'.
+	showContainerbuildsButton
+		color: Color darkGray;
+		target: self;
+		actionSelector: #showContainerBuilds.
 	showContainersButton := SimpleButtonMorph
-		newWithLabel: 'Show Containers'.
+		newWithLabel: 'Containers'.
 	showContainersButton
 		color: Color darkGray;
 		target: self;
-		actionSelector: #showContainers.
+		actionSelector: #showContainers.	
 	showDeploymentsButton := SimpleButtonMorph
-		newWithLabel: 'Show Deployments'.
+		newWithLabel: 'Deployments'.
 	showDeploymentsButton
 		color: Color darkGray;
 		target: self;
 		actionSelector: #showDeployments.
 	
 	row addMorph: showDeploymentsButton.
+	row addMorph: showContainerbuildsButton.
 	row addMorph: showContainersButton.
+	
 	^ row
 ]
 
@@ -107,7 +115,7 @@ CCAccountDetail >> initializeLayout [
 		layoutPolicy: TableLayout new;
 		"wrapCentering: #topLeft;"
 		"wrapDirection: #leftToRight;"
-		listDirection: #leftToRight  ;
+		listDirection: #topToBottom  ;
 		listCentering: #topLeft;
 		hResizing: #spaceFill;
 		vResizing: #spaceFill;
@@ -147,9 +155,17 @@ CCAccountDetail >> showAccount [
 ]
 
 { #category : #accessing }
-CCAccountDetail >> showContainers [
+CCAccountDetail >> showContainerBuilds [
 	| cw |
 	cw := CCContainerBuildsWindow new.
+	cw openInWindow.
+	cw account: account 
+]
+
+{ #category : #accessing }
+CCAccountDetail >> showContainers [
+	| cw |
+	cw := CCContainersWindow new.
 	cw openInWindow.
 	cw account: account 
 ]

@@ -100,7 +100,7 @@ CCMainWindow >> initialize [
 			"wrapDirection: #leftToRight  ;"
 			listDirection: #leftToRight;
 			listCentering: #topLeft;
-			height: 700;
+			height: 750;
 			cellInset: 10.
 			"wrapCentering: #center;"
 	self title: 'Cloud Conversations - Talking to the cloud about poetry'.
@@ -188,7 +188,7 @@ CCMainWindow >> initializePanels [
 	accountPanelMorph top: 35; left: 10.
 	templatePanelMorph := CCTemplatesPanelMorph new.
 	templatePanelMorph templates: self class models templates.
-	templatePanelMorph top: 35; left: 260.
+	templatePanelMorph top: 35; left: 280.
 	self addMorph: accountPanelMorph .
 	self addMorph: templatePanelMorph 
 ]

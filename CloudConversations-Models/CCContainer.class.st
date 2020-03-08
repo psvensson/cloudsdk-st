@@ -2,209 +2,109 @@ Class {
 	#name : #CCContainer,
 	#superclass : #Object,
 	#instVars : [
-		'results',
-		'options',
-		'images',
-		'steps',
-		'finishTime',
-		'timeout',
-		'id',
-		'startTime',
-		'logsBucket',
-		'timing',
-		'projectId',
-		'sourceProvenance',
-		'status',
-		'createTime',
-		'artifacts',
-		'logUrl',
-		'source',
-		'props'
+		'dict',
+		'name',
+		'tags',
+		'imageSize',
+		'mediaType',
+		'timeUploaded',
+		'timeCreated',
+		'reference'
 	],
 	#category : #'CloudConversations-Models'
 }
 
 { #category : #accessing }
-CCContainer >> artifacts [
-	^ artifacts
+CCContainer >> dict [
+	^ dict
 ]
 
 { #category : #accessing }
-CCContainer >> artifacts: anObject [
-	artifacts := anObject at: #images
+CCContainer >> dict: anObject [
+	dict := anObject
+]
+
+{ #category : #'instance creation' }
+CCContainer >> fromDict: d [
+	| instance |
+	instance := self.
+	instance dict: d.
+	instance imageSize: (d at: #imageSizeBytes).
+	instance mediaType: (d at: #mediaType).
+	instance name: (d at: #name).
+	instance reference: (d at: #reference).
+	instance tags: (d at: #tags).
+	instance timeCreated: (d at: #timeCreatedMs).
+	instance timeUploaded: (d at: #timeUploadedMs).
+	^ instance.
 ]
 
 { #category : #accessing }
-CCContainer >> asString [
-	^ (artifacts at: 1) 
+CCContainer >> imageSize: anObject [
+	imageSize := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> createTime [
-	^ createTime
+CCContainer >> imagesize [
+	^ imageSize
 ]
 
 { #category : #accessing }
-CCContainer >> createTime: anObject [
-	createTime := anObject
+CCContainer >> mediaType [
+	^ mediaType
 ]
 
 { #category : #accessing }
-CCContainer >> finishTime [
-	^ finishTime
+CCContainer >> mediaType: anObject [
+	mediaType := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> finishTime: anObject [
-	finishTime := anObject
+CCContainer >> name [
+	^ name
 ]
 
 { #category : #accessing }
-CCContainer >> id [
-	^ id
+CCContainer >> name: anObject [
+	name := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> id: anObject [
-	id := anObject
+CCContainer >> reference [
+	^ reference
 ]
 
 { #category : #accessing }
-CCContainer >> images [
-	^ images
+CCContainer >> reference: anObject [
+	reference := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> images: anObject [
-	images := anObject
+CCContainer >> tags [
+	^ tags
 ]
 
 { #category : #accessing }
-CCContainer >> logUrl [
-	^ logUrl
+CCContainer >> tags: anObject [
+	tags := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> logUrl: anObject [
-	logUrl := anObject
+CCContainer >> timeCreated [
+	^ timeCreated
 ]
 
 { #category : #accessing }
-CCContainer >> logsBucket [
-	^ logsBucket
+CCContainer >> timeCreated: anObject [
+	timeCreated := anObject
 ]
 
 { #category : #accessing }
-CCContainer >> logsBucket: anObject [
-	logsBucket := anObject
+CCContainer >> timeUploaded [
+	^ timeUploaded
 ]
 
 { #category : #accessing }
-CCContainer >> options [
-	^ options
-]
-
-{ #category : #accessing }
-CCContainer >> options: anObject [
-	options := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> projectId [
-	^ projectId
-]
-
-{ #category : #accessing }
-CCContainer >> projectId: anObject [
-	projectId := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> props [
-	^ props
-]
-
-{ #category : #accessing }
-CCContainer >> props: anObject [
-	props := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> results [
-	^ results
-]
-
-{ #category : #accessing }
-CCContainer >> results: anObject [
-	results := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> source [
-	^ source
-]
-
-{ #category : #accessing }
-CCContainer >> source: obj [
-	source := (obj at: #storageSource) at: #bucket
-]
-
-{ #category : #accessing }
-CCContainer >> sourceProvenance [
-	^ sourceProvenance 
-]
-
-{ #category : #accessing }
-CCContainer >> sourceProvenance: obj [
-	sourceProvenance := obj
-]
-
-{ #category : #accessing }
-CCContainer >> startTime [
-	^ startTime
-]
-
-{ #category : #accessing }
-CCContainer >> startTime: anObject [
-	startTime := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> status [
-	^ status
-]
-
-{ #category : #accessing }
-CCContainer >> status: anObject [
-	status := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> steps [
-	^ steps
-]
-
-{ #category : #accessing }
-CCContainer >> steps: anObject [
-	steps := (anObject at: 1) at: #args
-]
-
-{ #category : #accessing }
-CCContainer >> timeout [
-	^ timeout
-]
-
-{ #category : #accessing }
-CCContainer >> timeout: anObject [
-	timeout := anObject
-]
-
-{ #category : #accessing }
-CCContainer >> timing [
-	^ timing
-]
-
-{ #category : #accessing }
-CCContainer >> timing: anObject [
-	timing := anObject
+CCContainer >> timeUploaded: anObject [
+	timeUploaded := anObject
 ]

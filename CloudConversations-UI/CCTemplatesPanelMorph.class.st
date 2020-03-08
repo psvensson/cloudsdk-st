@@ -30,7 +30,7 @@ CCTemplatesPanelMorph >> initialize [
 CCTemplatesPanelMorph >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		height: 500;
+		"height: 500;"
 		listDirection: #topToBottom;
 		"listCentering: #justified ;"
 			"cellInset: 5;"

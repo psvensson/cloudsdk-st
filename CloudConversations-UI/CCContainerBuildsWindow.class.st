@@ -77,7 +77,7 @@ CCContainerBuildsWindow >> getContainerListFromCloud [
 { #category : #accessing }
 CCContainerBuildsWindow >> getContainerObjectFrom: cdict [
 	| container |
-	container := CCContainer new.
+	container := CCContainerBuildResults new.
 	cdict
 		at: #result
 		ifPresent: [ container
