@@ -46,11 +46,11 @@ CCContainersWindow >> containerSelected: aContainerIndex [
 	Transcript show:'ContainerWindow containerSelected: ',aContainerName;cr.
 	tags := containerConnection listRepositoryTags: aContainerName .
 	containerVersions := tags at: #manifest.
-	cdict := self getLatestContainerVersion: containerVersions.
+	cdict := CCContainer getLatestContainerVersion: containerVersions.
 	cdict at: #name put: aContainerName .
 	cdict at: #tags put: (tags at: #tags).
-	container := CCContainer new.
-	container fromDict: cdict.
+	cdict at: #manifest put: containerVersions .
+	container := CCContainer from: cdict.
 	table container: container.
 	table showContainer 
 	
@@ -93,34 +93,6 @@ CCContainersWindow >> getContainerListFromCloud [
 		menu: nil
 		keystroke: nil.
 	containers isEmpty ifFalse: [ self containerSelected: 1 ]	
-]
-
-{ #category : #initialization }
-CCContainersWindow >> getContainerObjectFrom: cdict [
-	| container manifest |
-	container := CCContainer new.	
-	manifest := cdict at: #manifest	.
-	container
-		name: (cdict at: #name);
-		tags: (cdict at: #tags);
-		reference: (manifest keys first);
-		imageSize: (manifest at: #imageSizeBytes);
-		mediaType: (cdict at: #mediaType);
-		timeUploaded: (cdict at: #timeUploadedMs);
-		timeCreated: (cdict at: #timeCreatedMs).
-	^ container
-]
-
-{ #category : #initialization }
-CCContainersWindow >> getLatestContainerVersion: containerVersions [
-	| values curriedVersions |
-	curriedVersions := Dictionary new.
-	containerVersions keysAndValuesDo: [ :key :value | 
-		value at: #reference put: key.
-		curriedVersions at: key put: value ].
-	values := containerVersions values.
-	values sort: [ :a :b | (a at: #timeCreatedMs) > (b at: #timeCreatedMs) ].
-	^ values first.
 ]
 
 { #category : #initialization }

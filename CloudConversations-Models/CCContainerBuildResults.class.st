@@ -21,8 +21,38 @@ Class {
 		'source',
 		'props'
 	],
+	#classInstVars : [
+		'artifacts'
+	],
 	#category : #'CloudConversations-Models'
 }
+
+{ #category : #'instance creation' }
+CCContainerBuildResults class >> from: cdict [
+	| container manifest |
+	container := self new.	
+	manifest := cdict at: #manifest ifAbsent: [nil].
+	container
+		props: cdict ;
+		"name: (cdict at: #name ifAbsent: [ (cdict at: #images) at: 1 ]);"
+		id: (cdict at: #id ifAbsent: [nil]);
+		status: (cdict at: #status);
+		"artifacts: (cdict at: artifacts ifAbsent: [nil]);"
+		createTime: (cdict at: #createTime ifAbsent: [nil]);
+		finishTime: (cdict at: #finishTime ifAbsent: [nil]);
+		images: (cdict at: #images ifAbsent: [nil]);
+		logUrl: (cdict at: #logUrl);
+		logsBucket: (cdict at: #logsBucket);
+		options: (cdict at: #options);
+		results: (cdict at: #results);
+		source: (cdict at: #source);
+		sourceProvenance: (cdict at: #sourceProvenance);
+		startTime: (cdict at: #startTime);
+		steps: (cdict at: #steps);
+		timeout: (cdict at: #timeout);
+		timing: (cdict at: #timing) .
+	^ container
+]
 
 { #category : #accessing }
 CCContainerBuildResults >> artifacts [
@@ -36,7 +66,7 @@ CCContainerBuildResults >> artifacts: anObject [
 
 { #category : #accessing }
 CCContainerBuildResults >> asString [
-	^ (artifacts at: 1) 
+	^ (images at: 1) 
 ]
 
 { #category : #accessing }

@@ -3,7 +3,8 @@ Class {
 	#superclass : #PanelMorph,
 	#instVars : [
 		'account',
-		'allAccounts'
+		'allAccounts',
+		'accountUpdate'
 	],
 	#category : #'CloudConversations-UI-Accounts'
 }
@@ -20,7 +21,7 @@ CCAccountDetail >> account: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> actionsRow [
-	| showContainersButton showDeploymentsButton row showContainerbuildsButton |
+	| showContainersButton showDeploymentsButton row showContainerbuildsButton renameButton |
 	row := Morph new.	
 	row
 		color: (Color gray);
@@ -48,7 +49,13 @@ CCAccountDetail >> actionsRow [
 		color: Color darkGray;
 		target: self;
 		actionSelector: #showDeployments.
+	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
+	renameButton
+		color: Color darkGray;
+		target: self;
+		actionSelector: #renameAccount.		
 	
+	row addMorph: renameButton.
 	row addMorph: showDeploymentsButton.
 	row addMorph: showContainerbuildsButton.
 	row addMorph: showContainersButton.
@@ -68,10 +75,13 @@ CCAccountDetail >> allAccounts: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> deleteAccount [
-	| really |
+	| really listItemWrappers |
 	really := UIManager default
 		confirm: 'Do you really waant to delete this Service Account Certificate?'
-		orCancel: [ ^ false ]
+		orCancel: [ ^ false ].
+	listItemWrappers := allAccounts select: [ :wrapper | wrapper item = account ].	
+	allAccounts remove: listItemWrappers first .	
+	accountUpdate value
 ]
 
 { #category : #accessing }
@@ -127,6 +137,22 @@ CCAccountDetail >> initializeLayout [
 		"wrapDirection: #leftToRight ;"
 		cellInset: 10;
 		color: Color gray darker
+]
+
+{ #category : #accessing }
+CCAccountDetail >> onAccountUpdate: aBlock [
+	accountUpdate := aBlock
+	
+]
+
+{ #category : #accessing }
+CCAccountDetail >> renameAccount [
+	account
+		name:
+			(UIManager default
+				request: 'Change name to:'
+				initialAnswer: account name).
+	accountUpdate value.
 ]
 
 { #category : #accessing }

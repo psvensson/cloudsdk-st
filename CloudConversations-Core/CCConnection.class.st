@@ -55,6 +55,8 @@ CCConnection >> secureJSONCallTo: url [
 	client contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
 		"request setBearerAuthentication: token;"
 	client url: url;
+		enforceHttpSuccess: true;
+   		ifFail: [ :ex | self inform: 'znClient error: ', ex printString. ^ ex ];
 		get.
 	^ client contents
 ]
@@ -80,14 +82,14 @@ CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
 	| value |
 	client headerAt: 'Authorization' put: 'Bearer ',token.
 	client headerAt: 'Accept' put: '*/*'.
-	client headerAt: 'Content-Type' put: 'application/zip'.
+	"client headerAt: 'Content-Type' put: 'application/zip'."
 	"client contentReader: [ :entity | NeoJSONReader fromString: entity contents ]."
 		"request setBearerAuthentication: token;"
 	value := ReadStream on: file .	
 	client url: url; 
 		"addPart: (ZnMimePart readFrom: value );"
-		addPart: (ZnMimePart fieldName: fileName value: file);
-		headerAt: 'Content-Type' put: 'application/zip';
+		"addPart: (ZnMimePart fieldName: fileName value: file);
+		headerAt: 'Content-Type' put: 'application/zip';"
 		entity: (
       ZnEntity
         readBinaryFrom: value   

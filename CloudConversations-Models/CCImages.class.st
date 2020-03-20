@@ -53,6 +53,8 @@ CCImages class >> spriteImage: aNAme [
 		ifTrue: [ str := self getEncodedCloud ].
 	aNAme = 'gcloud'
 		ifTrue: [ str := self getEncodedGcloudt  ].	
+	aNAme = 'google'
+		ifTrue: [ str := self getEncodedGcloudt  ].			
 	aNAme = 'aws'
 		ifTrue: [ str := self getEncodedAws  ].		
 	bytearray := str base64Decoded.

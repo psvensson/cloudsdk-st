@@ -17,6 +17,7 @@ CCAccountPanelMorph >> accounts [
 { #category : #accessing }
 CCAccountPanelMorph >> accounts: aCollection [
 	accounts := aCollection.
+	accountDetail allAccounts: accounts.
 	accountDetail showAccount.
 	accountsPanel
 		onAccountSelected: [ :selectedAccount | self selectAccount: selectedAccount ].
@@ -28,26 +29,28 @@ CCAccountPanelMorph >> initialize [
 	super initialize.
 	self label: 'Cloud Provider Service Accounts'.
 	accountsPanel := CCAccountsPanel new.
-	accountDetail := CCAccountDetail new.
+	accountDetail := CCAccountDetail new.	
 	self
-		layoutPolicy: TableLayout  new;
+		layoutPolicy: TableLayout new;
 		height: 200;
 		listDirection: #topToBottom;
-		"listCentering: #justified ;"		
-		"cellInset: 5;"
-		hResizing: #shrinkWrap;
+		"listCentering: #justified ;"
+			"cellInset: 5;"
+			hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap.
-		"hResizing: #spaceFill;
+	"hResizing: #spaceFill;
 		vResizing: #spaceFill."
 	self addMorph: accountsPanel.
 	self addMorph: accountDetail.
-	
+	accountDetail onAccountUpdate: [ accountsPanel updateList ]
 ]
 
 { #category : #accessing }
 CCAccountPanelMorph >> selectAccount: anAccount [
 	anAccount isNil
-		ifFalse: [ accountDetail
-				account: anAccount item;
-				showAccount ]
+		ifTrue: [ ^ self ].
+	CCMainController lastUsedAccount: anAccount item.
+	accountDetail
+		account: anAccount item;
+		showAccount
 ]

@@ -27,7 +27,7 @@ CCServiceAccount class >> withCertificateAsJSONString: aString [
 
 { #category : #accessing }
 CCServiceAccount >> asString [
-	^ name 
+	^ self name 
 ]
 
 { #category : #accessing }
@@ -46,7 +46,6 @@ CCServiceAccount >> certificateAsJSONString: aString [
 	jsonStringCertificate := aString .
 	reader := [ :string | (NeoJSONReader on: string readStream) next ].
 	certificate := reader value: aString .
-	name := self projectId
 ]
 
 { #category : #accessing }
@@ -76,7 +75,7 @@ CCServiceAccount >> jsonStringCertificate: anObject [
 
 { #category : #accessing }
 CCServiceAccount >> name [
-	^ name
+	^ name isNil ifTrue: [certificate at: #client_email] ifFalse: [ name ]
 ]
 
 { #category : #accessing }

@@ -63,7 +63,7 @@ CCContainerBuildsWindow >> getContainerListFromCloud [
 	Transcript show:'connection status: ',status asString;cr.
 	result := CCGoogleContainers with: connection.
 	list := result list.
-	containers := list collect: [ :each | self getContainerObjectFrom: each].
+	containers := list collect: [ :each | CCContainerBuildResults from: each].
 	self class savedContainers: containers.
 	containerList
 		on: self

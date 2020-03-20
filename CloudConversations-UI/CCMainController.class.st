@@ -34,6 +34,52 @@ CCMainController class >> connection [
 	^ connection
 ]
 
+{ #category : #'as yet unclassified' }
+CCMainController class >> futuresAll: futures [
+	"Works like Promise.All() in JavaScript"
+	| count results fblock |
+	count := futures size.
+	results := OrderedCollection new.
+	fblock := [ futures
+		do: [ :each | 
+			each
+				onSuccessDo: [ :v | 
+					Transcript show:'--- onSuccess: ',v asString;cr.
+					v isNil ifFalse: [results add: v results value].
+					count := count - 1.
+					count < 1
+						ifTrue: [  results ] ] ] ] future.
+	^ fblock andThen: [ results ]
+]
+
+{ #category : #'as yet unclassified' }
+CCMainController class >> futuresAll: futures whenDone: aBlock [
+	"Works like Promise.All() in JavaScript"
+
+	| count results fblock |
+	count := futures size.
+	results := OrderedCollection new.
+	fblock := [ futures
+		do:
+			[ :each | 
+			each
+				onSuccessDo: [ :v | 
+					Transcript
+						show: '--- onSuccess: ' , v asString;
+						cr.
+					v isNil
+						ifFalse: [ results add: v results value ].
+					count := count - 1.
+					count < 1
+						ifTrue: [ aBlock value: results ] ].
+			each
+				onFailureDo: [ :err | 
+					Transcript
+						show: '--- onFailure: ' , err asString;
+						cr.
+					results add: err ] ] future ]
+]
+
 { #category : #adding }
 CCMainController class >> getAccountForCertificate: cert kind: kind [
 	| account |
@@ -52,9 +98,9 @@ CCMainController class >> getConnectionForAccount: account [
 	connections ifNil: [ connections := Dictionary new ].
 	connection := (connections includesKey: account)
 		ifTrue: [ connections at: account ]
-		ifFalse: [ account cloudType = 'gcloud'
+		ifFalse: [ account cloudType = 'google'
 				ifTrue: [ connection := CCGoogleConnection with: account ] ].
-	connections at: account put: connection.
+	connections at: account name put: connection.
 	lastUsedConnection := connection .
 	^ connection
 ]
@@ -89,7 +135,7 @@ CCMainController class >> lastUsedContainer [
 				ifNil: [ UIManager default
 						alert: 'You need to select a service account to connect to'
 						title: 'No default connection' ]
-				ifNotNil: [ lastUsedContainer := CCContainers with: lastUsedConnection ] ].
+				ifNotNil: [ lastUsedContainer := CCGoogleContainers with: lastUsedConnection ] ].
 	^ lastUsedContainer
 ]
 

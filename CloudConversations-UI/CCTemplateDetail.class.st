@@ -83,7 +83,7 @@ CCTemplateDetail >> initializeLayout [
 		listDirection: #leftToRight  ;
 		listCentering: #topLeft;
 		hResizing: #spaceFill;
-		vResizing: #spaceFill;
+		vResizing: #shrinkWrap;
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
 		height:300;

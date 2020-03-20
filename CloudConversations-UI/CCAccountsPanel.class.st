@@ -169,6 +169,11 @@ CCAccountsPanel >> showCertificateDialog [
 		type:
 			(type = 1
 				ifTrue: [ 'aws' ]
-				ifFalse: [ 'gcloud' ]).
+				ifFalse: [ 'google' ]).
 	self showCertificateAlert
+]
+
+{ #category : #accessing }
+CCAccountsPanel >> updateList [
+	accountList updateList 
 ]
