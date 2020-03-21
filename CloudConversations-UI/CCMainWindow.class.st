@@ -51,8 +51,8 @@ CCMainWindow class >> models: anObject [
 CCMainWindow class >> open [
 	| window |
 	window := self new.
-	window hResizing: #shrinkWrap.
-	window extent: 700 @ 500.
+	window hResizing: #spaceFill.
+	window extent: 760 @ 650.
 ]
 
 { #category : #'initialization - private' }

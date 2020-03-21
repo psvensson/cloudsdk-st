@@ -47,6 +47,7 @@ CCTemplateDetail >> initialize [
 	editor morph: textMorph .
 	textMorph width: 300.
 	"textMorph contents: template content ."
+	self	layoutInset: 5 @ 5.
 	self initializeButtons .
 
 ]
@@ -61,7 +62,7 @@ CCTemplateDetail >> initializeButtons [
 	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
 	editButton target: self;
 		actionSelector: #openEditor.	
-	containerButton target: self;
+	containerButton target: self; color: Color green darker darker darker;
 		actionSelector: #createContainer.			
 	self addMorph: saveButton.
 	saveButton target: self;

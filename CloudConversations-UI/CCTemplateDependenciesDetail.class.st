@@ -32,17 +32,9 @@ CCTemplateDependenciesDetail >> dependencySelectedIndex [
 
 { #category : #initialization }
 CCTemplateDependenciesDetail >> initialize [
-	| labelMorph |
 	super initialize.
-	Transcript show:'------- dependency detail created -------';cr.
-	labelMorph := TextMorph new.
-	labelMorph
-		contents: 'Edit Dependecies';
-		hResizing: #spaceFill;
-		vResizing: #spaceFill.
-	self addMorph: labelMorph.
 	self initializeButtons.
-	self initializeList.	
+	self initializeList.
 	self initializeLayout.
 	self initializeDialog
 ]
@@ -107,10 +99,11 @@ CCTemplateDependenciesDetail >> initializeLayout [
 		vResizing: #spaceFill;
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
-		height:200;
+		height:300;
 		width:300;
 		"wrapDirection: #leftToRight ;"
 		cellInset: 10;
+		layoutInset: 5 @ 5;
 		color: Color blue darker
 ]
 

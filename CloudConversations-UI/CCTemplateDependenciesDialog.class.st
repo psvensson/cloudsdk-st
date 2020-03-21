@@ -51,33 +51,13 @@ CCTemplateDependenciesDialog >> getListElement: anIndex [
 ]
 
 { #category : #initialization }
-CCTemplateDependenciesDialog >> initalizeLayout [
-	self		
-		"extent: 300@300;"
-		layoutPolicy: TableLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
-		listDirection: #topToBottom  ;
-		"listCentering: #topLeft;"
-		"hResizing: #spaceFill;
-		vResizing: #spaceFill;"
-		hResizing: #shrinkWrap;
-		vResizing: #shrinkWrap;
-		"height:500;"
-		width:450;
-		color: Color lightGreen ;
-		"wrapDirection: #leftToRight ;"
-		cellInset: 10.
-]
-
-{ #category : #initialization }
 CCTemplateDependenciesDialog >> initialize [
 	super initialize.
 	self initializeLookups.
 	self initializeButtons .
 	self initializeList .
 	self initializeOptions .
-	self initalizeLayout.
+	self initializeLayout.
 	self initializeFields.
 	self initializeDescription .
 	
@@ -143,6 +123,26 @@ CCTemplateDependenciesDialog >> initializeFields [
 
 	self addMorph: searchbox.
 	
+]
+
+{ #category : #initialization }
+CCTemplateDependenciesDialog >> initializeLayout [
+	self		
+		"extent: 300@300;"
+		layoutPolicy: TableLayout new;
+		"wrapCentering: #topLeft;"
+		"wrapDirection: #leftToRight;"
+		listDirection: #topToBottom  ;
+		"listCentering: #topLeft;"
+		"hResizing: #spaceFill;
+		vResizing: #spaceFill;"
+		hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap;
+		"height:500;"
+		width:450;
+		color: Color lightGreen ;
+		"wrapDirection: #leftToRight ;"
+		cellInset: 10.
 ]
 
 { #category : #initialization }
