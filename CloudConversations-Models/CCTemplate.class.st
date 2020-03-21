@@ -6,7 +6,8 @@ Class {
 		'loadingContent',
 		'name',
 		'dependencies',
-		'imagePackages'
+		'imagePackages',
+		'loadfile'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -24,6 +25,15 @@ CCTemplate >> content [
 { #category : #accessing }
 CCTemplate >> content: anObject [
 	content := anObject
+]
+
+{ #category : #accessing }
+CCTemplate >> depFile [
+	| depStr |
+	depStr := dependencies isEmpty
+		ifTrue: [ '' ]
+		ifFalse: [ dependencies do: [ :each | each installString ] ].
+	^ depStr
 ]
 
 { #category : #accessing }
@@ -53,7 +63,7 @@ CCTemplate >> dumpAsFiles [
 	'Dockerfile' asFileReference
 		writeStreamDo: [ :stream | stream << self content ].
 	'load.st' asFileReference
-		writeStreamDo: [ :stream | stream << self loadFile ]	
+		writeStreamDo: [ :stream | stream << self depFile , self loadFile ]	
 ]
 
 { #category : #accessing }
@@ -111,15 +121,15 @@ CCTemplate >> initialize [
 
 { #category : #accessing }
 CCTemplate >> loadFile [
-	| loadfile depStr |
-	depStr := dependencies isEmpty
-		ifTrue: [ '' ]
-		ifFalse: [ dependencies do: [ :each | each installString ] ].
-	loadfile := depStr
-		,
-			'ZnServer startDefaultOn: 8080.
-SmalltalkImage current snapshot: true andQuit: true'.
+	loadfile
+		ifNil: [ loadfile := 'ZnServer startDefaultOn: 8080.
+SmalltalkImage current snapshot: true andQuit: true' ].
 	^ loadfile
+]
+
+{ #category : #accessing }
+CCTemplate >> loadFile: string [
+	loadfile := string.
 ]
 
 { #category : #accessing }
@@ -213,6 +223,6 @@ CCTemplate >> zipArchiveForBuild [
 	| dict |
 	dict := Dictionary new.
 	dict at: #Dockerfile put: self content.
-	dict at: 'load.st' put: self loadFile .
+	dict at: 'load.st' put: self depFile , self loadFile.
 	^ CCStorage createZipFileOf: dict
 ]

@@ -35,7 +35,7 @@ CCTemplatesPanelMorph >> initializeLayout [
 		"listCentering: #justified ;"
 			"cellInset: 5;"
 			height: 500;
-		hResizing: #spaceFill;
+		hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap .
 			
 		"vResizing: #shrinkWrap" 

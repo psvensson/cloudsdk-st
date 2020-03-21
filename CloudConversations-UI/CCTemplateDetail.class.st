@@ -11,7 +11,10 @@ Class {
 		'labelMorph',
 		'renameButton',
 		'templateUpdate',
-		'containerButton'
+		'containerButton',
+		'loadeditButton',
+		'loadeditor',
+		'loadtextMorph'
 	],
 	#category : #'CloudConversations-UI-Templates'
 }
@@ -45,9 +48,15 @@ CCTemplateDetail >> initialize [
 	editor model: template.
 	textMorph := TextMorph new.
 	editor morph: textMorph .
+	loadeditor := TextEditor new.
+	loadeditor model: template.
+	loadtextMorph := TextMorph new.
+	loadeditor morph: loadtextMorph .
 	textMorph width: 300.
+	loadtextMorph width: 300; height:300.	
 	"textMorph contents: template content ."
-	self	layoutInset: 5 @ 5.
+	self	layoutInset: 5 @ 5;
+		width:300.
 	self initializeButtons .
 
 ]
@@ -58,17 +67,21 @@ CCTemplateDetail >> initializeButtons [
 	containerButton := SimpleButtonMorph newWithLabel: 'Create Container'.
 	containerButton color: Color green darker darker darker.
 	copyButton := SimpleButtonMorph newWithLabel: 'Copy'.
-	editButton := SimpleButtonMorph newWithLabel: 'Edit'.
+	editButton := SimpleButtonMorph newWithLabel: 'Edit Dockerfile'.
+	loadeditButton := SimpleButtonMorph newWithLabel: 'Edit loadfile'.
 	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
 	editButton target: self;
-		actionSelector: #openEditor.	
-	containerButton target: self; color: Color green darker darker darker;
+		actionSelector: #openEditor.
+	loadeditButton target: self;
+		actionSelector: #openLoadEditor.		
+	containerButton target: self;
 		actionSelector: #createContainer.			
 	self addMorph: saveButton.
 	saveButton target: self;
 		actionSelector: #saveEditor.
 	self addMorph: copyButton.
 	self addMorph: editButton.
+	self addMorph: loadeditButton.
 	self addMorph: renameButton.
 	self addMorph: containerButton .
 	renameButton target: self;
@@ -79,18 +92,18 @@ CCTemplateDetail >> initializeButtons [
 CCTemplateDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
+		wrapCentering: #topLeft;"
+		"wrapDirection: #leftToRight;
 		listDirection: #leftToRight  ;
 		listCentering: #topLeft;
 		hResizing: #spaceFill;
 		vResizing: #shrinkWrap;
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
-		height:300;
+		width:300;
 		color: Color yellow ;
 		"wrapDirection: #leftToRight ;"
-		cellInset: 10;
+		"cellInset: 10;"
 		color: Color gray darker
 ]
 
@@ -108,6 +121,12 @@ CCTemplateDetail >> openEditor [
 ]
 
 { #category : #accessing }
+CCTemplateDetail >> openLoadEditor [
+	loadtextMorph contents: template loadFile .
+	loadtextMorph   openInWindow .
+]
+
+{ #category : #accessing }
 CCTemplateDetail >> renameTemplate [
 	template
 		name:
@@ -120,10 +139,16 @@ CCTemplateDetail >> renameTemplate [
 
 { #category : #accessing }
 CCTemplateDetail >> saveEditor [
-	| result |
-	result := textMorph contents .
-	Transcript show:result;cr.
-	template isNil ifFalse: [ template content: result ]
+	| result loadResults |
+	result := textMorph contents.
+	loadResults := loadtextMorph contents.
+	Transcript
+		show: result;
+		cr.
+	template isNil
+		ifFalse: [ template
+				content: result;
+				loadFile: loadResults ]
 ]
 
 { #category : #accessing }

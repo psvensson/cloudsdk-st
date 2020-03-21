@@ -52,7 +52,7 @@ CCMainWindow class >> open [
 	| window |
 	window := self new.
 	window hResizing: #spaceFill.
-	window extent: 760 @ 650.
+	window extent: 690 @ 620.
 ]
 
 { #category : #'initialization - private' }
@@ -100,6 +100,8 @@ CCMainWindow >> initialize [
 			"wrapDirection: #leftToRight  ;"
 			listDirection: #leftToRight;
 			listCentering: #topLeft;
+			hResizing: #shrinkWrap;
+			vResizing: #shrinkWrap ;
 			cellInset: 10.
 			"wrapCentering: #center;"
 	self title: 'Cloud Conversations - Talking to the cloud about poetry'.

@@ -91,8 +91,9 @@ CCTemplateDependenciesDetail >> initializeDialog [
 CCTemplateDependenciesDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
+		wrapCentering: #topLeft;
+		"wrapDirection: #topToBottom;"
+		wrapDirection: #leftToRight;
 		listDirection: #topToBottom  ;
 		"listCentering: #topLeft;"
 		hResizing: #spaceFill;
@@ -102,8 +103,8 @@ CCTemplateDependenciesDetail >> initializeLayout [
 		height:300;
 		width:300;
 		"wrapDirection: #leftToRight ;"
-		cellInset: 10;
-		layoutInset: 5 @ 5;
+		"cellInset: 10;"
+		"layoutInset: 5 @ 5;"
 		color: Color blue darker
 ]
 
