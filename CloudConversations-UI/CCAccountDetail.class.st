@@ -146,6 +146,22 @@ CCAccountDetail >> onAccountUpdate: aBlock [
 ]
 
 { #category : #accessing }
+CCAccountDetail >> projectIdMorph [
+	| projectMorph row |
+	row := Morph new.
+	row layoutPolicy: RowLayout new;
+		color: (Color gray darker );
+		"cellInset:6@0;"
+		layoutInset: 5@0;
+		listDirection: #leftToRight;
+		hResizing: #spaceFill.
+	projectMorph := TextMorph new contents: 'Project: ',account projectId .
+	projectMorph hResizing: #spaceFill.
+	row addMorph: projectMorph .
+	^ row 
+]
+
+{ #category : #accessing }
 CCAccountDetail >> renameAccount [
 	account
 		name:
@@ -172,7 +188,8 @@ CCAccountDetail >> showAccount [
 	account isNil
 		ifFalse: [ self
 				addMorph: self iconNameRow;
-				addMorph: self actionsRow ]
+				addMorph: self actionsRow;
+				addMorph: self projectIdMorph. ]
 		ifTrue: [ 
 			| text |
 			text := TextMorph new.
