@@ -52,18 +52,23 @@ CCDeploymentsWindow >> getGoogleRunDeployments [
 	result := CCGoogleRunDeployments
 		listServicesForConnection: connection
 		andEndpoint: endpoint.
-	list := result at: #items.
-	deployments := list collect: [ :each | CCDeployment from: each].
-	"self class savedContainers: deployments"
-	deploymentsList
-		on: self
-		list: #deployments
-		selected: #selectedDeploymentIndex
-		changeSelected: #deploymentSelected:
-		menu: nil
-		keystroke: nil.
-	deployments isEmpty
-		ifFalse: [ self deploymentSelected: 1 ]
+	(result includesKey: #error)
+		ifTrue: [ | msg |
+			msg := (result at: #error) .
+			UIManager default
+				inform: (msg at: #status) , ': ' , (msg at: #message) ]
+		ifFalse: [ list := result at: #items.
+			deployments := list collect: [ :each | CCDeployment from: each ].
+			"self class savedContainers: deployments"
+			deploymentsList
+				on: self
+				list: #deployments
+				selected: #selectedDeploymentIndex
+				changeSelected: #deploymentSelected:
+				menu: nil
+				keystroke: nil.
+			deployments isEmpty
+				ifFalse: [ self deploymentSelected: 1 ] ]
 ]
 
 { #category : #initialization }

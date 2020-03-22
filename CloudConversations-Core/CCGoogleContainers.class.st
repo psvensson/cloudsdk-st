@@ -68,6 +68,7 @@ CCGoogleContainers >> list [
 	url := 'https://cloudbuild.googleapis.com/v1/projects/',projectId,'/builds'.
 	"Transcript show: url;cr."
 	result := connection secureJSONCallTo: url.
+	result isEmpty ifTrue: [ ^ #() ].
 	^ (result contents) at: #builds
 ]
 
