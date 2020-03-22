@@ -23,7 +23,7 @@ CCGoogleContainers >> createContainerForTemplate: aTemplate [
 { #category : #accessing }
 CCGoogleContainers >> getBuildStepForCloudRunDeploy: projectId filename: filename imagename: img [
 	| rv |
-	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["run","deploy","',filename ,'","--image",',img,',"--region","us-central1","--platform","managed"]}'.
+	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["run","deploy","',filename ,'","--image",',img,',"--region","us-central1","--platform","managed","--allow-unauthenticated"]}'.
 	Transcript show:'cloud run build step: ',rv;cr.
 	^ rv
 ]

@@ -21,22 +21,21 @@ Class {
 
 { #category : #accessing }
 CCTemplateDetail >> createContainer [
-	| really |
-	Transcript
-		show: 'create Container';
-		cr.
-	CCMainController lastUsedConnection isNil
-		ifTrue: [ UIManager default
-				alert: 'No Account select to create container in'
-				title: 'Account Needed' ]
-		ifFalse: [ really := UIManager default
-				confirm: 'Do you really waant to create a container of this template?'
-				orCancel: [ ^ false ].
-			really
-				ifTrue: [ | container |
-					container := CCMainController lastUsedContainer.
-					container isNil
-						ifFalse: [ container createContainerForTemplate: template ] ] ]
+	| really connection containers storage zipfile result |
+	connection := CCMainController
+		getConnectionForAccount: CCMainController lastUsedAccount.
+	connection connect.
+	really := UIManager default
+		confirm: 'Do you really waant to create a container of this template?'
+		orCancel: [ ^ false ].
+	really
+		ifFalse: [ ^ self ].
+	containers := CCGoogleContainers with: connection.
+	storage := CCStorage with: connection.
+	zipfile := template zipArchiveForBuild .
+	result := containers uploadFile: zipfile as: 'foo18' To: storage andCreate: template .
+	UIManager default informUser: 'Continer created and deploy started.' during: [(Delay forSeconds: 3) wait].
+	
 ]
 
 { #category : #initialization }

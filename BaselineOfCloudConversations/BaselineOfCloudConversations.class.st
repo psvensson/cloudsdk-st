@@ -12,7 +12,7 @@ BaselineOfCloudConversations >> baseline: spec [
 		do: [ spec
 				package: 'CloudConversations-Core';
 				package: 'CloudConversations-UI';
-				package: 'CloudConversations-Tests'
+				package: 'CloudConversations-Core-Tests'
 					with: [ spec requires: #('CloudConversations-Core') ].
 			spec
 				baseline: 'NeoJSON'
