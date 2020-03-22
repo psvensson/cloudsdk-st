@@ -230,7 +230,7 @@ CCTemplateDependenciesDialog >> resultSelected: anIndex [
 CCTemplateDependenciesDialog >> results [
 	"Transcript show:'searchresult called';cr."
 	results
-		ifNil: [ results := self searchProjects ].
+		ifNil: [ results := #() ].
 	"Transcript show:'searchresults size = ',results size asString;cr.	"
 	^ results
 ]

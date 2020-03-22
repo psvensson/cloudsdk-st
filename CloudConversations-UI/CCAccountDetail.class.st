@@ -198,5 +198,8 @@ CCAccountDetail >> showContainers [
 
 { #category : #accessing }
 CCAccountDetail >> showDeployments [
-	Transcript show:'showDeployments';cr.
+	| dw |
+	dw := CCDeploymentsWindow new.
+	dw openInWindow.
+	dw account: account 
 ]

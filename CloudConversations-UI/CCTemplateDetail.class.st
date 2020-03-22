@@ -88,7 +88,7 @@ CCTemplateDetail >> initializeButtons [
 		actionSelector: #renameTemplate.
 ]
 
-{ #category : #accessing }
+{ #category : #initializing }
 CCTemplateDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
@@ -142,9 +142,6 @@ CCTemplateDetail >> saveEditor [
 	| result loadResults |
 	result := textMorph contents.
 	loadResults := loadtextMorph contents.
-	Transcript
-		show: result;
-		cr.
 	template isNil
 		ifFalse: [ template
 				content: result;

@@ -38,22 +38,21 @@ CCContainersWindow >> account: anObject [
 
 { #category : #initialization }
 CCContainersWindow >> containerSelected: aContainerIndex [
-	|  aContainerName tags container containerVersions cdict |
-	aContainerIndex = 0 ifTrue: [ ^ self ].
-	selectedContainerIndex := aContainerIndex .
-	containerList selectionIndex: aContainerIndex .
-	aContainerName := containers at: aContainerIndex .
-	Transcript show:'ContainerWindow containerSelected: ',aContainerName;cr.
-	tags := containerConnection listRepositoryTags: aContainerName .
+	| aContainerName tags container containerVersions cdict |
+	aContainerIndex = 0
+		ifTrue: [ ^ self ].
+	selectedContainerIndex := aContainerIndex.
+	containerList selectionIndex: aContainerIndex.
+	aContainerName := containers at: aContainerIndex.
+	tags := containerConnection listRepositoryTags: aContainerName.
 	containerVersions := tags at: #manifest.
 	cdict := CCContainer getLatestContainerVersion: containerVersions.
-	cdict at: #name put: aContainerName .
+	cdict at: #name put: aContainerName.
 	cdict at: #tags put: (tags at: #tags).
-	cdict at: #manifest put: containerVersions .
+	cdict at: #manifest put: containerVersions.
 	container := CCContainer from: cdict.
 	table container: container.
-	table showContainer 
-	
+	table showContainer
 ]
 
 { #category : #accessing }

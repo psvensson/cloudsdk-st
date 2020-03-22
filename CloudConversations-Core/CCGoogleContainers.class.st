@@ -114,9 +114,6 @@ CCGoogleContainers >> startBuildProcessFor: projectId filename: filename bucket:
 		, '","object":"' , filename , '.zip' , '"}},"steps":[' , dockerbuild
 		, ',' , dockerpush , ',' , cloudrundeploy , '],"images":[' , img
 		, ']}'.
-	Transcript
-		show: 'data=' , data;
-		cr.
 	url := 'https://cloudbuild.googleapis.com/v1/projects/' , projectId
 		, '/builds'.
 	^ connection secureJSONCallTo: url JSONContent: data

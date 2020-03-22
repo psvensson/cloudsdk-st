@@ -7,7 +7,8 @@ Class {
 		'selectedDeploymentIndex',
 		'account',
 		'table',
-		'deploymentConnection'
+		'deploymentConnection',
+		'endpoint'
 	],
 	#category : #'CloudConversations-UI-Deployments'
 }
@@ -25,10 +26,12 @@ CCDeploymentsWindow >> account: anObject [
 
 { #category : #accessing }
 CCDeploymentsWindow >> deploymentSelected: aDeploymentIndex [
-	|  deployment |
-	aDeploymentIndex = 0 ifTrue: [ ^ self ].
+	|  aDeployment |
 	selectedDeploymentIndex := aDeploymentIndex .
 	deploymentsList selectionIndex: aDeploymentIndex .
+	aDeployment := deployments at: aDeploymentIndex .
+	table deployment: aDeployment .
+	table showDeployment
 ]
 
 { #category : #accessing }
@@ -43,25 +46,31 @@ CCDeploymentsWindow >> deployments: d [
 
 { #category : #accessing }
 CCDeploymentsWindow >> getGoogleRunDeployments [
-	| connection status | 
-	connection := CCMainController getConnectionForAccount: account .
-	status := connection connect .	
-	deployments := CCGoogleRunDeployments listAllServicesForConnection: connection.	
-	self class savedContainers: deployments.
+	| connection status result list |
+	connection := CCMainController getConnectionForAccount: account.
+	status := connection connect.
+	result := CCGoogleRunDeployments
+		listServicesForConnection: connection
+		andEndpoint: endpoint.
+	list := result at: #items.
+	deployments := list collect: [ :each | CCDeployment from: each].
+	"self class savedContainers: deployments"
 	deploymentsList
 		on: self
-		list: #containers
-		selected: #selectedContainerIndex
-		changeSelected: #containerSelected:
+		list: #deployments
+		selected: #selectedDeploymentIndex
+		changeSelected: #deploymentSelected:
 		menu: nil
 		keystroke: nil.
-	deployments isEmpty ifFalse: [ self deploymentSelected: 1 ]	
+	deployments isEmpty
+		ifFalse: [ self deploymentSelected: 1 ]
 ]
 
 { #category : #initialization }
 CCDeploymentsWindow >> initialize [ 	
 	| title |
 	super initialize.
+	endpoint := CCGoogleRunDeployments serviceEndpoints at: 'us-central1'.
 	self initializeLayout.	
 	self initializeDeploymentsList.
 	self initializeTable .
@@ -114,4 +123,14 @@ CCDeploymentsWindow >> initializeTable [
 		top: 35.
 		"left: 250"
 	self addMorph: table
+]
+
+{ #category : #accessing }
+CCDeploymentsWindow >> selectedDeploymentIndex [
+	^ selectedDeploymentIndex
+]
+
+{ #category : #accessing }
+CCDeploymentsWindow >> selectedDeploymentIndex: anObject [
+	selectedDeploymentIndex := anObject
 ]
