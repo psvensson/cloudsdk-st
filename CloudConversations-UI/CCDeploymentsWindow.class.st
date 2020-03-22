@@ -57,7 +57,8 @@ CCDeploymentsWindow >> getGoogleRunDeployments [
 			msg := (result at: #error) .
 			UIManager default
 				inform: (msg at: #status) , ': ' , (msg at: #message) ]
-		ifFalse: [ list := result at: #items.
+		ifFalse: [ 
+			list := (result includesKey: #items) ifTrue: [  result at: #items] ifFalse: [ #() ].
 			deployments := list collect: [ :each | CCDeployment from: each ].
 			"self class savedContainers: deployments"
 			deploymentsList
