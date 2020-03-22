@@ -16,6 +16,7 @@ Metacello new
   - A downloaded JSON file for a service account (use 'create key' on 'IAM & Admin' -> 'service accounts' -> (the service account) -> 'edit').
   - Granting access for Google Cloud build to deploy to Google Cloud Run (step 2 here; (https://cloud.google.com/run/docs/continuous-deployment-with-cloud-build#continuous)).
   - Enabling the Cloud resource manager API, here; (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
+  - Enabling the Cloud Run API, here; (https://console.developers.google.com/apis/api/run.googleapis.com/overview)
 
 # How to use
 
