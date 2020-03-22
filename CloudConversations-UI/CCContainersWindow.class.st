@@ -82,12 +82,12 @@ CCContainersWindow >> getContainerListFromCloud [
 	status := connection connect.
 	containerConnection := CCGoogleContainers with: connection.
 	list := containerConnection listContainers.
-	(list at: #errors)
-		ifNotNil: [ 
+	(list includesKey: #errors)
+		ifTrue: [ 
 			| msg |
 			msg := (list at: #errors) at: 1.
 			UIManager default inform: (msg at: #code) ,': ', (msg at: #message) ]
-		ifNil: [ containers := list at: #repositories.
+		ifFalse: [ containers := list at: #repositories.
 			self class savedContainers: containers.
 			containerList
 				on: self
