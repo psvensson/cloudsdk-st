@@ -28,9 +28,9 @@ Add at least one service account key (from file or pasting) by pressing the 'New
 
 In the 'Docker templates' pane is a list of templates for creating custom Docker images of Pharo 7 with the options to add extra packages and edit the startup script (load file).
 
-When done editing a template, press 'Create Container'. This will use Google Cloud Build to both create a Docker image of the tamplte and then deploy it to Google Cloud Run as a cloud function. The process usually takes 1-2 minutes.
+When done editing a template, press 'Create Container'. This will use Google Cloud Build to both create a Docker image of the tamplte and then deploy it to Google Cloud Run as a cloud function. The process usually takes 1-2 minutes. You can follow the build process in the Google Cloud Console here; (https://console.cloud.google.com/cloud-build/builds)
 
-The button 'Containers' list Docker containers and the button 'Build results' lists the results of all builds, including failed ones. The 'Deployments' button, finally, lists finished running cloud functions and the 'url' property in the details is the ulr where the cloud function can be accessed.
+The button 'Containers' list Docker containers and the button 'Build results' lists the results of all builds, including failed ones. The 'Deployments' button, finally, lists finished running cloud functions and the 'url' property in the details is the ulr where the cloud function can be accessed. You can also see and manage the cloud function directly in the Google Cloud Console here; (https://console.cloud.google.com/run)
 
 
 
