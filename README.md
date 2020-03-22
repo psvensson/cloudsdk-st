@@ -6,7 +6,7 @@ Currently only supporting deploy to Google Cloud and to Google Cloud Run cloud f
 ```Smalltalk
 Metacello new
     repository: 'github://psvensson/cloudsdk-st:master';
-    baseline: 'cloudsdk-st';
+    baseline: 'CloudConversations';
     load
 ```
 
