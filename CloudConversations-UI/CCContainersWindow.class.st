@@ -78,20 +78,26 @@ CCContainersWindow >> deployContainer [
 { #category : #initialization }
 CCContainersWindow >> getContainerListFromCloud [
 	| connection status list |
-	connection := CCMainController getConnectionForAccount: account .
-	status := connection connect .
+	connection := CCMainController getConnectionForAccount: account.
+	status := connection connect.
 	containerConnection := CCGoogleContainers with: connection.
 	list := containerConnection listContainers.
-	containers := list at: #repositories .
-	self class savedContainers: containers.
-	containerList
-		on: self
-		list: #containers
-		selected: #selectedContainerIndex
-		changeSelected: #containerSelected:
-		menu: nil
-		keystroke: nil.
-	containers isEmpty ifFalse: [ self containerSelected: 1 ]	
+	(list at: #errors)
+		ifNotNil: [ 
+			| msg |
+			msg := (list at: #errors) at: 1.
+			UIManager default inform: (msg at: #code) ,': ', (msg at: #message) ]
+		ifNil: [ containers := list at: #repositories.
+			self class savedContainers: containers.
+			containerList
+				on: self
+				list: #containers
+				selected: #selectedContainerIndex
+				changeSelected: #containerSelected:
+				menu: nil
+				keystroke: nil.
+			containers isEmpty
+				ifFalse: [ self containerSelected: 1 ] ]
 ]
 
 { #category : #initialization }

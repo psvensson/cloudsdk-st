@@ -56,7 +56,8 @@ CCConnection >> secureJSONCallTo: url [
 		"request setBearerAuthentication: token;"
 	client url: url;
 		enforceHttpSuccess: true;
-   		ifFail: [ :ex | self inform: 'znClient error: ', ex printString. ^ ex ];
+   		ifFail: [ :ex | 
+			Transcript show:'Network Error: ',ex asString;cr. ];
 		get.
 	^ client contents
 ]
