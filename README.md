@@ -5,6 +5,11 @@ Currently only supporting deploy to Google Cloud and to Google Cloud Run cloud f
 This is an Alpha-release, so will have a lot of sharp corners. Please write issues like it's going out of style, to help me make it better :)
 
 # Installation
+
+If you had a previous installation, please delete the directory ~/Pharo/Images/{your image}/pharo-local/iceberg/psvensson to make sure that you get any new stuff. Thx.
+
+Tested for Pharo 8. Does *not* work with Pharo 9 yet.
+
 ```Smalltalk
 Metacello new
     repository: 'github://psvensson/cloudsdk-st:master';
