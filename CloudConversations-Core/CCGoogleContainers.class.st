@@ -55,7 +55,6 @@ CCGoogleContainers >> initializeRegistry [
 	sa := connection serviceAccount.
 	url := 'https://gcr.io/' , 'foobar'.
 	
-	dockerRegistry := DockerRegistry url: url username: 'json_key' password: sa jsonStringCertificate.
 ]
 
 { #category : #accessing }
