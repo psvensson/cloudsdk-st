@@ -33,7 +33,7 @@ CCTemplateDetail >> createContainer [
 	containers := CCGoogleContainers with: connection.
 	storage := CCStorage with: connection.
 	zipfile := template zipArchiveForBuild .
-	result := containers uploadFile: zipfile as: 'foo18' To: storage andCreate: template .
+	result := containers uploadFile: zipfile as: (template name asLowercase ) To: storage andCreate: template .
 	UIManager default informUser: 'Continer created and deploy started.' during: [(Delay forSeconds: 3) wait].
 	
 ]

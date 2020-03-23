@@ -30,27 +30,29 @@ Class {
 { #category : #'instance creation' }
 CCContainerBuildResults class >> from: cdict [
 	| container manifest |
-	container := self new.	
-	manifest := cdict at: #manifest ifAbsent: [nil].
+	container := self new.
+	manifest := cdict at: #manifest ifAbsent: [ nil ].
 	container
-		props: cdict ;
+		props: cdict;
 		"name: (cdict at: #name ifAbsent: [ (cdict at: #images) at: 1 ]);"
-		id: (cdict at: #id ifAbsent: [nil]);
+			id: (cdict at: #id ifAbsent: [ nil ]);
 		status: (cdict at: #status);
 		"artifacts: (cdict at: artifacts ifAbsent: [nil]);"
-		createTime: (cdict at: #createTime ifAbsent: [nil]);
-		finishTime: (cdict at: #finishTime ifAbsent: [nil]);
-		images: (cdict at: #images ifAbsent: [nil]);
+			createTime: (cdict at: #createTime ifAbsent: [ nil ]);
+		finishTime: (cdict at: #finishTime ifAbsent: [ nil ]);
+		images: (cdict at: #images ifAbsent: [ nil ]);
 		logUrl: (cdict at: #logUrl);
 		logsBucket: (cdict at: #logsBucket);
 		options: (cdict at: #options);
-		results: (cdict at: #results);
 		source: (cdict at: #source);
 		sourceProvenance: (cdict at: #sourceProvenance);
 		startTime: (cdict at: #startTime);
 		steps: (cdict at: #steps);
-		timeout: (cdict at: #timeout);
-		timing: (cdict at: #timing) .
+		timeout: (cdict at: #timeout).
+	(cdict includesKey: #results)
+		ifTrue: [ container
+				results: (cdict at: #results);
+				timing: (cdict at: #timing) ].
 	^ container
 ]
 
