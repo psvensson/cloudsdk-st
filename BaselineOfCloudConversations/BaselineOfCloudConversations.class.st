@@ -10,6 +10,7 @@ BaselineOfCloudConversations >> baseline: spec [
 	spec
 		for: #common
 		do: [ spec
+				package: 'CloudConversations-Models';
 				package: 'CloudConversations-Core';
 				package: 'CloudConversations-UI'.
 			spec
