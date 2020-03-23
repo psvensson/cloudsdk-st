@@ -1,6 +1,8 @@
 # cloudsdk-st
-An tool for deploying Smalltalk application directly to the cloud, from the image, without touching any files.
+A tool for deploying Smalltalk application directly to the cloud, from the image, without touching any files.
 Currently only supporting deploy to Google Cloud and to Google Cloud Run cloud functions (lambdas).
+
+This is an Alpha-release, so will have a lot of sharp corners. Please write issues like it's going out of style, to help me make it better :)
 
 # Installation
 ```Smalltalk
