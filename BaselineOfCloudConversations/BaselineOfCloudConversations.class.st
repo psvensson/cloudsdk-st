@@ -11,9 +11,7 @@ BaselineOfCloudConversations >> baseline: spec [
 		for: #common
 		do: [ spec
 				package: 'CloudConversations-Core';
-				package: 'CloudConversations-UI';
-				package: 'CloudConversations-Core-Tests'
-					with: [ spec requires: #('CloudConversations-Core') ].
+				package: 'CloudConversations-UI'.
 			spec
 				baseline: 'NeoJSON'
 				with: [ spec repository: 'github://svenvc/NeoJSON/repository' ].
