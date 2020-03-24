@@ -2,7 +2,7 @@
 A tool for deploying Smalltalk application directly to the cloud, from the image, without touching any files.
 Currently only supporting deploy to Google Cloud and to Google Cloud Run cloud functions (lambdas).
 
-This is an Alpha-release, so will have a lot of sharp corners. Please write issues like it's going out of style, to help me make it better :)
+There is a blog post with more details and screenshots that describes the onboarding process in more detail here; (https://unclescript.blogspot.com/2020/03/a-cloud-sdk-for-pharo-smalltalk.html).
 
 # Installation
 
