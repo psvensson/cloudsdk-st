@@ -160,16 +160,18 @@ CCAccountsPanel >> showCertificateDialog [
 	result := kind = 2
 		ifTrue: [ self pasteCertificate ]
 		ifFalse: [ self fileCertificate ].
+	"	
 	type := UIManager default
 		chooseFrom: #(AWS Google)
 		message: 'For which cloud is this Service Account Certificate made?'
-		title: 'New Account'.
+		title: 'New Account'."
 	self
 		createAccountFrom: result
-		type:
+		"type:
 			(type = 1
 				ifTrue: [ 'aws' ]
-				ifFalse: [ 'google' ]).
+				ifFalse: [ 'google' ])."
+		type: 1.		
 	self showCertificateAlert
 ]
 
