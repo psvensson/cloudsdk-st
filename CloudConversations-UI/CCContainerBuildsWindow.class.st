@@ -57,21 +57,25 @@ CCContainerBuildsWindow >> containers: anObject [
 
 { #category : #services }
 CCContainerBuildsWindow >> getContainerListFromCloud [
-	| connection status result list |
-	connection := CCMainController getConnectionForAccount: account .
-	status := connection connect .
-	Transcript show:'connection status: ',status asString;cr.
+	| connection status result |
+	connection := CCMainController getConnectionForAccount: account.
+	status := connection connect.
 	result := CCGoogleContainers with: connection.
-	list := result list.
-	containers := list collect: [ :each | CCContainerBuildResults from: each].
-	self class savedContainers: containers.
-	containerList
-		on: self
-		list: #containers
-		selected: #selectedContainerIndex
-		changeSelected: #containerSelected:
-		menu: nil
-		keystroke: nil
+	result list
+		onSuccessDo: [ :list | 
+			Transcript
+				show: 'Got container build results: ' , status asString;
+				cr.
+			containers := list
+				collect: [ :each | CCContainerBuildResults from: each ].
+			self class savedContainers: containers.
+			containerList
+				on: self
+				list: #containers
+				selected: #selectedContainerIndex
+				changeSelected: #containerSelected:
+				menu: nil
+				keystroke: nil ]
 ]
 
 { #category : #accessing }

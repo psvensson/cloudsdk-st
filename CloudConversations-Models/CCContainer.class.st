@@ -10,7 +10,9 @@ Class {
 		'timeUploaded',
 		'timeCreated',
 		'reference',
-		'image'
+		'image',
+		'fromTemplate',
+		'fromTemplateVersion'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -45,6 +47,11 @@ CCContainer class >> getLatestContainerVersion: containerVersions [
 ]
 
 { #category : #accessing }
+CCContainer >> asString [
+	^ name
+]
+
+{ #category : #accessing }
 CCContainer >> dict [
 	^ dict
 ]
@@ -67,6 +74,26 @@ CCContainer >> fromDict: d [
 	instance timeCreated: (d at: #timeCreatedMs).
 	instance timeUploaded: (d at: #timeUploadedMs).
 	^ instance.
+]
+
+{ #category : #accessing }
+CCContainer >> fromTemplate [
+	^ fromTemplate
+]
+
+{ #category : #accessing }
+CCContainer >> fromTemplate: anObject [
+	fromTemplate := anObject
+]
+
+{ #category : #accessing }
+CCContainer >> fromTemplateVersion [
+	^ fromTemplateVersion
+]
+
+{ #category : #accessing }
+CCContainer >> fromTemplateVersion: anObject [
+	fromTemplateVersion := anObject
 ]
 
 { #category : #accessing }

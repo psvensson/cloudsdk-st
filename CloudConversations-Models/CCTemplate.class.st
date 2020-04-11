@@ -7,7 +7,8 @@ Class {
 		'name',
 		'dependencies',
 		'imagePackages',
-		'loadfile'
+		'loadfile',
+		'generation'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -18,13 +19,20 @@ CCTemplate >> asString [
 ]
 
 { #category : #accessing }
+CCTemplate >> bumpGeneration [
+	generation isNil ifTrue: [ generation := 0 ].
+	generation := generation +1
+]
+
+{ #category : #accessing }
 CCTemplate >> content [
 	^ content
 ]
 
 { #category : #accessing }
 CCTemplate >> content: anObject [
-	content := anObject
+	content := anObject.
+	
 ]
 
 { #category : #accessing }
@@ -116,7 +124,8 @@ CCTemplate >> initialize [
 	imagePackages := OrderedCollection new.
 	dependencies := OrderedCollection new.
 	self regenerateContent .
-	loadingContent := ''
+	loadingContent := ''.
+	generation := 1.
 ]
 
 { #category : #accessing }

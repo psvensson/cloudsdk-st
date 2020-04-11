@@ -22,7 +22,9 @@ Class {
 		'newAccountButton',
 		'accountDetail',
 		'accountPanelMorph',
-		'templatePanelMorph'
+		'templatePanelMorph',
+		'busyIcon',
+		'loadingtext'
 	],
 	#classInstVars : [
 		'models'
@@ -52,7 +54,7 @@ CCMainWindow class >> open [
 	| window |
 	window := self new.
 	window hResizing: #spaceFill.
-	window extent: 690 @ 620.
+	window extent: 720 @ 620.
 ]
 
 { #category : #'initialization - private' }
@@ -91,6 +93,12 @@ CCMainWindow >> addTabs [
 	self tabs do: [ :tab | tabmanager addTab: tab ]
 ]
 
+{ #category : #accessing }
+CCMainWindow >> hideBusyIcon [
+	self removeMorph: hat.
+	loadingtext contents: ''.
+]
+
 { #category : #initialization }
 CCMainWindow >> initialize [
 	super initialize.
@@ -113,6 +121,9 @@ CCMainWindow >> initialize [
 	"self initializeTextEditor.	"
 	"self initializeTabs."
 	self initializePanels.
+	loadingtext := TextMorph new contents: ''.
+	self addMorph: loadingtext .
+	CCMainController setMainWindow: self.
 	self
 		themeChanged;
 		openInWorld.
@@ -195,14 +206,6 @@ CCMainWindow >> initializePanels [
 ]
 
 { #category : #'initialization - private' }
-CCMainWindow >> initializeTabs [
-	tabmanager := TabManagerMorph new.
-	self addTabs .
-	"self addMorph: tabmanager fullFrame: (LayoutFrame identity topOffset: dock minExtent y)"
-	self addMorph: tabmanager fullFrame: (LayoutFrame identity)
-]
-
-{ #category : #'initialization - private' }
 CCMainWindow >> initializeTextEditor [
 	holder := NewValueHolder new.
 	text := self
@@ -241,6 +244,14 @@ CCMainWindow >> initializeTools [
 				getEnabled: nil
 				labelForm: (self iconNamed: #smallPrintIcon)
 				help: 'Print' translated)}.
+]
+
+{ #category : #accessing }
+CCMainWindow >> showBusyIcon [
+	hat top: 400; left: 200.
+	self addMorph: hat .
+	loadingtext contents: 'loading..'.
+	self changed.
 ]
 
 { #category : #'initialization - private' }

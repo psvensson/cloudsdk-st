@@ -8,61 +8,6 @@ Class {
 }
 
 { #category : #accessing }
-CCGoogleRunDeployments class >> listAllServicesForConnection: connection [
-	| projectId services endpoints futures |
-	Transcript
-		show: 'list all service for connection';
-		cr.
-	projectId := connection serviceAccount projectId.
-	services := OrderedCollection new.
-	futures := OrderedCollection new.
-	endpoints := self serviceEndpoints.
-	endpoints valuesDo: [ :each | 
-			| url results |			
-			futures add: [ url := each , '/apis/serving.knative.dev/v1/namespaces/'
-				, projectId , '/services'.
-			Transcript
-				show: 'list service for: ' , url;
-				cr.
-			results := connection secureJSONCallTo: url.
-			(results includesKey: #items)
-				ifTrue: [ services addAll: (results at: #items) ] ] future ].
-	CCMainController futuresAll: futures whenDone: [ :allres | 
-		Transcript show:'all futures resolved: ',allres asString;cr.
-		^ allres ]
-		
-]
-
-{ #category : #accessing }
-CCGoogleRunDeployments class >> listAllServicesForConnection: connection whenDone: aBlock [
-	| projectId services endpoints count check |
-	projectId := connection serviceAccount projectId.
-	services := OrderedCollection new.
-	endpoints := self serviceEndpoints.
-	count := endpoints size.
-	Transcript
-		show: 'list ' , count asString , ' services for connection';
-		cr.
-	check := [ :res | 
-	count := count - 1.
-	Transcript
-		show: 'check count = ' , count asString;
-		cr.
-	count = 0
-		ifTrue: [ aBlock value: res ] ].
-	endpoints
-		valuesDo: [ :each | 
-			| url results future |
-			future := [ url := each
-				, '/apis/serving.knative.dev/v1/namespaces/' , projectId
-				, '/services'.
-			connection secureJSONCallTo: url.
-			 ] future.
-		future onSuccessDo: [ : res | check value: res] .
-		future onFailureDo: [ :err | check value: nil ] ]
-]
-
-{ #category : #accessing }
 CCGoogleRunDeployments class >> listServicesForConnection: connection andEndpoint: endpoint [
 	| projectId url |	
 	projectId := connection serviceAccount projectId.
@@ -185,6 +130,12 @@ CCGoogleRunDeployments >> getTrafficForContainer: container [
 	t at: #configurationName put: 'deafult'.
 	t at: #percent put: 100.
 	^ t
+]
+
+{ #category : #accessing }
+CCGoogleRunDeployments >> initialize [ 
+	super initialize.
+	type := 'cloudrun'
 ]
 
 { #category : #accessing }

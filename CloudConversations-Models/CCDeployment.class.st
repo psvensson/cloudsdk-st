@@ -21,13 +21,20 @@ Class {
 		'uid',
 		'creationTimestamp',
 		'namespace',
-		'annotations'
+		'annotations',
+		'status'
 	],
 	#category : #'CloudConversations-Models'
 }
 
 { #category : #'instance creation' }
-CCDeployment class >> from: cdict [
+CCDeployment class >> from: cdict type: type [
+	type = 'cloudrun' ifTrue: [ ^ self fromCloudRun: cdict].
+	type = 'computeengine' ifTrue: [ ^ self fromComputeEngine: cdict].
+]
+
+{ #category : #'instance creation' }
+CCDeployment class >> fromCloudRun: cdict [ 
 	| c |
 	c := self new.
 	c dict: cdict;
@@ -43,6 +50,19 @@ CCDeployment class >> from: cdict [
 	creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
 	namespace: ((cdict at: #metadata) at: #namespace);
 	url: ((cdict at: #status) at: #url).
+	^c
+]
+
+{ #category : #'instance creation' }
+CCDeployment class >> fromComputeEngine: cdict [ 
+	| c |
+	c := self new.
+	c dict: cdict;
+	status: (cdict at: #status);
+	name: (cdict at: #name);
+	tags: (((cdict at: #tags) values first));
+	creationTimestamp: (cdict at: #creationTimestamp);
+	url: (((((cdict at: #networkInterfaces) first) at: #accessConfigs) first) at: #natIP).
 	^c
 ]
 
@@ -199,6 +219,16 @@ CCDeployment >> port [
 { #category : #accessing }
 CCDeployment >> port: anObject [
 	port := anObject
+]
+
+{ #category : #accessing }
+CCDeployment >> status [
+	^ status
+]
+
+{ #category : #accessing }
+CCDeployment >> status: anObject [
+	status := anObject
 ]
 
 { #category : #accessing }

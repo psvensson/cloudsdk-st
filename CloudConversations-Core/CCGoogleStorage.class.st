@@ -12,13 +12,19 @@ CCGoogleStorage >> delete: aFileReference [
 { #category : #'as yet unclassified' }
 CCGoogleStorage >> list [
 	"List all files in the default bucket for the project defined by the service account"
-	| projectId url result |
-	Transcript show:'CCGoogleSTorage.list (unimplemented)';cr.
-	projectId := connection serviceAccount projectId .
-	url := 'https://storage.googleapis.com/storage/v1/b/',projectId,'.appspot.com/o'.
+
+	| projectId url future |
+	future := TKTFuture new.
+	Transcript
+		show: 'CCGoogleSTorage.list (unimplemented)';
+		cr.
+	projectId := connection serviceAccount projectId.
+	url := 'https://storage.googleapis.com/storage/v1/b/' , projectId
+		, '.appspot.com/o'.
 	"Transcript show: url;cr."
-	result := connection secureJSONCallTo: url.
-	^ result at: #items
+	(connection secureJSONCallTo: url)
+		onSuccessDo: [ :result | future deploySuccess: (result at: #items) ].
+	^ future
 ]
 
 { #category : #'as yet unclassified' }

@@ -10,7 +10,9 @@ Class {
 		'serviceAccount',
 		'token',
 		'client',
-		'containers'
+		'containers',
+		'onStartConnect',
+		'onEndConnect'
 	],
 	#category : #'CloudConversations-Core-Connectivity'
 }
@@ -48,39 +50,61 @@ CCConnection >> initialize [
 ]
 
 { #category : #accessing }
+CCConnection >> onEndConnect: aBlock [ 
+	onEndConnect := aBlock 
+]
+
+{ #category : #accessing }
+CCConnection >> onStartConnect: aBlock [ 
+	onStartConnect := aBlock 
+]
+
+{ #category : #accessing }
 CCConnection >> secureJSONCallTo: url [
-	client headerAt: 'Authorization' put: 'Bearer ',token.
+	^ [ self sendStartConnect.
+	client headerAt: 'Authorization' put: 'Bearer ' , token.
 	client headerAt: 'Accept' put: '*/*'.
-	 "headerAt: 'Content-Type' put: 'application/json';"
-	client contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
-		"request setBearerAuthentication: token;"
-	client url: url;
+	"headerAt: 'Content-Type' put: 'application/json';"
+	client
+		contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
+	"request setBearerAuthentication: token;"
+	client
+		url: url;
 		enforceHttpSuccess: true;
-   		ifFail: [ :ex | 
-			Transcript show:'Network Error: ',ex asString;cr. ];
+		ifFail: [ :ex | 
+			UIManager default
+				inform: 'Network Error: ' , ex asString;
+				cr ];
 		get.
-	^ client contents
+	self sendEndConnect.
+	client contents ] future
 ]
 
 { #category : #accessing }
 CCConnection >> secureJSONCallTo: url JSONContent: json [
-	client headerAt: 'Authorization' put: 'Bearer ',token.
+	^ [ self sendStartConnect.
+	client headerAt: 'Authorization' put: 'Bearer ' , token.
 	client headerAt: 'Accept' put: '*/*'.
-	 "headerAt: 'Content-Type' put: 'application/json';"
-	client contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
-		"request setBearerAuthentication: token;"
-	client url: url;
-		entity: (ZnEntity 
-            with: json
-            type: ZnMimeType applicationJson
-            );
+	"headerAt: 'Content-Type' put: 'application/json';"
+	client
+		contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
+	"request setBearerAuthentication: token;"
+	client
+		url: url;
+		entity: (ZnEntity with: json type: ZnMimeType applicationJson);
+		ifFail: [ :ex | 
+			UIManager default
+				inform: 'Network Error: ' , ex asString;
+				cr ];
 		post.
-	^ client contents
+	self sendEndConnect.
+	client contents ] future
 ]
 
 { #category : #accessing }
 CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
 	| value |
+	self sendStartConnect .
 	client headerAt: 'Authorization' put: 'Bearer ',token.
 	client headerAt: 'Accept' put: '*/*'.
 	"client headerAt: 'Content-Type' put: 'application/zip'."
@@ -96,8 +120,23 @@ CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
         readBinaryFrom: value   
         usingType: (ZnMimeType main: 'application' sub:'zip')
 		 andLength: file size);
+		ifFail: [ :ex | 
+			UIManager default
+				inform: 'Network Error: ' , ex asString;
+				cr ];
 		post.
+	self sendEndConnect .	
 	^ client contents
+]
+
+{ #category : #accessing }
+CCConnection >> sendEndConnect [
+	onEndConnect ifNotNil: [ onEndConnect value ]
+]
+
+{ #category : #accessing }
+CCConnection >> sendStartConnect [
+	onStartConnect ifNotNil: [ onStartConnect value ]
 ]
 
 { #category : #accessing }

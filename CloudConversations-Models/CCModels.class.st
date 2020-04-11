@@ -5,7 +5,9 @@ Class {
 		'accounts',
 		'containers',
 		'deployments',
-		'templates'
+		'templates',
+		'selectedEndpoint',
+		'selectedZone'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -46,6 +48,31 @@ CCModels >> initialize [
 	containers  := OrderedCollection new.
 	deployments  := OrderedCollection new.
 	templates  := OrderedCollection new.
+	selectedEndpoint :=	CCGoogleRunDeployments serviceEndpoints at: 'us-central1'
+]
+
+{ #category : #accessing }
+CCModels >> selectedEndpoint [
+	selectedEndpoint isNil
+		ifTrue: [ selectedEndpoint := CCGoogleRunDeployments serviceEndpoints
+				at: 'us-central1' ].
+	^ selectedEndpoint
+]
+
+{ #category : #accessing }
+CCModels >> selectedEndpoint: anObject [
+	selectedEndpoint := anObject
+]
+
+{ #category : #accessing }
+CCModels >> selectedZone [
+selectedZone isNil ifTrue: [ selectedZone := 'us-central1-a' ].
+	^ selectedZone
+]
+
+{ #category : #accessing }
+CCModels >> selectedZone: anObject [
+	selectedZone := anObject
 ]
 
 { #category : #accessing }

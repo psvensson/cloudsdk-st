@@ -15,7 +15,7 @@ CCStorage class >> createZipFileOf: aDictionary [
 	archive := ZipArchive new.
 	aDictionary
 		keysAndValuesDo:
-			[ :key :value | archive addDeflateString: value withInternetLineEndings as: key ].
+			[ :key :value | archive addDeflateString: (value asString) withInternetLineEndings as: key ].
 	^ ByteArray streamContents: [ :strm | archive writeTo: strm ]
 ]
 

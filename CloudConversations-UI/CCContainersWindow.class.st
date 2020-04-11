@@ -7,7 +7,8 @@ Class {
 		'selectedContainerIndex',
 		'account',
 		'table',
-		'containerConnection'
+		'containerConnection',
+		'reloadButton'
 	],
 	#classInstVars : [
 		'savedContainers'
@@ -43,14 +44,7 @@ CCContainersWindow >> containerSelected: aContainerIndex [
 		ifTrue: [ ^ self ].
 	selectedContainerIndex := aContainerIndex.
 	containerList selectionIndex: aContainerIndex.
-	aContainerName := containers at: aContainerIndex.
-	tags := containerConnection listRepositoryTags: aContainerName.
-	containerVersions := tags at: #manifest.
-	cdict := CCContainer getLatestContainerVersion: containerVersions.
-	cdict at: #name put: aContainerName.
-	cdict at: #tags put: (tags at: #tags).
-	cdict at: #manifest put: containerVersions.
-	container := CCContainer from: cdict.
+	container := containers at: aContainerIndex.
 	table container: container.
 	table showContainer
 ]
@@ -76,28 +70,50 @@ CCContainersWindow >> deployContainer [
 ]
 
 { #category : #initialization }
+CCContainersWindow >> getContainerFor: aContainerName [
+	| containerVersions cdict container future |
+	future := TKTFuture new.
+	(containerConnection listRepositoryTags: aContainerName)
+		onSuccessDo: [ :tags | 
+			containerVersions := tags at: #manifest.
+			cdict := CCContainer getLatestContainerVersion: containerVersions.
+			cdict at: #name put: aContainerName.
+			cdict at: #tags put: (tags at: #tags).
+			cdict at: #manifest put: containerVersions.
+			container := CCContainer from: cdict.
+			future deploySuccess: container ].
+	^ future
+]
+
+{ #category : #initialization }
 CCContainersWindow >> getContainerListFromCloud [
-	| connection status list |
+	| connection |
 	connection := CCMainController getConnectionForAccount: account.
-	status := connection connect.
+	connection connect.
 	containerConnection := CCGoogleContainers with: connection.
-	list := containerConnection listContainers.
-	(list includesKey: #errors)
-		ifTrue: [ 
-			| msg |
-			msg := (list at: #errors) at: 1.
-			UIManager default inform: (msg at: #code) ,': ', (msg at: #message) ]
-		ifFalse: [ containers := list at: #repositories.
-			self class savedContainers: containers.
-			containerList
-				on: self
-				list: #containers
-				selected: #selectedContainerIndex
-				changeSelected: #containerSelected:
-				menu: nil
-				keystroke: nil.
-			containers isEmpty
-				ifFalse: [ self containerSelected: 1 ] ]
+	containerConnection listContainers
+		onSuccessDo: [ :list | 
+			(list includesKey: #errors)
+				ifTrue: [ | msg |
+					msg := (list at: #errors) at: 1.
+					UIManager default
+						inform: (msg at: #code) , ': ' , (msg at: #message) ]
+				ifFalse: [ | containerFutures |
+					containerFutures := (list at: #repositories)
+						collect: [ :each | self getContainerFor: each ].
+					(CCMainController futuresAll: containerFutures)
+						onSuccessDo: [ :cs | 
+							containers removeAll.
+							containers addAll: cs.
+							containerList
+								on: self
+								list: #containers
+								selected: #selectedContainerIndex
+								changeSelected: #containerSelected:
+								menu: nil
+								keystroke: nil.
+							cs isEmpty
+								ifFalse: [ self containerSelected: 1 ] ] ] ]
 ]
 
 { #category : #initialization }
@@ -108,8 +124,21 @@ CCContainersWindow >> initialize [
 	self initializeContainerList.
 	self initializeTable .
 	title := TextMorph new.
-	title contents: 'Available Docker Containers'.
+	title contents: 'Available Docker Containers'; left: 200.
 	self addMorph: title.
+	self initializeButtons.
+	containers := CCMainWindow models containers.
+	
+]
+
+{ #category : #initialization }
+CCContainersWindow >> initializeButtons [
+	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
+	reloadButton
+		color: Color green darker darker;
+		target: self;
+		actionSelector: #reloadResults.
+	self addMorph: reloadButton.
 	
 ]
 
@@ -156,6 +185,12 @@ CCContainersWindow >> initializeTable [
 		top: 35.
 		"left: 250"
 	self addMorph: table
+]
+
+{ #category : #initialization }
+CCContainersWindow >> reloadResults [
+	self getContainerListFromCloud
+	
 ]
 
 { #category : #initialization }

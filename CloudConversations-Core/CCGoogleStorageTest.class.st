@@ -14,18 +14,19 @@ CCGoogleStorageTest >> setUp [
 
 { #category : #tests }
 CCGoogleStorageTest >> testListStorage [
-	| serviceAccount status connection storage result |
-	serviceAccount := CCServiceAccount withCertificateAsJSONString: certificateString .	
-	serviceAccount cloudType: 'google'.	
-	connection := CCGoogleConnection with: serviceAccount .
-	status := connection connect .
+	| serviceAccount status connection storage  |
+	serviceAccount := CCServiceAccount
+		withCertificateAsJSONString: certificateString.
+	serviceAccount cloudType: 'google'.
+	connection := CCGoogleConnection with: serviceAccount.
+	status := connection connect.
 	self assert: status equals: true.
 	storage := CCGoogleStorage with: connection.
-	result := storage list.
-	"Transcript show:'storage list found ',result size asString,' items';cr.
+	storage list
+		onSuccessDo:
+			[ :result | "Transcript show:'storage list found ',result size asString,' items';cr.
 	result do: [ :file |
-		Transcript show: (file at: #name);cr. ]."
-	self assert: result size > 0 equals: true
+		Transcript show: (file at: #name);cr. ]." self assert: result size > 0 equals: true ]
 ]
 
 { #category : #tests }

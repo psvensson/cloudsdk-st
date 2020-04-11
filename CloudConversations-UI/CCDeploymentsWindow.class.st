@@ -8,7 +8,9 @@ Class {
 		'account',
 		'table',
 		'deploymentConnection',
-		'endpoint'
+		'endpoint',
+		'reloadButton',
+		'zone'
 	],
 	#category : #'CloudConversations-UI-Deployments'
 }
@@ -21,7 +23,7 @@ CCDeploymentsWindow >> account [
 { #category : #accessing }
 CCDeploymentsWindow >> account: anObject [
 	account := anObject.
-	self getGoogleRunDeployments.
+	self reloadResults .
 ]
 
 { #category : #accessing }
@@ -44,46 +46,91 @@ CCDeploymentsWindow >> deployments: d [
 	deployments := d
 ]
 
-{ #category : #accessing }
-CCDeploymentsWindow >> getGoogleRunDeployments [
-	| connection status result list |
+{ #category : #listing }
+CCDeploymentsWindow >> getGoogleComputeEngineDeployments [
+	| connection list |
 	connection := CCMainController getConnectionForAccount: account.
-	status := connection connect.
-	result := CCGoogleRunDeployments
+	zone := CCMainWindow models selectedZone.
+	connection connect.
+	(CCGoogleComputeEngineDeployments
 		listServicesForConnection: connection
-		andEndpoint: endpoint.
-	(result includesKey: #error)
-		ifTrue: [ | msg |
-			msg := (result at: #error) .
-			UIManager default
-				inform: (msg at: #status) , ': ' , (msg at: #message) ]
-		ifFalse: [ 
-			list := (result includesKey: #items) ifTrue: [  result at: #items] ifFalse: [ #() ].
-			deployments := list collect: [ :each | CCDeployment from: each ].
-			"self class savedContainers: deployments"
-			deploymentsList
-				on: self
-				list: #deployments
-				selected: #selectedDeploymentIndex
-				changeSelected: #deploymentSelected:
-				menu: nil
-				keystroke: nil.
-			deployments isEmpty
-				ifFalse: [ self deploymentSelected: 1 ] ]
+		andZone: zone)
+		onSuccessDo: [ :result | 
+			(result includesKey: #error)
+				ifTrue: [ | msg |
+					msg := result at: #error.
+					UIManager default
+						inform: (msg at: #status) , ': ' , (msg at: #message) ]
+				ifFalse: [ list := (result includesKey: #items)
+						ifTrue: [ result at: #items ]
+						ifFalse: [ #() ].
+					deployments
+						addAll: (list collect: [ :each | CCDeployment from: each type: 'computeengine' ]).
+					"self class savedContainers: deployments"
+					deploymentsList
+						on: self
+						list: #deployments
+						selected: #selectedDeploymentIndex
+						changeSelected: #deploymentSelected:
+						menu: nil
+						keystroke: nil.
+					deployments isEmpty
+						ifFalse: [ self deploymentSelected: 1 ] ] ]
+]
+
+{ #category : #listing }
+CCDeploymentsWindow >> getGoogleRunDeployments [
+	| connection list |
+	connection := CCMainController getConnectionForAccount: account.
+	endpoint := CCMainWindow models selectedEndpoint.
+	connection connect.
+	(CCGoogleRunDeployments
+		listServicesForConnection: connection
+		andEndpoint: endpoint)
+		onSuccessDo: [ :result | 
+			(result includesKey: #error)
+				ifTrue: [ | msg |
+					msg := result at: #error.
+					UIManager default
+						inform: (msg at: #status) , ': ' , (msg at: #message) ]
+				ifFalse: [ list := (result includesKey: #items)
+						ifTrue: [ result at: #items ]
+						ifFalse: [ #() ].
+					deployments
+						addAll: (list collect: [ :each | CCDeployment from: each type: 'cloudrun']).
+					"self class savedContainers: deployments"
+					deploymentsList
+						on: self
+						list: #deployments
+						selected: #selectedDeploymentIndex
+						changeSelected: #deploymentSelected:
+						menu: nil
+						keystroke: nil.
+					deployments isEmpty
+						ifFalse: [ self deploymentSelected: 1 ] ] ]
 ]
 
 { #category : #initialization }
-CCDeploymentsWindow >> initialize [ 	
+CCDeploymentsWindow >> initialize [
 	| title |
 	super initialize.
-	endpoint := CCGoogleRunDeployments serviceEndpoints at: 'us-central1'.
-	self initializeLayout.	
+	self initializeLayout.
 	self initializeDeploymentsList.
-	self initializeTable .
+	self initializeTable.
 	title := TextMorph new.
-	title contents: 'Deployments'.
+	title contents: 'Deployments'; left: 200.
 	self addMorph: title.
-	
+	self initializeButtons.
+]
+
+{ #category : #listing }
+CCDeploymentsWindow >> initializeButtons [
+	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
+	reloadButton
+		color: Color green darker darker;
+		target: self;
+		actionSelector: #reloadResults.
+	self addMorph: reloadButton.
 ]
 
 { #category : #initialization }
@@ -93,14 +140,13 @@ CCDeploymentsWindow >> initializeDeploymentsList [
 		color: Color gray;
 		top: 35;
 		left: 10;
-		width:220;
-		height:400;
+		width: 220;
+		height: 400;
 		borderWidth: 10;
 		hResizing: #shrinkWrap;
 		"vResizing: #shrinkWrap ;"
-		getIconSelector: #icon.
-	
-	self addMorph: deploymentsList	
+			getIconSelector: #icon.
+	self addMorph: deploymentsList
 ]
 
 { #category : #initialization }
@@ -129,6 +175,13 @@ CCDeploymentsWindow >> initializeTable [
 		top: 35.
 		"left: 250"
 	self addMorph: table
+]
+
+{ #category : #initialization }
+CCDeploymentsWindow >> reloadResults [
+	deployments := OrderedCollection new.
+	self getGoogleRunDeployments .
+	self getGoogleComputeEngineDeployments .
 ]
 
 { #category : #accessing }

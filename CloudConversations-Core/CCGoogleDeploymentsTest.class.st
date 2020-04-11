@@ -14,45 +14,51 @@ CCGoogleDeploymentsTest >> setUp [
 
 { #category : #tests }
 CCGoogleDeploymentsTest >> testCreateDeployment [
-	| serviceAccount status connection containers result repositories cdict container deployments  aContainerName tags containerVersions |
+	| serviceAccount status connection containers repositories cdict container deployments aContainerName containerVersions |
 	serviceAccount := CCServiceAccount
 		withCertificateAsJSONString: certificateString.
 	connection := CCGoogleConnection with: serviceAccount.
 	status := connection connect.
 	self assert: status equals: true.
 	containers := CCGoogleContainers with: connection.
-	result := containers listContainers.
-	self assert: (result at: 'repositories') isEmpty equals: false.
-	repositories := result at: #repositories.
-	aContainerName := repositories first.
-	tags := containers listRepositoryTags: aContainerName .
-	containerVersions := tags at: #manifest.
-	cdict := CCContainer getLatestContainerVersion: containerVersions.
-	cdict at: #name put: aContainerName .
-	cdict at: #tags put: (tags at: #tags).
-	cdict at: #manifest put: containerVersions .
-	container := CCContainer from: cdict.
-	deployments := CCGoogleRunDeployments with: connection.
-	deployments endpoint: (CCGoogleRunDeployments serviceEndpoints at: 'us-central1').
-	deployments createService: 'fooservice' fromContainer: container.
-	
-	
+	containers listContainers
+		onSuccessDo: [ :result | 
+			self assert: (result at: 'repositories') isEmpty equals: false.
+			repositories := result at: #repositories.
+			aContainerName := repositories first.
+			(containers listRepositoryTags: aContainerName)
+				onSuccessDo: [ :tags | 
+					containerVersions := tags at: #manifest.
+					cdict := CCContainer getLatestContainerVersion: containerVersions.
+					cdict at: #name put: aContainerName.
+					cdict at: #tags put: (tags at: #tags).
+					cdict at: #manifest put: containerVersions.
+					container := CCContainer from: cdict type: 'cloudrun'.
+					deployments := CCGoogleRunDeployments with: connection.
+					deployments
+						endpoint: (CCGoogleRunDeployments serviceEndpoints at: 'us-central1').
+					(deployments createService: 'fooservice' fromContainer: container)
+						onSuccessDo: [ CCMainController getMainWindow showBusyIcon ].
+					CCMainController getMainWindow showBusyIcon ] ]
 ]
 
 { #category : #tests }
 CCGoogleDeploymentsTest >> testList [
-	| serviceAccount status connection deployments result md |
+	| serviceAccount status connection deployments md |
 	serviceAccount := CCServiceAccount
 		withCertificateAsJSONString: certificateString.
 	connection := CCGoogleConnection with: serviceAccount.
 	status := connection connect.
 	self assert: status equals: true.
 	deployments := CCGoogleRunDeployments with: connection.
-	deployments endpoint: (CCGoogleRunDeployments serviceEndpoints at: 'us-central1').
-	result := deployments listDeployments .
-	self assert: (result at: 'items') isEmpty equals: false.
-	md := result at: #items.
-	md inspect.
-	Transcript show:md asString;cr.
-	
+	deployments
+		endpoint: (CCGoogleRunDeployments serviceEndpoints at: 'us-central1').
+	deployments listDeployments
+		onSuccessDo: [ :result | 
+			self assert: (result at: 'items') isEmpty equals: false.
+			md := result at: #items.
+			md inspect.
+			Transcript
+				show: md asString;
+				cr ]
 ]

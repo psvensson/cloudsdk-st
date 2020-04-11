@@ -11,13 +11,35 @@ Class {
 }
 
 { #category : #accessing }
-CCGoogleContainers >> createContainerForTemplate: aTemplate [
-	| files zipfile storage |
-	files := Dictionary new.
-	files at: #Dockerfile put: aTemplate content.
-	zipfile := CCStorage createZipFileOf: files.
-	storage := CCMainController lastUsedStorage.
-	self uploadFile: zipfile To: storage andCreate: aTemplate
+CCGoogleContainers >> buildDataFor: img projectId: projectId filename: filename bucket: bucket type: type [
+	| dockerbuild dockerpush deploy data |
+	dockerbuild := self
+		getBuildStepForDockerBuild: projectId
+		filename: filename
+		imagename: img.
+	dockerpush := self
+		getBuildStepForDockerPush: projectId
+		filename: filename
+		imagename: img.
+	deploy := type = 'cloud run'
+		ifTrue: [ self
+				getBuildStepForCloudRunDeploy: projectId
+				filename: filename
+				imagename: img ]
+		ifFalse: [ self
+				getBuildStepForCloudVMDeploy: projectId
+				filename: filename
+				imagename: img
+			" , ','
+				,
+					(self
+						getBuildStepForCloudVMFirewall: projectId
+						filename: filename
+						imagename: img)" ].
+	data := '{"source":{"storageSource":{"bucket":"' , bucket
+		, '","object":"' , filename , '.zip' , '"}},"steps":[' , dockerbuild
+		, ',' , dockerpush , ',' , deploy , '],"images":[' , img , ']}'.
+	^ data
 ]
 
 { #category : #accessing }
@@ -25,6 +47,24 @@ CCGoogleContainers >> getBuildStepForCloudRunDeploy: projectId filename: filenam
 	| rv |
 	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["run","deploy","',filename ,'","--image",',img,',"--region","us-central1","--platform","managed","--allow-unauthenticated"]}'.
 	Transcript show:'cloud run build step: ',rv;cr.
+	^ rv
+]
+
+{ #category : #accessing }
+CCGoogleContainers >> getBuildStepForCloudVMDeploy: projectId filename: filename imagename: img [
+	| rv zone |
+	zone := CCMainWindow models selectedZone .
+	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","instances", "create-with-container","',filename ,'","--container-image",',img,',"--zone","',zone,'","--tags","',filename,',pharo"]}'.
+	Transcript show:'cloud VM build step: ',rv;cr.
+	^ rv
+]
+
+{ #category : #accessing }
+CCGoogleContainers >> getBuildStepForCloudVMFirewall: projectId filename: filename imagename: img [
+	| rv zone |
+	zone := CCMainWindow models selectedZone .
+	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","firewall-rules", "create","',filename ,'","--allow","tcp:80,443,8080","--target-tags","',filename,'"]}'.
+	Transcript show:'cloud VM build step: ',rv;cr.
 	^ rv
 ]
 
@@ -42,11 +82,12 @@ CCGoogleContainers >> getBuildStepForDockerPush: projectId filename: filename im
 CCGoogleContainers >> getContainerManifestByName: aRepositoryName andReference: aReference [
 	| projectId url res |
 	projectId := connection serviceAccount projectId.
-	url := 'https://gcr.io/v2/',aRepositoryName,'/manifests/',aReference .
-	Transcript show:'getContainerManifestByReference url=',url;cr.	
-	res := connection secureJSONCallTo: url.
-	
-	^ res
+	url := 'https://gcr.io/v2/' , aRepositoryName , '/manifests/'
+		, aReference.
+	Transcript
+		show: 'getContainerManifestByReference url=' , url;
+		cr.
+	^ connection secureJSONCallTo: url
 ]
 
 { #category : #accessing }
@@ -58,17 +99,22 @@ CCGoogleContainers >> initializeRegistry [
 ]
 
 { #category : #accessing }
-CCGoogleContainers >> list [ 
+CCGoogleContainers >> list [
+	| projectId url future |
+	future := TKTFuture new.
 	"list all containers present on the cloud provider"
 	"GET https://cloudbuild.googleapis.com/v1/projects/{projectId}/builds"
-	| projectId url result |
 	"Transcript show: token;cr."
-	projectId := connection serviceAccount projectId .
-	url := 'https://cloudbuild.googleapis.com/v1/projects/',projectId,'/builds'.
+	projectId := connection serviceAccount projectId.
+	url := 'https://cloudbuild.googleapis.com/v1/projects/' , projectId
+		, '/builds'.
 	"Transcript show: url;cr."
-	result := connection secureJSONCallTo: url.
-	result isEmpty ifTrue: [ ^ #() ].
-	^ (result contents) at: #builds
+	(connection secureJSONCallTo: url)
+		onSuccessDo: [ :result | 
+			result isEmpty
+				ifTrue: [ future deploySuccess: #() ]
+				ifFalse: [ future deploySuccess: (result contents at: #builds) ] ].
+	^ future
 ]
 
 { #category : #accessing }
@@ -95,25 +141,15 @@ CCGoogleContainers >> listRepositoryTags: aRepositoryName [
 ]
 
 { #category : #accessing }
-CCGoogleContainers >> startBuildProcessFor: projectId filename: filename bucket: bucket [
-	| data url dockerbuild cloudrundeploy img dockerpush |
+CCGoogleContainers >> startBuildProcessFor: projectId filename: filename bucket: bucket type: type [
+	| data url img |
 	img := '"gcr.io/' , projectId , '/' , filename , '"'.
-	dockerbuild := self
-		getBuildStepForDockerBuild: projectId
+	data := self
+		buildDataFor: img
+		projectId: projectId
 		filename: filename
-		imagename: img.
-	dockerpush := self
-		getBuildStepForDockerPush: projectId
-		filename: filename
-		imagename: img.
-	cloudrundeploy := self
-		getBuildStepForCloudRunDeploy: projectId
-		filename: filename
-		imagename: img.
-	data := '{"source":{"storageSource":{"bucket":"' , bucket
-		, '","object":"' , filename , '.zip' , '"}},"steps":[' , dockerbuild
-		, ',' , dockerpush , ',' , cloudrundeploy , '],"images":[' , img
-		, ']}'.
+		bucket: bucket
+		type: type.
 	url := 'https://cloudbuild.googleapis.com/v1/projects/' , projectId
 		, '/builds'.
 	^ connection secureJSONCallTo: url JSONContent: data
@@ -135,16 +171,18 @@ CCGoogleContainers >> uploadFile: zipfile To: storage andCreate: aTemplate [
 	
 	url := 'https://cloudbuild.googleapis.com/v1/projects/' , projectId
 		, '/builds'.
-	Transcript show:'url=',url;cr.	
+	"Transcript show:'url=',url;cr."
 	^ connection secureJSONCallTo: url JSONContent: data
 ]
 
 { #category : #accessing }
-CCGoogleContainers >> uploadFile: zipfile as: filename To: storage andCreate: aTemplate [
-	| bucket projectId |
+CCGoogleContainers >> uploadFile: zipfile as: name To: storage andCreate: aTemplate type: type [
+	| bucket projectId filename result |
+	filename := (name copyReplaceAll: ' ' with: '') asLowercase  .
 	projectId := connection serviceAccount projectId.
 	bucket := projectId , '.appspot.com'.
 	storage upload: zipfile as: filename , '.zip'.
-	self startBuildProcessFor: projectId filename: filename bucket: bucket.
+	^ self startBuildProcessFor: projectId filename: filename bucket: bucket type: type.
+	
 	
 ]

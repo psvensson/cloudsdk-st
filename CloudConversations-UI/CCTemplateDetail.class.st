@@ -21,7 +21,7 @@ Class {
 
 { #category : #accessing }
 CCTemplateDetail >> createContainer [
-	| really connection containers storage zipfile result |
+	| really connection containers storage zipfile kind type |
 	connection := CCMainController
 		getConnectionForAccount: CCMainController lastUsedAccount.
 	connection connect.
@@ -29,13 +29,29 @@ CCTemplateDetail >> createContainer [
 		confirm: 'Do you really waant to create a container of this template?'
 		orCancel: [ ^ false ].
 	really
-		ifFalse: [ ^ self ].
+		ifFalse: [ ^ false ].
 	containers := CCGoogleContainers with: connection.
 	storage := CCStorage with: connection.
-	zipfile := template zipArchiveForBuild .
-	result := containers uploadFile: zipfile as: (template name asLowercase ) To: storage andCreate: template .
-	UIManager default informUser: 'Continer created and deploy started.' during: [(Delay forSeconds: 3) wait].
-	
+	zipfile := template zipArchiveForBuild.
+	kind := UIManager default
+		chooseFrom: #('Cloud Run cloud function' 'Cloud VM')
+		message: 'What kind of service do you want to create?'
+		title: 'Deploy'.
+	type := kind = 2
+		ifTrue: [ 'vm' ]
+		ifFalse: [ 'run' ].
+	(containers
+		uploadFile: zipfile
+		as: template name asLowercase
+		To: storage
+		andCreate: template
+		type: type)
+		onSuccessDo: [ : result |CCMainController getMainWindow hideBusyIcon ].
+	CCMainController getMainWindow showBusyIcon.
+	UIManager default
+		informUser: 'Container created and deploy started.'
+		during: [ (Delay forSeconds: 3) wait ].
+	^ true
 ]
 
 { #category : #initialization }
@@ -63,7 +79,7 @@ CCTemplateDetail >> initialize [
 { #category : #accessing }
 CCTemplateDetail >> initializeButtons [
 	saveButton := SimpleButtonMorph newWithLabel: 'Save'.
-	containerButton := SimpleButtonMorph newWithLabel: 'Create Container'.
+	containerButton := SimpleButtonMorph newWithLabel: 'Deploy'.
 	containerButton color: Color green darker darker darker.
 	copyButton := SimpleButtonMorph newWithLabel: 'Copy'.
 	editButton := SimpleButtonMorph newWithLabel: 'Edit Dockerfile'.
@@ -144,7 +160,8 @@ CCTemplateDetail >> saveEditor [
 	template isNil
 		ifFalse: [ template
 				content: result;
-				loadFile: loadResults ]
+				loadFile: loadResults;
+				bumpGeneration ]
 ]
 
 { #category : #accessing }

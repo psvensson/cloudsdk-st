@@ -24,7 +24,8 @@ Class {
 		'lastUsedConnection',
 		'lasUsedContainer',
 		'lastUsedContainer',
-		'lastUsedStorage'
+		'lastUsedStorage',
+		'mainWindow'
 	],
 	#category : #'CloudConversations-UI-Main'
 }
@@ -40,16 +41,19 @@ CCMainController class >> futuresAll: futures [
 	| count results fblock |
 	count := futures size.
 	results := OrderedCollection new.
-	fblock := [ futures
+	fblock := TKTFuture new.
+	futures
 		do: [ :each | 
 			each
 				onSuccessDo: [ :v | 
-					Transcript show:'--- onSuccess: ',v asString;cr.
-					v isNil ifFalse: [results add: v results value].
+					Transcript show:'--- onSuccess: ',v asString,' count = ',count asString;cr.
+					v ifNotNil: [results add: (v value) ].
 					count := count - 1.
 					count < 1
-						ifTrue: [  results ] ] ] ] future.
-	^ fblock andThen: [ results ]
+						ifTrue: [ 
+							Transcript show:'--deploySuccess--';cr.
+							fblock deploySuccess: results ] ] ]  .
+	^ fblock 
 ]
 
 { #category : #'as yet unclassified' }
@@ -101,8 +105,16 @@ CCMainController class >> getConnectionForAccount: account [
 		ifFalse: [ account cloudType = 'google'
 				ifTrue: [ connection := CCGoogleConnection with: account ] ].
 	connections at: account name put: connection.
-	lastUsedConnection := connection .
+	connection onStartConnect: [ mainWindow showBusyIcon ].
+	connection onEndConnect: [ mainWindow hideBusyIcon ].
+	Transcript show: 'CCMainController>>getConnectionFroAccount sett start/end blocks';cr.
+	lastUsedConnection := connection.
 	^ connection
+]
+
+{ #category : #accessing }
+CCMainController class >> getMainWindow [
+	^ mainWindow 
 ]
 
 { #category : #accessing }
@@ -148,4 +160,10 @@ CCMainController class >> lastUsedStorage [
 						title: 'No default connection' ]
 				ifNotNil: [ lastUsedStorage := CCStorage with: lastUsedConnection ] ].
 	^ lastUsedStorage
+]
+
+{ #category : #accessing }
+CCMainController class >> setMainWindow: aWindow [
+	Transcript show: 'setting main window in CCMainCOntroller';cr.
+	mainWindow := aWindow 
 ]
