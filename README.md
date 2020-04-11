@@ -1,6 +1,8 @@
 # cloudsdk-st
 A tool for deploying Smalltalk application directly to the cloud, from the image, without touching any files.
-Currently only supporting deploy to Google Cloud and to Google Cloud Run cloud functions (lambdas).
+Currently supporting deploy to Google Cloud and to Google Cloud Run cloud functions (lambdas) and Google Compute Engine VMs.
+
+If deploy to Compute Engine, you need to manually add a rule for your project's firewall to allow traffic to the VM. The Vm is tagged with both 'pharo' and the individual name of the deployment, so if you add a rule targeting the 'pharo' tag, it will work for all VM deployments.
 
 There is a blog post with more details and screenshots that describes the onboarding process in more detail here; (https://unclescript.blogspot.com/2020/03/a-cloud-sdk-for-pharo-smalltalk.html).
 
