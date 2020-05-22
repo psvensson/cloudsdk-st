@@ -26,6 +26,8 @@ Metacello new
   - Granting access for Google Cloud build to deploy to Google Cloud Run, by setting 'Cloud Run Admin' to enabled here; (https://console.cloud.google.com/cloud-build/settings).
   - Enabling the Cloud resource manager API, here; (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
   - Enabling the Cloud Run API, here; (https://console.developers.google.com/apis/api/run.googleapis.com/overview)
+  
+  You might need to add the cloud build service account a a member to the service account you're using, to be able to deploy to Cloud Run. See How to manage Google IAM. See https://cloud.google.com/cloud-build/docs/securing-builds/set-service-account-permissions
 
 # How to use
 
