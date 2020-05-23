@@ -201,9 +201,9 @@ RUN wget -O- https://get.pharo.org/64/80+vm | bash
 COPY load.st load.st
 COPY setup.sh setup.sh
 RUN chmod +x setup.sh
-RUN ./setup.sh
+RUN ./setup.sh; echo 0
 
-RUN ./pharo Pharo.image load.st
+RUN ./pharo Pharo.image load.st; echo 0
 
 ######################################
 # Expose port 8080 of Zinc outside the container
