@@ -38,9 +38,10 @@ CCTemplate >> content: anObject [
 { #category : #accessing }
 CCTemplate >> depFile [
 	| depStr |
-	depStr := dependencies isEmpty
+	depStr := 'Iceberg remoteTypeSelector: #httpsUrl. '.
+	dependencies isEmpty
 		ifTrue: [ '' ]
-		ifFalse: [ dependencies do: [ :each | each installString ] ].
+		ifFalse: [ dependencies do: [ :each | depStr := depStr , each installString ] ].
 	^ depStr
 ]
 
@@ -195,9 +196,12 @@ WORKDIR webapp
 ######################################
 # Download Pharo using Zeroconf & start script
 ######################################
-RUN wget -O- https://get.pharo.org/64/70+vm | bash
+RUN wget -O- https://get.pharo.org/64/80+vm | bash
 
 COPY load.st load.st
+COPY setup.sh setup.sh
+RUN chmod +x setup.sh
+RUN ./setup.sh
 
 RUN ./pharo Pharo.image load.st
 
@@ -228,10 +232,19 @@ CMD ./pharo --headless Pharo.image --no-quit'
 ]
 
 { #category : #accessing }
+CCTemplate >> setupFile [
+	^ 'cat <<END | tee /etc/security/limits.d/pharo.conf\n
+Step #0: *      hard    rtprio  2\n
+Step #0: *      soft    rtprio  2\n
+Step #0: END'
+]
+
+{ #category : #accessing }
 CCTemplate >> zipArchiveForBuild [
 	| dict |
 	dict := Dictionary new.
 	dict at: #Dockerfile put: self content.
+	dict at: 'setup.sh' put: self setupFile .
 	dict at: 'load.st' put: self depFile , self loadFile.
 	^ CCStorage createZipFileOf: dict
 ]

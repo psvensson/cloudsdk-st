@@ -22,48 +22,58 @@ Class {
 		'creationTimestamp',
 		'namespace',
 		'annotations',
-		'status'
+		'status',
+		'type'
 	],
 	#category : #'CloudConversations-Models'
 }
 
 { #category : #'instance creation' }
 CCDeployment class >> from: cdict type: type [
+	cdict at: #type put: type.
 	type = 'cloudrun' ifTrue: [ ^ self fromCloudRun: cdict].
 	type = 'computeengine' ifTrue: [ ^ self fromComputeEngine: cdict].
 ]
 
 { #category : #'instance creation' }
-CCDeployment class >> fromCloudRun: cdict [ 
+CCDeployment class >> fromCloudRun: cdict [
 	| c |
 	c := self new.
-	c dict: cdict;
-	annotations: ((cdict at: #metadata) at: #annotations);
-	apiVersion: (cdict at: #apiVersion);
-	containerConcurrency: ((((cdict at: #spec) at: #template) at: #spec) at: #containerConcurrency);
-	timeoutSeconds: ((((cdict at: #spec) at: #template) at: #spec) at: #timeoutSeconds);
-	name: ((((cdict at: #spec) at: #template) at: #metadata) at: #name);
-	annotations: ((((cdict at: #spec) at: #template) at: #metadata) at: #annotations);
-	traffic: ((cdict at: #spec) at: #traffic);
-	uid: ((cdict at: #metadata) at: #uid);
-	generation: ((cdict at: #metadata) at: #generation);
-	creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
-	namespace: ((cdict at: #metadata) at: #namespace);
-	url: ((cdict at: #status) at: #url).
-	^c
+	c
+		dict: cdict;
+		type: (cdict at: #type);
+		annotations: ((cdict at: #metadata) at: #annotations);
+		apiVersion: (cdict at: #apiVersion);
+		containerConcurrency:
+			((((cdict at: #spec) at: #template) at: #spec)
+				at: #containerConcurrency);
+		timeoutSeconds: ((((cdict at: #spec) at: #template) at: #spec) at: #timeoutSeconds);
+		name: ((((cdict at: #spec) at: #template) at: #metadata) at: #name);
+		annotations: ((((cdict at: #spec) at: #template) at: #metadata) at: #annotations);
+		traffic: ((cdict at: #spec) at: #traffic);
+		uid: ((cdict at: #metadata) at: #uid);
+		generation: ((cdict at: #metadata) at: #generation);
+		creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
+		namespace: ((cdict at: #metadata) at: #namespace);
+		url: ((cdict at: #status) at: #url).
+	^ c
 ]
 
 { #category : #'instance creation' }
-CCDeployment class >> fromComputeEngine: cdict [ 
+CCDeployment class >> fromComputeEngine: cdict [
 	| c |
 	c := self new.
-	c dict: cdict;
-	status: (cdict at: #status);
-	name: (cdict at: #name);
-	tags: (((cdict at: #tags) values first));
-	creationTimestamp: (cdict at: #creationTimestamp);
-	url: (((((cdict at: #networkInterfaces) first) at: #accessConfigs) first) at: #natIP).
-	^c
+	c
+		dict: cdict;
+		type: (cdict at: #type);
+		status: (cdict at: #status);
+		name: (cdict at: #name);
+		tags: (cdict at: #tags) values first;
+		creationTimestamp: (cdict at: #creationTimestamp);
+		url:
+			(((cdict at: #networkInterfaces) first at: #accessConfigs) first
+				at: #natIP).
+	^ c
 ]
 
 { #category : #accessing }
@@ -139,6 +149,11 @@ CCDeployment >> generation [
 { #category : #accessing }
 CCDeployment >> generation: anObject [
 	generation := anObject
+]
+
+{ #category : #accessing }
+CCDeployment >> icon [
+	^ CCImages iconFrom: type
 ]
 
 { #category : #accessing }
@@ -259,6 +274,16 @@ CCDeployment >> traffic [
 { #category : #accessing }
 CCDeployment >> traffic: anObject [
 	traffic := anObject
+]
+
+{ #category : #accessing }
+CCDeployment >> type [
+	^ type
+]
+
+{ #category : #accessing }
+CCDeployment >> type: anObject [
+	type := anObject
 ]
 
 { #category : #accessing }

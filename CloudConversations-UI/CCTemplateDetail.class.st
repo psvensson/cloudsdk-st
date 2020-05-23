@@ -14,7 +14,9 @@ Class {
 		'containerButton',
 		'loadeditButton',
 		'loadeditor',
-		'loadtextMorph'
+		'loadtextMorph',
+		'deleteButton',
+		'templateDelete'
 	],
 	#category : #'CloudConversations-UI-Templates'
 }
@@ -39,7 +41,7 @@ CCTemplateDetail >> createContainer [
 		title: 'Deploy'.
 	type := kind = 2
 		ifTrue: [ 'vm' ]
-		ifFalse: [ 'run' ].
+		ifFalse: [ 'cloud run' ].
 	(containers
 		uploadFile: zipfile
 		as: template name asLowercase
@@ -52,6 +54,11 @@ CCTemplateDetail >> createContainer [
 		informUser: 'Container created and deploy started.'
 		during: [ (Delay forSeconds: 3) wait ].
 	^ true
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> deleteTemplate [
+	templateDelete ifNotNil: [ templateDelete value: template ]
 ]
 
 { #category : #initialization }
@@ -78,6 +85,7 @@ CCTemplateDetail >> initialize [
 
 { #category : #accessing }
 CCTemplateDetail >> initializeButtons [
+	deleteButton := SimpleButtonMorph newWithLabel: 'Delete'.
 	saveButton := SimpleButtonMorph newWithLabel: 'Save'.
 	containerButton := SimpleButtonMorph newWithLabel: 'Deploy'.
 	containerButton color: Color green darker darker darker.
@@ -94,6 +102,9 @@ CCTemplateDetail >> initializeButtons [
 	self addMorph: saveButton.
 	saveButton target: self;
 		actionSelector: #saveEditor.
+	self addMorph: deleteButton.
+	deleteButton target: self;
+		actionSelector: #deleteTemplate.	
 	self addMorph: copyButton.
 	self addMorph: editButton.
 	self addMorph: loadeditButton.
@@ -120,6 +131,12 @@ CCTemplateDetail >> initializeLayout [
 		"wrapDirection: #leftToRight ;"
 		"cellInset: 10;"
 		color: Color gray darker
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> onTemplateDelete: aBlock [
+	templateDelete := aBlock 
+	
 ]
 
 { #category : #accessing }

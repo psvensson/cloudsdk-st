@@ -171,7 +171,7 @@ CCAccountsPanel >> showCertificateDialog [
 			(type = 1
 				ifTrue: [ 'aws' ]
 				ifFalse: [ 'google' ])."
-		type: 1.		
+		type: 'google'.		
 	self showCertificateAlert
 ]
 

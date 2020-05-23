@@ -15,15 +15,15 @@ CCTemplatesPanelMorph >> initialize [
 	super initialize.
 	self label: 'Docker Templates'.
 	templatesPanel := CCTemplatesPanel new.
-	templatesPanel onTemplateSelected: [ :selectedTemplate |
-	  templateDetail template: selectedTemplate	].
+	templatesPanel
+		onTemplateSelected: [ :selectedTemplate | templateDetail template: selectedTemplate ].
 	templateDetail := CCTemplateDetail new.
-	templateDetail onTemplateUpdate: [ templatesPanel updateList ].	
+	templateDetail onTemplateUpdate: [ templatesPanel updateList ].
+	templateDetail
+		onTemplateDelete: [ :template | templatesPanel deleteTemplate ].
 	self initializeLayout.
-	
 	self addMorph: templateDetail.
-	self addMorph: templatesPanel.
-	
+	self addMorph: templatesPanel
 ]
 
 { #category : #initialization }

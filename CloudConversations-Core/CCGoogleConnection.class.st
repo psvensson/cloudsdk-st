@@ -66,6 +66,7 @@ CCGoogleConnection class >> requestAccessTokenForJWT: aJWT [
 			formAdd: 'assertion' -> aJWT ;
 			post.
 	result := NeoJSONObject fromString: client contents.		
+	
 	^ result at: 'access_token'
 ]
 

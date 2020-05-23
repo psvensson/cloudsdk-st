@@ -31,6 +31,16 @@ CCTemplatesPanel >> createNewTemplate [
 ]
 
 { #category : #initialization }
+CCTemplatesPanel >> deleteTemplate [
+	| really |
+	really := UIManager default
+		confirm: 'Do you really waant to delete this Service Account Certificate?'
+		orCancel: [ ^ false ].
+	templates remove: (templates at: selectedTemplateIndex).
+	self updateList
+]
+
+{ #category : #initialization }
 CCTemplatesPanel >> highlightSelectedTemplate [
 	templates
 		ifEmpty: [  ]
@@ -93,7 +103,6 @@ CCTemplatesPanel >> initializeTemplatesList [
 { #category : #initialization }
 CCTemplatesPanel >> onTemplateSelected: aBlock [
 	onSelectedTemplate := aBlock.
-	templatesList updateList.
 	
 	
 ]

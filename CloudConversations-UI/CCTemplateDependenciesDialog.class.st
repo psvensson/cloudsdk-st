@@ -14,7 +14,8 @@ Class {
 		'searchbox',
 		'query',
 		'pharosearch',
-		'smalltalksearch'
+		'smalltalksearch',
+		'installmorph'
 	],
 	#category : #'CloudConversations-UI-Templates'
 }
@@ -104,8 +105,18 @@ CCTemplateDependenciesDialog >> initializeDescription [
 		vResizing: #shrinkWrap;
 		wrapFlag: true;
 		autoFit: true.
+		
+	installmorph := TextMorph new.
+	installmorph
+		contents: 'no install script';
+		hResizing: #spaceFill;
+		vResizing: #shrinkWrap;
+		wrapFlag: true;
+		autoFit: true.	
 	
-	self addMorph: descriptionmorph 
+	
+	self addMorph: installmorph .
+	self addMorph: descriptionmorph .
 ]
 
 { #category : #initialization }
@@ -209,7 +220,7 @@ CCTemplateDependenciesDialog >> onProjectSelected: aBlock [
 
 { #category : #initialization }
 CCTemplateDependenciesDialog >> resultSelected: anIndex [
-	|  i |
+	|  i installstring |
 	i := (anIndex = 0) ifTrue: [ 1 ] ifFalse: [ anIndex ].
 	selectedResultIndex := i.
 	searchresults updateList.
@@ -224,6 +235,8 @@ CCTemplateDependenciesDialog >> resultSelected: anIndex [
 		vResizing: #shrinkWrap;
 		wrapFlag: true;
 		autoFit: true.
+	installstring := (ghlookup installStringForItem: selectedproject ).
+		installmorph contents: installstring.	
 ]
 
 { #category : #initialization }
@@ -271,11 +284,13 @@ CCTemplateDependenciesDialog >> selectPharoSearch: state [
 
 { #category : #initialization }
 CCTemplateDependenciesDialog >> selectProject [
-	selectedproject := results  at: selectedResultIndex.
-	Transcript show:'selectProject called: ',selectedproject  asString;cr.
-	onProjectSelected isNil ifFalse: [ 
-		selectedproject at: #installString put: (ghlookup installStringForItem: selectedproject ).
-		onProjectSelected value: selectedproject value: 'github' ]
+	selectedproject := results at: selectedResultIndex.
+	Transcript
+		show: 'selectProject called: ' , selectedproject asString;
+		cr.
+	onProjectSelected isNil
+		ifFalse: [ selectedproject at: #installString put: installmorph contents.
+			onProjectSelected value: selectedproject value: 'github' ]
 ]
 
 { #category : #initialization }
