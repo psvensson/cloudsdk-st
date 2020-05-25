@@ -176,7 +176,7 @@ FROM ubuntu
 ######################################
 # Basic project infos
 ######################################
-LABEL maintainer="Your Name"
+LABEL maintainer="',Author fullName,'"
 
 ######################################
 # Update Ubuntu apt and install some tools
@@ -198,6 +198,8 @@ WORKDIR webapp
 ######################################
 RUN wget -O- https://get.pharo.org/64/80+vm | bash
 
+COPY service_account.json service_account.json
+RUN export certificate="$(cat service_account.json)"
 COPY load.st load.st
 COPY setup.sh setup.sh
 RUN chmod +x setup.sh
@@ -213,7 +215,10 @@ EXPOSE 8080
 ######################################
 # Finally run headless as server
 ######################################
-CMD ./pharo --headless Pharo.image --no-quit'
+ENTRYPOINT ./pharo
+CMD ["--headless", "Pharo.image", "--no-quit"]'
+
+
 ]
 
 { #category : #accessing }
@@ -233,18 +238,25 @@ CMD ./pharo --headless Pharo.image --no-quit'
 
 { #category : #accessing }
 CCTemplate >> setupFile [
-	^ 'cat <<END | tee /etc/security/limits.d/pharo.conf\n
+	^ '#!/bin/sh\n cat <<END | tee /etc/security/limits.d/pharo.conf\n
 Step #0: *      hard    rtprio  2\n
 Step #0: *      soft    rtprio  2\n
 Step #0: END'
 ]
 
 { #category : #accessing }
-CCTemplate >> zipArchiveForBuild [
+CCTemplate >> startFile [
+	^ '#!/bin/bash\n./pharo --headless Pharo.image --no-quit'
+]
+
+{ #category : #accessing }
+CCTemplate >> zipArchiveForBuildWith: aServiceAccount [
 	| dict |
 	dict := Dictionary new.
 	dict at: #Dockerfile put: self content.
 	dict at: 'setup.sh' put: self setupFile .
+	dict at: 'startup.sh' put: self startFile .
+	dict at: 'service_account.json' put: aServiceAccount jsonStringCertificate .
 	dict at: 'load.st' put: self depFile , self loadFile.
 	^ CCStorage createZipFileOf: dict
 ]

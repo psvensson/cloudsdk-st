@@ -34,7 +34,7 @@ CCTemplateDetail >> createContainer [
 		ifFalse: [ ^ false ].
 	containers := CCGoogleContainers with: connection.
 	storage := CCStorage with: connection.
-	zipfile := template zipArchiveForBuild.
+	zipfile := template zipArchiveForBuildWith: connection serviceAccount.
 	kind := UIManager default
 		chooseFrom: #('Cloud Run cloud function' 'Cloud VM')
 		message: 'What kind of service do you want to create?'

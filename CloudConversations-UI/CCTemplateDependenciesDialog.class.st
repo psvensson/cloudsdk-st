@@ -76,7 +76,7 @@ CCTemplateDependenciesDialog >> initializeButtons [
 		cellInset: 5;
 		color: Color transparent;
 		vResizing: #spaceFill.
-	selectbutton := SimpleButtonMorph newWithLabel: 'Select'.
+	selectbutton := SimpleButtonMorph newWithLabel: 'Add'.
 	selectbutton color: Color darkGray.
 	forwardbutton := IconicButton new.
 	forwardbutton labelGraphic: (Smalltalk ui theme iconNamed: #forward); color: Color darkGray.

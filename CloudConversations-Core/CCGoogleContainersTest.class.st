@@ -25,7 +25,7 @@ CCGoogleContainersTest >> testCreate [
 	storage := CCStorage with: connection.
 	template := CCTemplate new.
 	template name: 'foo18'.
-	zipfile := template zipArchiveForBuild.
+	zipfile := template zipArchiveForBuildWith: serviceAccount .
 	(containers
 		uploadFile: zipfile
 		as: 'foo18'

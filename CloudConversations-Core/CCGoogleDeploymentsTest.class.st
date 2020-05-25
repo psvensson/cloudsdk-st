@@ -33,7 +33,7 @@ CCGoogleDeploymentsTest >> testCreateDeployment [
 					cdict at: #name put: aContainerName.
 					cdict at: #tags put: (tags at: #tags).
 					cdict at: #manifest put: containerVersions.
-					container := CCContainer from: cdict type: 'cloudrun'.
+					container := CCContainer from: cdict .
 					deployments := CCGoogleRunDeployments with: connection.
 					deployments
 						endpoint: (CCGoogleRunDeployments serviceEndpoints at: 'us-central1').
