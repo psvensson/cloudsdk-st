@@ -13,9 +13,8 @@ Class {
 }
 
 { #category : #accessing }
-CCTemplateDependenciesDetail >> dependencies [
-	"Transcript show:'dependenices called. template is ',template asString;cr."
-	^ template dependencies
+CCTemplateDependenciesDetail >> dependencies [ 
+	^ template dependencies 
 ]
 
 { #category : #initialization }
@@ -82,7 +81,7 @@ CCTemplateDependenciesDetail >> initializeDialog [
 			Transcript
 				show: 'intializeDialog got add dependency callback';
 				cr.
-			self dependencies add: dep.
+			template dependencies add: dep.
 			dependenciesList updateList.
 			template regenerateContent  ]
 ]

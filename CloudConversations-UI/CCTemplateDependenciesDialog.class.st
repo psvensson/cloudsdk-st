@@ -72,10 +72,9 @@ CCTemplateDependenciesDialog >> initializeButtons [
 	row := Morph new.
 	row layoutPolicy: RowLayout new.
 	row
-		hResizing: #spaceFill;
-		cellInset: 5;
+		hResizing: #shrinkWrap;
 		color: Color transparent;
-		vResizing: #spaceFill.
+		vResizing: #shrinkWrap.
 	selectbutton := SimpleButtonMorph newWithLabel: 'Add'.
 	selectbutton color: Color darkGray.
 	forwardbutton := IconicButton new.

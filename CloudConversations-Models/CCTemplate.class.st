@@ -62,7 +62,7 @@ CCTemplate >> dependenciesPartDockerfile [
 	rv := ''.
 	dependencies do: [  :dep |
 		|istr|
-		istr := dep installString isNil ifTrue: [ '' ] ifFalse: [ dep installString ].
+		istr := dep installString isNil ifTrue: [ '' ] ifFalse: [ dep installString,'\n' ].
 		rv := rv, istr].
 	^ rv
 ]
@@ -132,7 +132,7 @@ CCTemplate >> initialize [
 { #category : #accessing }
 CCTemplate >> loadFile [
 	loadfile
-		ifNil: [ loadfile := 'ZnServer startDefaultOn: 8080.
+		ifNil: [ loadfile := self dependenciesPartDockerfile ,'\nZnServer startDefaultOn: 8080.
 SmalltalkImage current snapshot: true andQuit: true' ].
 	^ loadfile
 ]
@@ -166,6 +166,7 @@ CCTemplate >> name: anObject [
 
 { #category : #accessing }
 CCTemplate >> regenerateContent [
+	loadfile := nil.
 	content := "self firstPartDockerfile , self dependenciesPartDockerfile
 		, self secondPartDockerfile"
 		'######################################
@@ -206,6 +207,7 @@ RUN chmod +x setup.sh
 RUN ./setup.sh; echo 0
 
 RUN ./pharo Pharo.image load.st; echo 0
+
 
 ######################################
 # Expose port 8080 of Zinc outside the container

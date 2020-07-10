@@ -13,7 +13,8 @@ Class {
 { #category : #initialization }
 CCTemplatesPanelMorph >> initialize [
 	super initialize.
-	self label: 'Docker Templates'.
+	self label: 'Docker Templates';
+	vResizing: #shrinkWrap .
 	templatesPanel := CCTemplatesPanel new.
 	templatesPanel
 		onTemplateSelected: [ :selectedTemplate | templateDetail template: selectedTemplate ].
@@ -34,7 +35,7 @@ CCTemplatesPanelMorph >> initializeLayout [
 		listDirection: #topToBottom;
 		"listCentering: #justified ;"
 			"cellInset: 5;"
-			height: 500;
+			"width: 350;"
 		hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap .
 			

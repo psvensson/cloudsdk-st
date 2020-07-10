@@ -21,6 +21,26 @@ Class {
 	#category : #'CloudConversations-UI-Templates'
 }
 
+{ #category : #examples }
+CCTemplateDetail class >> createButton: label target: target selector: selector [
+	| button |
+	button := PluggableButtonMorph
+		on: target
+		getState: nil
+		action: selector
+		label: label
+		menu: nil.
+	button
+		labelMorph color: Color orange;
+		vResizing: #spaceFill.
+	^ button
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> copyLabel [
+	^ 'Copy'
+]
+
 { #category : #accessing }
 CCTemplateDetail >> createContainer [
 	| really connection containers storage zipfile kind type |
@@ -57,8 +77,23 @@ CCTemplateDetail >> createContainer [
 ]
 
 { #category : #accessing }
+CCTemplateDetail >> deleteLabel [
+	^ 'Delete'
+]
+
+{ #category : #accessing }
 CCTemplateDetail >> deleteTemplate [
 	templateDelete ifNotNil: [ templateDelete value: template ]
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> deployLabel [
+	^ 'Deploy'
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> dockerfileLabel [
+	^ 'Edit Dockerfile'
 ]
 
 { #category : #initialization }
@@ -74,63 +109,79 @@ CCTemplateDetail >> initialize [
 	loadeditor model: template.
 	loadtextMorph := TextMorph new.
 	loadeditor morph: loadtextMorph .
-	textMorph width: 300.
 	loadtextMorph width: 300; height:300.	
 	"textMorph contents: template content ."
-	self	layoutInset: 5 @ 5;
-		width:300.
+	self	layoutInset: 5 @ 5.
+	"self	width:300."
 	self initializeButtons .
 
 ]
 
 { #category : #accessing }
 CCTemplateDetail >> initializeButtons [
-	deleteButton := SimpleButtonMorph newWithLabel: 'Delete'.
-	saveButton := SimpleButtonMorph newWithLabel: 'Save'.
-	containerButton := SimpleButtonMorph newWithLabel: 'Deploy'.
+	deleteButton := self class
+		createButton: #deleteLabel
+		target: self
+		selector: #deleteTemplate.
+	saveButton := self class
+		createButton: #saveLabel
+		target: self
+		selector: #saveEditor.
+	containerButton := self class
+		createButton: #deployLabel
+		target: self
+		selector: #createContainer.
 	containerButton color: Color green darker darker darker.
-	copyButton := SimpleButtonMorph newWithLabel: 'Copy'.
-	editButton := SimpleButtonMorph newWithLabel: 'Edit Dockerfile'.
-	loadeditButton := SimpleButtonMorph newWithLabel: 'Edit loadfile'.
-	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
-	editButton target: self;
-		actionSelector: #openEditor.
-	loadeditButton target: self;
-		actionSelector: #openLoadEditor.		
-	containerButton target: self;
-		actionSelector: #createContainer.			
+	copyButton := self class
+		createButton: #copyLabel
+		target: self
+		selector: #copyContainer.
+	editButton := self class
+		createButton: #dockerfileLabel
+		target: self
+		selector: #openEditor.
+	loadeditButton := self class
+		createButton: #loadfileLabel
+		target: self
+		selector: #openLoadEditor.
+	renameButton := self class
+		createButton: #renameLabel
+		target: self
+		selector: #renameTemplate.
 	self addMorph: saveButton.
-	saveButton target: self;
-		actionSelector: #saveEditor.
 	self addMorph: deleteButton.
-	deleteButton target: self;
-		actionSelector: #deleteTemplate.	
+	deleteButton labelMorph inspect.
 	self addMorph: copyButton.
 	self addMorph: editButton.
 	self addMorph: loadeditButton.
 	self addMorph: renameButton.
-	self addMorph: containerButton .
-	renameButton target: self;
-		actionSelector: #renameTemplate.
+	self addMorph: containerButton
 ]
 
 { #category : #initializing }
 CCTemplateDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;
+		"wrapCentering: #topLeft;"
+		wrapDirection: #topToBottom ;
 		listDirection: #leftToRight  ;
-		listCentering: #topLeft;
-		hResizing: #spaceFill;
+		"listCentering: #topLeft;"
+		"hResizing: #spaceFill;"
 		vResizing: #shrinkWrap;
-		"hResizing: #shrinkWrap;
-		vResizing: #shrinkWrap;"
+		"hResizing: #shrinkWrap;"
+		"vResizing: #shrinkWrap;"
 		width:300;
+		cellInset: 1;
+		layoutInset: 1;
 		color: Color yellow ;
 		"wrapDirection: #leftToRight ;"
 		"cellInset: 10;"
 		color: Color gray darker
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> loadfileLabel [
+	^ 'Edit loadfile'
 ]
 
 { #category : #accessing }
@@ -159,6 +210,11 @@ CCTemplateDetail >> openLoadEditor [
 ]
 
 { #category : #accessing }
+CCTemplateDetail >> renameLabel [
+	^ 'Rename'
+]
+
+{ #category : #accessing }
 CCTemplateDetail >> renameTemplate [
 	template
 		name:
@@ -179,6 +235,11 @@ CCTemplateDetail >> saveEditor [
 				content: result;
 				loadFile: loadResults;
 				bumpGeneration ]
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> saveLabel [
+	^ 'Save'
 ]
 
 { #category : #accessing }

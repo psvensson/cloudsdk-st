@@ -7,7 +7,7 @@ The following Google Cloud APIs need to be enabled on a project for this to work
 "
 Class {
 	#name : #CCMainWindow,
-	#superclass : #StandardWindow,
+	#superclass : #Morph,
 	#instVars : [
 		'fileMenu',
 		'tools',
@@ -52,9 +52,16 @@ CCMainWindow class >> models: anObject [
 { #category : #'instance creation' }
 CCMainWindow class >> open [
 	| window |
-	window := self new.
-	window hResizing: #spaceFill.
-	window extent: 720 @ 620.
+	window := StandardWindow new.
+	window
+		title: 'Cloud Conversations - Talking to the cloud about poetry';
+		"layoutPolicy: TableLayout new;"
+		vResizing: #shrinkWrap;
+		hResizing: #shrinkWrap;		
+		addMorph: self new;
+		openInWorld.
+	window extent: 760@620.	
+	^ window
 ]
 
 { #category : #'initialization - private' }
@@ -102,31 +109,31 @@ CCMainWindow >> hideBusyIcon [
 { #category : #initialization }
 CCMainWindow >> initialize [
 	super initialize.
-	self layoutPolicy: ProportionalLayout new;
-			addCloseBox ;
-			wrapCentering: #topLeft;
-			"wrapDirection: #leftToRight  ;"
-			listDirection: #leftToRight;
-			listCentering: #topLeft;
-			hResizing: #shrinkWrap;
-			vResizing: #shrinkWrap ;
-			cellInset: 10.
-			"wrapCentering: #center;"
-	self title: 'Cloud Conversations - Talking to the cloud about poetry'.
+	"self layoutPolicy: TableLayout new."
+	self
+		"listDirection: #leftToRight;
+		wrapCentering: #topLeft;
+		wrapDirection: #topToBottom;
+		hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap;"
+		"width: 880;"
+		color: Color transparent ;
+		cellInset: 10.
+	"wrapCentering: #center;"
 	self initializeImages.
-	self initializeFileMenu.
-	self initializeTools.
+	"self initializeFileMenu."
+	"self initializeTools."
 	self initializeDialogs.
 	"self initializeDock."
 	"self initializeTextEditor.	"
 	"self initializeTabs."
 	self initializePanels.
 	loadingtext := TextMorph new contents: ''.
-	self addMorph: loadingtext .
+	"self addMorph: loadingtext."
 	CCMainController setMainWindow: self.
 	self
 		themeChanged;
-		openInWorld.
+		openInWorld
 ]
 
 { #category : #'initialization - private' }
@@ -197,12 +204,12 @@ CCMainWindow >> initializeImages [
 CCMainWindow >> initializePanels [
 	accountPanelMorph := CCAccountPanelMorph new.
 	accountPanelMorph accounts: self class models accounts.
-	accountPanelMorph top: 35; left: 10.
+	accountPanelMorph top: 5; left: 10.
 	templatePanelMorph := CCTemplatesPanelMorph new.
 	templatePanelMorph templates: self class models templates.
-	templatePanelMorph top: 35; left: 440.
-	self addMorph: accountPanelMorph .
+	templatePanelMorph top: 5; left: 450.
 	self addMorph: templatePanelMorph .
+	self addMorph: accountPanelMorph .
 ]
 
 { #category : #'initialization - private' }

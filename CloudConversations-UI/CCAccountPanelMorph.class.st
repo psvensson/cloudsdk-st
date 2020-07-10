@@ -24,16 +24,18 @@ CCAccountPanelMorph >> accounts: aCollection [
 	accountsPanel accounts: accounts
 ]
 
-{ #category : #initializing }
+{ #category : #initialization }
 CCAccountPanelMorph >> initialize [
-	super initialize.
-	self label: 'Cloud Provider Service Accounts'.
+	super initialize.	
+	self label: 'Cloud Provider Service Accounts';
+	vResizing: #shrinkWrap .
 	accountsPanel := CCAccountsPanel new.
 	accountDetail := CCAccountDetail new.	
 	self
 		layoutPolicy: TableLayout new;
-		height: 200;
-		listDirection: #topToBottom;
+		"width: 550;"
+		"vResizing: #shrinkWrap ;"
+		"listDirection: #topToBottom;"
 		"listCentering: #justified ;"
 			"cellInset: 5;"
 			hResizing: #shrinkWrap;
