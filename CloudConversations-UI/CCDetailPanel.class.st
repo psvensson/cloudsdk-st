@@ -26,9 +26,11 @@ CCDetailPanel >> initializeButtons [
 CCDetailPanel >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		wrapDirection: #topToBottom;
-		listDirection: #leftToRight;
-		vResizing: #shrinkWrap;
+		"wrapDirection: #leftToRight;"
+		listDirection: #topToBottom;
+		wrapCentering: #topLeft;
+		"hResizing: #shrinkWrap;"
+		vResizing: #spaceFill;
 		width: 300;
 		cellInset: 1;
 		layoutInset: 1;

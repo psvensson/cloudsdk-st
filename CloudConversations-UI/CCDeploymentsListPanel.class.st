@@ -25,17 +25,17 @@ CCDeploymentsListPanel >> account [
 { #category : #accessing }
 CCDeploymentsListPanel >> account: anObject [
 	account := anObject.
-	self reloadResults 
+	account ifNotNil: [self reloadResults ]
 ]
 
 { #category : #accessing }
 CCDeploymentsListPanel >> deploymentSelected: aDeploymentIndex [
 	|  aDeployment |
 	selectedDeploymentIndex := aDeploymentIndex .
-	deploymentsList selectionIndex: aDeploymentIndex .
-	aDeployment := deployments at: aDeploymentIndex .
-	table deployment: aDeployment .
-	table showDeployment
+	list selectionIndex: aDeploymentIndex .
+	aDeployment := listCollection at: aDeploymentIndex .
+	"table deployment: aDeployment .
+	table showDeployment"
 ]
 
 { #category : #accessing }
@@ -91,7 +91,6 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 		andEndpoint: endpoint.
 	future
 		onSuccessDo: [ :result | 
-			result inspect.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
@@ -99,7 +98,7 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 						inform: (msg at: #status) , ': ' , (msg at: #message) ]
 				ifFalse: [ | rlist |
 					Transcript
-						show: 'google run list: ' , result items size;
+						show: 'google run list: ' , ((result at: #items) size) asString;
 						cr.
 					rlist := (result includesKey: #items)
 						ifTrue: [ result at: #items ]
@@ -119,8 +118,8 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 { #category : #initialization }
 CCDeploymentsListPanel >> initialize [
 	super initialize.
-	self initializeDeploymentsList.
-	self initializeTable.
+	"self initializeDeploymentsList."
+	"self initializeTable."
 	self initializeButtons
 ]
 

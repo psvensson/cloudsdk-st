@@ -10,10 +10,13 @@ Class {
 
 { #category : #accessing }
 CCDeploymentDetail >> addDeploymentPropsAndValueTo: aMorph [
-	#(annotations apiVersion containerConcurrency timeoutSeconds name traffic uid generation creationTimestamp namespace url)
+	#(apiVersion containerConcurrency timeoutSeconds name traffic uid generation creationTimestamp namespace url)
 		do: [ :key | 
 			| row |
 			row := self deploymentPropertyRow: key.
+			row 
+				vResizing: #shrinkWrap;
+				hResizing: #shrinkWrap.
 			aMorph addMorph: row ]
 ]
 
@@ -54,20 +57,7 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 { #category : #accessing }
 CCDeploymentDetail >> initialize [
 	super initialize.
-	self
-		layoutPolicy: TableLayout new;
-		listDirection: #topToBottom;
-		"listCentering: #topLeft;
-		wrapCentering: #center;"
-			layoutInset: 4;
-		hResizing: #shrinkWrap;
-		"vResizing: #shrinkWrap;"
-			cellInset: 15;
-		"left: 250;"
-			"height:400;
-		width:300;"
-			color: Color gray darker darker.
-	"self showDeployment"
+	
 ]
 
 { #category : #initialization }

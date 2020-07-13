@@ -27,9 +27,9 @@ CCGroupbox >> initialize [
 	detail := self getDetailPanel.
 	detail onItemUpdate: [ panel updateList ].
 	detail onItemDelete: [ :item | panel deleteItem ].
-	self initializeLayout.
-	self addMorph: detail.
+	self initializeLayout.	
 	self addMorph: panel.
+	self addMorph: detail.
 	self label: self modelName
 ]
 
@@ -38,6 +38,7 @@ CCGroupbox >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
+		width:300;
 		hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap
 ]

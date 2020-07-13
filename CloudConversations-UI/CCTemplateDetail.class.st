@@ -161,20 +161,13 @@ CCTemplateDetail >> initializeButtons [
 CCTemplateDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		"wrapCentering: #topLeft;"
-		wrapDirection: #topToBottom ;
-		listDirection: #leftToRight  ;
-		"listCentering: #topLeft;"
-		"hResizing: #spaceFill;"
+		wrapDirection: #topToBottom;
+		listDirection: #leftToRight;
 		vResizing: #shrinkWrap;
-		"hResizing: #shrinkWrap;"
-		"vResizing: #shrinkWrap;"
-		width:300;
+		width: 300;
 		cellInset: 1;
 		layoutInset: 1;
-		color: Color yellow ;
-		"wrapDirection: #leftToRight ;"
-		"cellInset: 10;"
+		color: Color yellow;
 		color: Color gray darker
 ]
 
