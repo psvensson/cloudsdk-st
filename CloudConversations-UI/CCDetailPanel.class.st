@@ -31,10 +31,9 @@ CCDetailPanel >> initializeLayout [
 		wrapCentering: #topLeft;
 		"hResizing: #shrinkWrap;"
 		vResizing: #spaceFill;
-		width: 300;
+		width: 340;
 		cellInset: 1;
 		layoutInset: 1;
-		color: Color yellow;
 		color: Color gray darker
 ]
 

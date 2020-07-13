@@ -34,8 +34,8 @@ CCListPanel >> initializeLayout [
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
 		cellInset: 10 @ 20;
-		width: 300;
-		hResizing: #shrinkWrap;
+		width: 340;
+		hResizing: #spaceFill;
 		vResizing: #shrinkWrap;
 		themeChanged;
 		color: Color gray darker
@@ -48,11 +48,11 @@ CCListPanel >> initializeList [
 		color: Color gray;
 		top: 35;
 		"left: 10;"
-			"width:220;"
-			width: 300;
+		"width:220;"
+		width: 340;
 		borderWidth: 10;
-		hResizing: #spaceFill;
-		vResizing: #shrinkWrap;
+		"hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap;"
 		getIconSelector: #icon.
 	self addMorph: list.
 	list updateList

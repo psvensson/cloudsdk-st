@@ -44,10 +44,17 @@ CCDeploymentDetail >> deployment: anObject [
 CCDeploymentDetail >> deploymentPropertyRow: prop [
 	| propline method valstr |
 	propline := TextMorph new.
-	method := prop asSymbol .
+	prop = 'url' ifTrue: [ propline underlined ; color: Color blue].
+	"TODO: add mousedown event handler and open os web browser"
+	method := prop asSymbol.
 	valstr := '--'.
-	(item respondsTo: method) ifTrue: [ valstr := item perform:  method  ] .
+	(item respondsTo: method)
+		ifTrue: [ valstr := item perform: method ].
 	propline
+		layoutPolicy: TableLayout new;
+		wrapCentering: #topLeft;
+		wrapDirection: #leftToRight;
+		listDirection: #leftToRight;
 		contents: prop , ': ' , valstr asString;
 		hResizing: #spaceFill;
 		vResizing: #spaceFill.

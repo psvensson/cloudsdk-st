@@ -38,7 +38,7 @@ CCGroupbox >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
-		width:300;
+		"width:350;"
 		hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap
 ]
