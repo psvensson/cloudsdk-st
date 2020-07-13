@@ -1,6 +1,6 @@
 Class {
 	#name : #CCDeploymentDetail,
-	#superclass : #PanelMorph,
+	#superclass : #CCDetailPanel,
 	#instVars : [
 		'deployment',
 		'allDeployments'
@@ -43,7 +43,7 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 	propline := TextMorph new.
 	method := prop asSymbol .
 	valstr := '--'.
-	(deployment respondsTo: method) ifTrue: [ valstr := deployment perform:  method  ] .
+	(item respondsTo: method) ifTrue: [ valstr := item perform:  method  ] .
 	propline
 		contents: prop , ': ' , valstr asString;
 		hResizing: #spaceFill;
@@ -53,21 +53,37 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 
 { #category : #accessing }
 CCDeploymentDetail >> initialize [
-	super initialize .
-	self		
+	super initialize.
+	self
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
 		"listCentering: #topLeft;
 		wrapCentering: #center;"
-		layoutInset: 4;
+			layoutInset: 4;
 		hResizing: #shrinkWrap;
 		"vResizing: #shrinkWrap;"
-		cellInset: 15;	
-			left: 250;	
-		height:400;
-		width:300;
-		color: Color gray darker darker.
-		self showDeployment 
+			cellInset: 15;
+		"left: 250;"
+			"height:400;
+		width:300;"
+			color: Color gray darker darker.
+	"self showDeployment"
+]
+
+{ #category : #initialization }
+CCDeploymentDetail >> initializeButtons [
+	"no buttons for us yet"
+]
+
+{ #category : #rendering }
+CCDeploymentDetail >> renderDetail [
+	self removeAllMorphs.
+	item
+		ifNil: [ | text |
+			text := TextMorph new.
+			text contents: '* No Deployment Selected'.
+			self addMorph: text ]
+		ifNotNil: [ self addDeploymentPropsAndValueTo: self ]
 ]
 
 { #category : #accessing }
@@ -77,6 +93,6 @@ CCDeploymentDetail >> showDeployment [
 		ifFalse: [ self addDeploymentPropsAndValueTo: self ]
 		ifTrue: [ | text |
 			text := TextMorph new.
-			text contents: 'No Deplyment Selected'.
+			text contents: '* No Deplyment Selected'.
 			self addMorph: text ]
 ]

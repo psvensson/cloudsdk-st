@@ -61,20 +61,23 @@ CCConnection >> onStartConnect: aBlock [
 
 { #category : #accessing }
 CCConnection >> secureJSONCallTo: url [
-	^ [ self sendStartConnect.
+	^ [ Transcript
+		show: url;
+		cr.
 	client headerAt: 'Authorization' put: 'Bearer ' , token.
 	client headerAt: 'Accept' put: '*/*'.
 	"headerAt: 'Content-Type' put: 'application/json';"
 	client
 		contentReader: [ :entity | NeoJSONReader fromString: entity contents ].
-	"request setBearerAuthentication: token;"
 	client
 		url: url;
-		enforceHttpSuccess: true;
-		ifFail: [ :ex | 
-			UIManager default
-				inform: 'Network Error: ' , ex asString;
-				cr ];
+		"enforceHttpSuccess: true;"
+			ifFail: [ :ex | 
+			UIManager default inform: 'Network Error: ' , ex asString.
+			Transcript
+				show: 'Network error: ' , ex asString;
+				cr.
+			ex ];
 		get.
 	self sendEndConnect.
 	client contents ] future
@@ -94,8 +97,7 @@ CCConnection >> secureJSONCallTo: url JSONContent: json [
 		entity: (ZnEntity with: json type: ZnMimeType applicationJson);
 		ifFail: [ :ex | 
 			UIManager default
-				inform: 'Network Error: ' , ex asString;
-				cr ];
+				inform: 'Network Error: ' , ex asString ];
 		post.
 	self sendEndConnect.
 	client contents ] future
@@ -122,8 +124,7 @@ CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
 		 andLength: file size);
 		ifFail: [ :ex | 
 			UIManager default
-				inform: 'Network Error: ' , ex asString;
-				cr ];
+				inform: 'Network Error: ' , ex asString ];
 		post.
 	self sendEndConnect .	
 	^ client contents

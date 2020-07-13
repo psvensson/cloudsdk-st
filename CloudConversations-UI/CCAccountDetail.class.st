@@ -43,12 +43,12 @@ CCAccountDetail >> actionsRow [
 		color: Color darkGray;
 		target: self;
 		actionSelector: #showContainers.	
-	showDeploymentsButton := SimpleButtonMorph
+	"showDeploymentsButton := SimpleButtonMorph
 		newWithLabel: 'Deployments'.
 	showDeploymentsButton
-		color: Color darkGray;
+		color: Color orange;
 		target: self;
-		actionSelector: #showDeployments.
+		actionSelector: #showDeployments."
 	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
 	renameButton
 		color: Color darkGray;
@@ -56,7 +56,7 @@ CCAccountDetail >> actionsRow [
 		actionSelector: #renameAccount.		
 	
 	row addMorph: renameButton.
-	row addMorph: showDeploymentsButton.
+	"row addMorph: showDeploymentsButton."
 	row addMorph: showContainerbuildsButton.
 	row addMorph: showContainersButton.
 	
@@ -216,7 +216,7 @@ CCAccountDetail >> showContainers [
 { #category : #accessing }
 CCAccountDetail >> showDeployments [
 	| dw |
-	dw := CCDeploymentsWindow new.
+	dw := CCDeploymentsListPanel new.
 	dw openInWindow.
 	dw account: account 
 ]

@@ -58,12 +58,14 @@ CCTemplate >> dependencies: anObject [
 { #category : #accessing }
 CCTemplate >> dependenciesPartDockerfile [
 	| rv |
-	Transcript show:'dockerfile deps: ',dependencies size asString;cr.
 	rv := ''.
-	dependencies do: [  :dep |
-		|istr|
-		istr := dep installString isNil ifTrue: [ '' ] ifFalse: [ dep installString,'\n' ].
-		rv := rv, istr].
+	dependencies
+		do: [ :dep | 
+			| istr |
+			istr := dep installString
+				ifNil: [ '' ]
+				ifNotNil: [ dep installString , '\n' ].
+			rv := rv , istr ].
 	^ rv
 ]
 

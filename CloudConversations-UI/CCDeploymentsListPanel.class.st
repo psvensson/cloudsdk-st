@@ -1,6 +1,6 @@
 Class {
-	#name : #CCDeploymentsWindow,
-	#superclass : #PanelMorph,
+	#name : #CCDeploymentsListPanel,
+	#superclass : #CCListPanel,
 	#instVars : [
 		'deploymentsList',
 		'deployments',
@@ -10,24 +10,26 @@ Class {
 		'deploymentConnection',
 		'endpoint',
 		'reloadButton',
-		'zone'
+		'zone',
+		'runDeployments',
+		'computeEngineDeployments'
 	],
 	#category : #'CloudConversations-UI-Deployments'
 }
 
 { #category : #accessing }
-CCDeploymentsWindow >> account [
+CCDeploymentsListPanel >> account [
 	^ account
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> account: anObject [
+CCDeploymentsListPanel >> account: anObject [
 	account := anObject.
-	self reloadResults .
+	self reloadResults 
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> deploymentSelected: aDeploymentIndex [
+CCDeploymentsListPanel >> deploymentSelected: aDeploymentIndex [
 	|  aDeployment |
 	selectedDeploymentIndex := aDeploymentIndex .
 	deploymentsList selectionIndex: aDeploymentIndex .
@@ -37,94 +39,93 @@ CCDeploymentsWindow >> deploymentSelected: aDeploymentIndex [
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> deployments [
+CCDeploymentsListPanel >> deployments [
 	^ deployments
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> deployments: d [
+CCDeploymentsListPanel >> deployments: d [
 	deployments := d
 ]
 
 { #category : #listing }
-CCDeploymentsWindow >> getGoogleComputeEngineDeployments [
-	| connection list |
+CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
+	| connection operation |
 	connection := CCMainController getConnectionForAccount: account.
 	zone := CCMainWindow models selectedZone.
 	connection connect.
-	(CCGoogleComputeEngineDeployments
+	operation := CCGoogleComputeEngineDeployments
 		listServicesForConnection: connection
-		andZone: zone)
+		andZone: zone.
+	operation
 		onSuccessDo: [ :result | 
+			Transcript show:'got result';cr.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
 					UIManager default
 						inform: (msg at: #status) , ': ' , (msg at: #message) ]
-				ifFalse: [ list := (result includesKey: #items)
+				ifFalse: [ | clist |
+					clist := (result includesKey: #items)
 						ifTrue: [ result at: #items ]
 						ifFalse: [ #() ].
-					deployments
-						addAll: (list collect: [ :each | CCDeployment from: each type: 'computeengine' ]).
-					"self class savedContainers: deployments"
-					deploymentsList
-						on: self
-						list: #deployments
-						selected: #selectedDeploymentIndex
-						changeSelected: #deploymentSelected:
-						menu: nil
-						keystroke: nil.
-					deployments isEmpty
-						ifFalse: [ self deploymentSelected: 1 ] ] ]
+					computeEngineDeployments := clist
+						collect: [ :each | CCDeployment from: each type: 'computeengine' ].
+					self listCollection: runDeployments , computeEngineDeployments.
+					listCollection isEmpty
+						ifFalse: [ self deploymentSelected: 1 ] ] ];
+		onFailureDo: [ :e | 
+			Transcript
+				show: 'list compute engine instance error: ' e asString;
+				cr ]
 ]
 
 { #category : #listing }
-CCDeploymentsWindow >> getGoogleRunDeployments [
-	| connection list |
+CCDeploymentsListPanel >> getGoogleRunDeployments [
+	| connection future |
 	connection := CCMainController getConnectionForAccount: account.
 	endpoint := CCMainWindow models selectedEndpoint.
 	connection connect.
-	(CCGoogleRunDeployments
+	future := CCGoogleRunDeployments
 		listServicesForConnection: connection
-		andEndpoint: endpoint)
+		andEndpoint: endpoint.
+	future
 		onSuccessDo: [ :result | 
+			result inspect.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
 					UIManager default
 						inform: (msg at: #status) , ': ' , (msg at: #message) ]
-				ifFalse: [ list := (result includesKey: #items)
+				ifFalse: [ | rlist |
+					Transcript
+						show: 'google run list: ' , result items size;
+						cr.
+					rlist := (result includesKey: #items)
 						ifTrue: [ result at: #items ]
 						ifFalse: [ #() ].
-					deployments
-						addAll: (list collect: [ :each | CCDeployment from: each type: 'cloudrun']).
+					runDeployments := rlist
+						collect: [ :each | CCDeployment from: each type: 'cloudrun' ].
 					"self class savedContainers: deployments"
-					deploymentsList
-						on: self
-						list: #deployments
-						selected: #selectedDeploymentIndex
-						changeSelected: #deploymentSelected:
-						menu: nil
-						keystroke: nil.
-					deployments isEmpty
-						ifFalse: [ self deploymentSelected: 1 ] ] ]
+					self listCollection: runDeployments , computeEngineDeployments.
+					listCollection isEmpty
+						ifFalse: [ self deploymentSelected: 1 ] ] ];
+		onFailureDo: [ :fail | 
+			Transcript
+				show: 'failed to get google run list: ' , fail asString;
+				cr ]
 ]
 
 { #category : #initialization }
-CCDeploymentsWindow >> initialize [
-	| title |
+CCDeploymentsListPanel >> initialize [
 	super initialize.
-	self initializeLayout.
 	self initializeDeploymentsList.
 	self initializeTable.
-	title := TextMorph new.
-	title contents: 'Deployments'; left: 200.
-	self addMorph: title.
-	self initializeButtons.
+	self initializeButtons
 ]
 
 { #category : #listing }
-CCDeploymentsWindow >> initializeButtons [
+CCDeploymentsListPanel >> initializeButtons [
 	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
 	reloadButton
 		color: Color green darker darker;
@@ -134,62 +135,43 @@ CCDeploymentsWindow >> initializeButtons [
 ]
 
 { #category : #initialization }
-CCDeploymentsWindow >> initializeDeploymentsList [
+CCDeploymentsListPanel >> initializeDeploymentsList [
 	deploymentsList := PluggableIconListMorph new.
 	deploymentsList
 		color: Color gray;
 		top: 35;
-		left: 10;
-		width: 220;
-		height: 400;
+		"left: 10;
+		width: 220;"
+			"height: 400;"
 		borderWidth: 10;
 		hResizing: #shrinkWrap;
 		"vResizing: #shrinkWrap ;"
 			getIconSelector: #icon.
-	self addMorph: deploymentsList
+	self addMorph: deploymentsList.
+	
 ]
 
 { #category : #initialization }
-CCDeploymentsWindow >> initializeLayout [
-	self
-		layoutPolicy: ProportionalLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
-		listDirection: #rightToLeft  ;
-		"listCentering: #topLeft;"
-		"wrapDirection: #leftToRight ;"
-		cellInset: 10;		
-		"wrapCentering: #center;"
-		"vResizing: #shrinkWrap;"
-		"hResizing: #shrinkWrap;"
-		width: 560;
-		height: 450;
-		themeChanged;
-		color: Color gray darker
-]
-
-{ #category : #initialization }
-CCDeploymentsWindow >> initializeTable [
+CCDeploymentsListPanel >> initializeTable [
 	table := CCDeploymentDetail new.
-	table
-		top: 35.
-		"left: 250"
+	
 	self addMorph: table
 ]
 
 { #category : #initialization }
-CCDeploymentsWindow >> reloadResults [
-	deployments := OrderedCollection new.
+CCDeploymentsListPanel >> reloadResults [
+	runDeployments  := OrderedCollection new.
+	computeEngineDeployments := OrderedCollection new.
 	self getGoogleRunDeployments .
 	self getGoogleComputeEngineDeployments .
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> selectedDeploymentIndex [
+CCDeploymentsListPanel >> selectedDeploymentIndex [
 	^ selectedDeploymentIndex
 ]
 
 { #category : #accessing }
-CCDeploymentsWindow >> selectedDeploymentIndex: anObject [
+CCDeploymentsListPanel >> selectedDeploymentIndex: anObject [
 	selectedDeploymentIndex := anObject
 ]

@@ -13,8 +13,9 @@ Class {
 { #category : #initialization }
 CCTemplatesPanelMorph >> initialize [
 	super initialize.
-	self label: 'Docker Templates';
-	vResizing: #shrinkWrap .
+	self
+		label: 'Docker Templates';
+		vResizing: #shrinkWrap.
 	templatesPanel := CCTemplatesPanel new.
 	templatesPanel
 		onTemplateSelected: [ :selectedTemplate | templateDetail template: selectedTemplate ].

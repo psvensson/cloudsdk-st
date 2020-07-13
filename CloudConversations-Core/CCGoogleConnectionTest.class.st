@@ -25,6 +25,6 @@ CCGoogleConnectionTest >> testRequestAccessTokenForJWT [
 	serviceAccount := CCServiceAccount withCertificateAsJSONString: certificateString .	
 	jwt := CCGoogleConnection createJWTForServiceAccount: serviceAccount .
 	result := CCGoogleConnection requestAccessTokenForJWT: jwt.
-	"Transcript show: result;cr."
+	Transcript show: result;cr.
 	self assert: result isEmpty equals: false
 ]

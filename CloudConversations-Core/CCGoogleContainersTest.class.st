@@ -9,7 +9,7 @@ Class {
 
 { #category : #running }
 CCGoogleContainersTest >> setUp [
-	certificateString := 'service_account.json' asFileReference readStream contents.
+	certificateString := 'foobar-6e993-compute-engine.json' asFileReference readStream contents.
 ]
 
 { #category : #tests }
@@ -59,8 +59,7 @@ CCGoogleContainersTest >> testList [
 				do: [ :each | 
 					| digest name manifest |
 					(containers listRepositoryTags: each)
-						onSuccessDo: [ :tags | 
-							tags inspect.
+						onSuccessDo: [ :tags | 							
 							digest := (tags at: #manifest) keys first.
 							name := tags at: #name.
 							"manifest := containers getContainerManifestByName: name andReference: digest."

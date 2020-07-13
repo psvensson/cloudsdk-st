@@ -150,7 +150,6 @@ CCTemplateDetail >> initializeButtons [
 		selector: #renameTemplate.
 	self addMorph: saveButton.
 	self addMorph: deleteButton.
-	deleteButton labelMorph inspect.
 	self addMorph: copyButton.
 	self addMorph: editButton.
 	self addMorph: loadeditButton.

@@ -116,15 +116,12 @@ CCTemplatesPanel >> selectListRow [
 CCTemplatesPanel >> templateSelected: anIndex [
 	| template |
 	anIndex > 0
-		ifTrue: [ selectedTemplateIndex := anIndex.
-			Transcript
-				show: '*** templatespanel templateselected: ' , anIndex asString;
-				cr.
-			template := templates at: selectedTemplateIndex.
-			onSelectedTemplate isNil
-				ifFalse: [ onSelectedTemplate value: template ].
-			self highlightSelectedTemplate.
-			dependenciesdetail template: template ]
+		ifFalse: [ ^ self ].
+	selectedTemplateIndex := anIndex.
+	template := templates at: selectedTemplateIndex.
+	onSelectedTemplate ifNotNil: [ onSelectedTemplate value: template ].
+	self highlightSelectedTemplate.
+	dependenciesdetail template: template
 ]
 
 { #category : #initialization }

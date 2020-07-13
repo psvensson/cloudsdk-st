@@ -142,6 +142,6 @@ CCGoogleRunDeployments >> initialize [
 CCGoogleRunDeployments >> listDeployments [
 	| url projectId |
 	projectId := connection serviceAccount projectId.
-	url := endpoint,'/apis/serving.knative.dev/v1/namespaces/',projectId ,'/services'.
+	url := endpoint,'/apis/serving.knative.dev/v1/',projectId ,'/services'.
 	^ connection secureJSONCallTo: url
 ]
