@@ -43,8 +43,15 @@ CCDeploymentDetail >> deployment: anObject [
 { #category : #accessing }
 CCDeploymentDetail >> deploymentPropertyRow: prop [
 	| propline method valstr |
-	propline := TextMorph new.
-	prop = 'url' ifTrue: [ propline underlined ; color: Color blue].
+	propline := CCClickableTextMorph new.
+	prop = 'url'
+		ifTrue: [ propline
+				underlined; fillStyle: Color white;
+				color: Color blue;
+				action: [ Transcript
+						show: 'callback';
+						cr.
+					WebBrowser openOn: valstr  ] ].
 	"TODO: add mousedown event handler and open os web browser"
 	method := prop asSymbol.
 	valstr := '--'.
