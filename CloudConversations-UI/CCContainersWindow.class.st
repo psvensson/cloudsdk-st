@@ -75,13 +75,15 @@ CCContainersWindow >> getContainerFor: aContainerName [
 	future := TKTFuture new.
 	(containerConnection listRepositoryTags: aContainerName)
 		onSuccessDo: [ :tags | 
-			containerVersions := tags at: #manifest.
-			cdict := CCContainer getLatestContainerVersion: containerVersions.
-			cdict at: #name put: aContainerName.
-			cdict at: #tags put: (tags at: #tags).
-			cdict at: #manifest put: containerVersions.
-			container := CCContainer from: cdict.
-			future deploySuccess: container ].
+			tags inspect.
+			containerVersions := tags at: #manifest ifAbsent: [  ].
+			containerVersions
+				ifNotNil: [ cdict := CCContainer getLatestContainerVersion: containerVersions.
+					cdict at: #name put: aContainerName.
+					cdict at: #tags put: (tags at: #tags).
+					cdict at: #manifest put: containerVersions.
+					container := CCContainer from: cdict.
+					future deploySuccess: container ] ].
 	^ future
 ]
 

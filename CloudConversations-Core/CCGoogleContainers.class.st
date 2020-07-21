@@ -155,8 +155,11 @@ Cloud Resource Manager API has not been used in project 973408038350 before or i
 CCGoogleContainers >> listRepositoryTags: aRepositoryName [
 	| projectId url |
 	projectId := connection serviceAccount projectId.
-	url := 'https://gcr.io/v2/',aRepositoryName,'/tags/list'.
-	Transcript show:'listRepositoryTags url=',url;cr.	
+	url := 'https://gcr.io/v2/', projectId , '/' , aRepositoryName
+		, '/tags/list'.
+	Transcript
+		show: 'listRepositoryTags url=' , url;
+		cr.
 	^ connection secureJSONCallTo: url
 ]
 

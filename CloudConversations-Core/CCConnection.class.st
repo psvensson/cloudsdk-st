@@ -61,9 +61,9 @@ CCConnection >> onStartConnect: aBlock [
 
 { #category : #accessing }
 CCConnection >> secureJSONCallTo: url [
-	^ [ "Transcript
-		show: url;
-		cr."
+	^ [ Transcript
+		show: 'secureJSONCallTo: ', url;
+		cr.
 	client headerAt: 'Authorization' put: 'Bearer ' , token.
 	client headerAt: 'Accept' put: '*/*'.
 	"headerAt: 'Content-Type' put: 'application/json';"
@@ -77,7 +77,7 @@ CCConnection >> secureJSONCallTo: url [
 			Transcript
 				show: 'Network error: ' , ex asString;
 				cr.
-			ex ];
+			client inspect];
 		get.	
 	self sendEndConnect.
 	client contents ] future
