@@ -53,8 +53,8 @@ CCGoogleContainersTest >> testList [
 	containers := CCGoogleContainers with: connection.
 	containers listContainers
 		onSuccessDo: [ :result | 
-			self assert: (result at: 'repositories') isEmpty equals: false.
-			repositories := result at: #repositories.
+			self assert: (result at: #child) isEmpty equals: false.
+			repositories := result at: #child.
 			repositories
 				do: [ :each | 
 					| digest name manifest |
@@ -67,4 +67,20 @@ CCGoogleContainersTest >> testList [
 							Transcript
 								show: name , ' -> ' , digest;
 								cr ] ] ]
+]
+
+{ #category : #tests }
+CCGoogleContainersTest >> testListOccurences [
+	| serviceAccount connection containers repositories |
+	serviceAccount := CCServiceAccount
+		withCertificateAsJSONString: certificateString.
+	connection := CCGoogleConnection with: serviceAccount.
+	connection connect.
+	containers := CCGoogleContainers with: connection.
+	containers listContainerAnalysis
+		onSuccessDo: [ :result | 
+			result inspect.
+			self assert: (result at: #child) isEmpty equals: false.
+			repositories := result at: #child ];
+		onFailureDo: [ :err | err inspect ] future
 ]

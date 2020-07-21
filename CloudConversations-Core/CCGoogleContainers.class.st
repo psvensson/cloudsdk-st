@@ -121,6 +121,21 @@ CCGoogleContainers >> list [
 ]
 
 { #category : #accessing }
+CCGoogleContainers >> listContainerAnalysis [
+	"https://containeranalysis.googleapis.com/v1/projects/foobar-6e993/occurrences"
+
+	| projectId url |
+	projectId := connection serviceAccount projectId.
+	Transcript
+		show: 'listContaineAnalysiss. projectId=' , projectId;
+		cr.
+	url := 'https://containeranalysis.googleapis.com/v1/projects/'
+		, projectId , '/occurences'.
+	"url := 'https://gcr.io/v2/_catalog'."
+	^ connection secureJSONCallTo: url
+]
+
+{ #category : #accessing }
 CCGoogleContainers >> listContainers [
 	"This can happen;
 
@@ -131,7 +146,7 @@ Cloud Resource Manager API has not been used in project 973408038350 before or i
 	Transcript show:'listContainers';cr.
 	projectId := connection serviceAccount projectId.
 	Transcript show:'projectId=',projectId ;cr.
-	url := 'https://us.gcr.io/v2/',projectId,'/tags/list'.
+	url := 'https://gcr.io/v2/',projectId,'/tags/list'.
 	"url := 'https://gcr.io/v2/_catalog'."
 	^ connection secureJSONCallTo: url
 ]

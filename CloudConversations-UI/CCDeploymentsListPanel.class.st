@@ -96,10 +96,7 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 					msg := result at: #error.
 					UIManager default
 						inform: (msg at: #status) , ': ' , (msg at: #message) ]
-				ifFalse: [ | rlist |
-					Transcript
-						show: 'google run list: ' , ((result at: #items) size) asString;
-						cr.
+				ifFalse: [ | rlist |					
 					rlist := (result includesKey: #items)
 						ifTrue: [ result at: #items ]
 						ifFalse: [ #() ].

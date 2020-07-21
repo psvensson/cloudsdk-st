@@ -1,6 +1,6 @@
 Class {
 	#name : #CCContainersWindow,
-	#superclass : #PanelMorph,
+	#superclass : #CCListPanel,
 	#instVars : [
 		'containerList',
 		'containers',
@@ -87,19 +87,20 @@ CCContainersWindow >> getContainerFor: aContainerName [
 
 { #category : #initialization }
 CCContainersWindow >> getContainerListFromCloud [
-	| connection |
+	| connection future |
 	connection := CCMainController getConnectionForAccount: account.
 	connection connect.
 	containerConnection := CCGoogleContainers with: connection.
-	containerConnection listContainers
-		onSuccessDo: [ :list | 
-			(list includesKey: #errors)
+	future := containerConnection listContainers.
+		future onSuccessDo: [ :clist | 
+			clist inspect.
+			(clist includesKey: #errors)
 				ifTrue: [ | msg |
-					msg := (list at: #errors) at: 1.
+					msg := (clist at: #errors) at: 1.
 					UIManager default
 						inform: (msg at: #code) , ': ' , (msg at: #message) ]
 				ifFalse: [ | containerFutures |
-					containerFutures := (list at: #repositories)
+					containerFutures := (clist at: #child)
 						collect: [ :each | self getContainerFor: each ].
 					(CCMainController futuresAll: containerFutures)
 						onSuccessDo: [ :cs | 
@@ -113,7 +114,11 @@ CCContainersWindow >> getContainerListFromCloud [
 								menu: nil
 								keystroke: nil.
 							cs isEmpty
-								ifFalse: [ self containerSelected: 1 ] ] ] ]
+								ifFalse: [ self containerSelected: 1 ] ] ] ];
+					onFailureDo: [ :fail | 
+			Transcript
+				show: 'failed to get container list: ' , fail asString;
+				cr ]
 ]
 
 { #category : #initialization }
