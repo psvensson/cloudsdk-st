@@ -1,5 +1,5 @@
 Class {
-	#name : #CCContainersWindow,
+	#name : #CCContainersListPanel,
 	#superclass : #CCListPanel,
 	#instVars : [
 		'containerList',
@@ -17,65 +17,52 @@ Class {
 }
 
 { #category : #accessing }
-CCContainersWindow class >> savedContainers [
+CCContainersListPanel class >> savedContainers [
 	^ savedContainers
 ]
 
 { #category : #accessing }
-CCContainersWindow class >> savedContainers: anObject [
+CCContainersListPanel class >> savedContainers: anObject [
 	savedContainers := anObject
 ]
 
 { #category : #accessing }
-CCContainersWindow >> account [
+CCContainersListPanel >> account [
 	^ account
 ]
 
 { #category : #accessing }
-CCContainersWindow >> account: anObject [
+CCContainersListPanel >> account: anObject [
 	account := anObject.
 	self getContainerListFromCloud
 ]
 
-{ #category : #initialization }
-CCContainersWindow >> containerSelected: aContainerIndex [
-	| aContainerName tags container containerVersions cdict |
-	aContainerIndex = 0
-		ifTrue: [ ^ self ].
-	selectedContainerIndex := aContainerIndex.
-	containerList selectionIndex: aContainerIndex.
-	container := containers at: aContainerIndex.
-	table container: container.
-	table showContainer
-]
-
 { #category : #accessing }
-CCContainersWindow >> containers [
+CCContainersListPanel >> containers [
 	^ containers
 ]
 
 { #category : #accessing }
-CCContainersWindow >> containers: anObject [
+CCContainersListPanel >> containers: anObject [
 	containers := anObject
 ]
 
 { #category : #accessing }
-CCContainersWindow >> deleteContainer [
+CCContainersListPanel >> deleteContainer [
 	Transcript show:'delte container (unimplemented)';cr.
 ]
 
 { #category : #accessing }
-CCContainersWindow >> deployContainer [
+CCContainersListPanel >> deployContainer [
 	Transcript show:'deploycontainer (unimplemented)';cr.
 ]
 
 { #category : #initialization }
-CCContainersWindow >> getContainerFor: aContainerName [
+CCContainersListPanel >> getContainerFor: aContainerName [
 	| containerVersions cdict container future |
 	future := TKTFuture new.
 	(containerConnection listRepositoryTags: aContainerName)
 		onSuccessDo: [ :tags | 
-			tags inspect.
 			containerVersions := tags at: #manifest ifAbsent: [  ].
 			containerVersions
 				ifNotNil: [ cdict := CCContainer getLatestContainerVersion: containerVersions.
@@ -88,14 +75,14 @@ CCContainersWindow >> getContainerFor: aContainerName [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> getContainerListFromCloud [
+CCContainersListPanel >> getContainerListFromCloud [
 	| connection future |
 	connection := CCMainController getConnectionForAccount: account.
 	connection connect.
 	containerConnection := CCGoogleContainers with: connection.
 	future := containerConnection listContainers.
-		future onSuccessDo: [ :clist | 
-			clist inspect.
+	future
+		onSuccessDo: [ :clist | 
 			(clist includesKey: #errors)
 				ifTrue: [ | msg |
 					msg := (clist at: #errors) at: 1.
@@ -106,40 +93,26 @@ CCContainersWindow >> getContainerListFromCloud [
 						collect: [ :each | self getContainerFor: each ].
 					(CCMainController futuresAll: containerFutures)
 						onSuccessDo: [ :cs | 
-							containers removeAll.
-							containers addAll: cs.
-							containerList
-								on: self
-								list: #containers
-								selected: #selectedContainerIndex
-								changeSelected: #containerSelected:
-								menu: nil
-								keystroke: nil.
+							self listCollection: cs.
 							cs isEmpty
-								ifFalse: [ self containerSelected: 1 ] ] ] ];
-					onFailureDo: [ :fail | 
+								ifFalse: [ self itemSelected: 1 ].
+								 ] ] ];
+		onFailureDo: [ :fail | 
 			Transcript
 				show: 'failed to get container list: ' , fail asString;
 				cr ]
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initialize [
-	| title |
-	super initialize.
-	self initializeLayout.	
-	self initializeContainerList.
-	self initializeTable .
-	title := TextMorph new.
-	title contents: 'Available Docker Containers'; left: 200.
-	self addMorph: title.
+CCContainersListPanel >> initialize [
+	super initialize.	
 	self initializeButtons.
 	containers := CCMainWindow models containers.
 	
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initializeButtons [
+CCContainersListPanel >> initializeButtons [
 	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
 	reloadButton
 		color: Color green darker darker;
@@ -150,43 +123,7 @@ CCContainersWindow >> initializeButtons [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> initializeContainerList [
-	containerList := PluggableIconListMorph new.
-	containerList
-		color: Color gray;
-		top: 35;
-		left: 10;
-		width:220;
-		height:400;
-		borderWidth: 10;
-		hResizing: #shrinkWrap;
-		"vResizing: #shrinkWrap ;"
-		getIconSelector: #icon.
-	
-	self addMorph: containerList	
-]
-
-{ #category : #initialization }
-CCContainersWindow >> initializeLayout [
-	self
-		layoutPolicy: ProportionalLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
-		listDirection: #rightToLeft  ;
-		"listCentering: #topLeft;"
-		"wrapDirection: #leftToRight ;"
-		cellInset: 10;		
-		"wrapCentering: #center;"
-		"vResizing: #shrinkWrap;"
-		"hResizing: #shrinkWrap;"
-		width: 560;
-		height: 450;
-		themeChanged;
-		color: Color gray darker
-]
-
-{ #category : #initialization }
-CCContainersWindow >> initializeTable [
+CCContainersListPanel >> initializeTable [
 	table := CCContainerDetail new.
 	table
 		top: 35.
@@ -195,12 +132,17 @@ CCContainersWindow >> initializeTable [
 ]
 
 { #category : #initialization }
-CCContainersWindow >> reloadResults [
+CCContainersListPanel >> reloadResults [
 	self getContainerListFromCloud
 	
 ]
 
 { #category : #initialization }
-CCContainersWindow >> selectedContainerIndex [
+CCContainersListPanel >> selectedContainerIndex [
 	^ selectedContainerIndex
+]
+
+{ #category : #rendering }
+CCContainersListPanel >> updateList [
+	self reloadResults
 ]

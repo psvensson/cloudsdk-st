@@ -1,6 +1,6 @@
 Class {
 	#name : #CCContainerDetail,
-	#superclass : #ScrollPane,
+	#superclass : #CCDetailPanel,
 	#instVars : [
 		'container',
 		'allContainers',
@@ -40,14 +40,26 @@ CCContainerDetail >> actionsRow [
 ]
 
 { #category : #accessing }
-CCContainerDetail >> addContainerPropsAndValueTo: aMorph [	
-	aMorph addMorph: (self containerPropertyRow: #name value: (container name)).
-	aMorph addMorph: (self containerPropertyRow: #tags value: (container tags)).
-	aMorph addMorph: (self containerPropertyRow: #imagesize value: (container dict at: #imageSizeBytes )).
-	aMorph addMorph: (self containerPropertyRow: #mediaType value: (container mediaType)).
-	aMorph addMorph: (self containerPropertyRow: #timeUplaoded value: (container timeUploaded)).
-	aMorph addMorph: (self containerPropertyRow: #timeCreated value: (container timeCreated)).
-	aMorph addMorph: (self containerPropertyRow: #reference value: (container reference)).
+CCContainerDetail >> addContainerPropsAndValueTo: aMorph [
+	| timeUploaded timeCreated |
+	timeUploaded := CCMainController formattedDateFromMillis: item timeUploaded.
+	timeCreated := CCMainController formattedDateFromMillis: item timeCreated .
+	aMorph addMorph: (self containerPropertyRow: #name value: item name).
+	aMorph addMorph: (self containerPropertyRow: #tags value: item tags).
+	aMorph
+		addMorph:
+			(self
+				containerPropertyRow: #imagesize
+				value: (item dict at: #imageSizeBytes)).
+	"aMorph addMorph: (self containerPropertyRow: #mediaType value: (item mediaType))."
+	aMorph
+		addMorph:
+			(self
+				containerPropertyRow: #timeUploaded 
+				value: timeUploaded).
+	aMorph
+		addMorph: (self containerPropertyRow: #timeCreated value: timeCreated).
+	"aMorph addMorph: (self containerPropertyRow: #reference value: (item reference))."
 ]
 
 { #category : #accessing }
@@ -74,40 +86,36 @@ CCContainerDetail >> container: anObject [
 CCContainerDetail >> containerPropertyRow: prop value: val [
 	| propline method valstr |
 	propline := TextMorph new.
-	method := prop asSymbol .
-	valstr := '--'.
-	(container respondsTo: method) ifTrue: [ valstr := container perform:  method  ] .
+	"method := prop asSymbol ."
+	valstr := val ifNil: ['--'] ifNotNil: [val asString].
+	"(item respondsTo: method) ifTrue: [ valstr := item perform:  method  ] ."
 	propline
 		contents: prop , ': ' , valstr asString;
-		hResizing: #spaceFill;
-		vResizing: #spaceFill.
+		"hResizing: #shrinkWrap."
+		vResizing: #shrinkWrap .
 	^ propline
 ]
 
 { #category : #initialization }
 CCContainerDetail >> initialize [
-	super initialize. 
-	self		
-		layoutPolicy: TableLayout new;
-		listDirection: #topToBottom;
-		"listCentering: #topLeft;
-		wrapCentering: #center;"
-		layoutInset: 4;
-		hResizing: #shrinkWrapl;
-		"vResizing: #shrinkWrap;"
-		cellInset: 15;	
-			left: 250;	
-		height:400;
-		width:300;
-		color: Color gray darker darker.
-		self showContainer .
+	super initialize.
+	self showContainer
+]
+
+{ #category : #initialization }
+CCContainerDetail >> initializeButtons [
 	self addMorph: self actionsRow .	
+]
+
+{ #category : #rendering }
+CCContainerDetail >> renderDetail [
+	self showContainer 
 ]
 
 { #category : #accessing }
 CCContainerDetail >> showContainer [
 	self removeAllMorphs.
-	container isNil
+	item isNil
 		ifFalse: [ self addContainerPropsAndValueTo: self ]
 		ifTrue: [ | text |
 			text := TextMorph new.

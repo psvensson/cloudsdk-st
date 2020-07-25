@@ -1,6 +1,6 @@
 Class {
 	#name : #CCContainerBuildDetail,
-	#superclass : #ScrollPane,
+	#superclass : #CCDetailPanel,
 	#instVars : [
 		'container',
 		'allContainers'
@@ -67,6 +67,16 @@ CCContainerBuildDetail >> initialize [
 		width:300;
 		color: Color gray darker darker.
 		self showContainer 
+]
+
+{ #category : #initialization }
+CCContainerBuildDetail >> initializeButtons [
+	
+]
+
+{ #category : #rendering }
+CCContainerBuildDetail >> renderDetail [
+	self showContainer 
 ]
 
 { #category : #accessing }

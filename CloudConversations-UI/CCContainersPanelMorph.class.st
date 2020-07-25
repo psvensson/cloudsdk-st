@@ -12,7 +12,7 @@ CCContainersPanelMorph >> getDetailPanel [
 { #category : #initialization }
 CCContainersPanelMorph >> getListPanel [
 	| listpanel |
-	listpanel := CCContainersWindow new.
+	listpanel := CCContainersListPanel new.
 	listpanel
 		account: CCMainController lastUsedAccount.
 	^ listpanel

@@ -29,9 +29,9 @@ CCDetailPanel >> initializeLayout [
 		"wrapDirection: #leftToRight;"
 		listDirection: #topToBottom;
 		wrapCentering: #topLeft;
-		"hResizing: #shrinkWrap;"
-		vResizing: #spaceFill;
-		width: 340;
+		hResizing: #spaceFill;
+		vResizing: #shrinkWrap;
+		"width: 280;"
 		cellInset: 1;
 		layoutInset: 1;
 		color: Color gray darker

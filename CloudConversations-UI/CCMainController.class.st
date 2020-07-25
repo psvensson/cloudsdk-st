@@ -35,6 +35,14 @@ CCMainController class >> connection [
 	^ connection
 ]
 
+{ #category : #accessing }
+CCMainController class >> formattedDateFromMillis: millis [
+	| date rv |
+	date := DateAndTime fromUnixTime: (millis asInteger) / 1000.
+	rv := date asLocalStringYMDHM .
+	^ rv
+]
+
 { #category : #'as yet unclassified' }
 CCMainController class >> futuresAll: futures [
 	"Works like Promise.All() in JavaScript"

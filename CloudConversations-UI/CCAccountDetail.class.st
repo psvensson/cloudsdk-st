@@ -208,7 +208,7 @@ CCAccountDetail >> showContainerBuilds [
 { #category : #accessing }
 CCAccountDetail >> showContainers [
 	| cw |
-	cw := CCContainersWindow new.
+	cw := CCContainersListPanel new.
 	cw openInWindow.
 	cw account: account 
 ]

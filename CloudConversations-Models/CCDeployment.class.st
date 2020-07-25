@@ -23,7 +23,8 @@ Class {
 		'namespace',
 		'annotations',
 		'status',
-		'type'
+		'type',
+		'container'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -37,16 +38,16 @@ CCDeployment class >> from: cdict type: type [
 
 { #category : #'instance creation' }
 CCDeployment class >> fromCloudRun: cdict [
-	| c |
+	| c spec |
+	spec := self getSpec: cdict.
 	c := self new.
 	c
 		dict: cdict;
 		type: (cdict at: #type);
 		annotations: ((cdict at: #metadata) at: #annotations);
 		apiVersion: (cdict at: #apiVersion);
-		containerConcurrency:
-			((((cdict at: #spec) at: #template) at: #spec)
-				at: #containerConcurrency);
+		containerConcurrency: (spec at: #containerConcurrency);
+		container: (self getContainer: cdict);
 		timeoutSeconds: ((((cdict at: #spec) at: #template) at: #spec) at: #timeoutSeconds);
 		name: ((((cdict at: #spec) at: #template) at: #metadata) at: #name);
 		annotations: ((((cdict at: #spec) at: #template) at: #metadata) at: #annotations);
@@ -76,6 +77,21 @@ CCDeployment class >> fromComputeEngine: cdict [
 	^ c
 ]
 
+{ #category : #'instance creation' }
+CCDeployment class >> getContainer: cdict [
+	| spec image |
+	spec := self getSpec: cdict.
+	image := ((spec at: #containers) at: 1) at: #image.
+	^ (image includesSubstring: '@')
+		ifTrue: [ (image substrings: '@') at: 1 ]
+		ifFalse: [ image ]
+]
+
+{ #category : #'instance creation' }
+CCDeployment class >> getSpec: cdict [
+	^  ((cdict at: #spec) at: #template) at: #spec
+]
+
 { #category : #accessing }
 CCDeployment >> annotations [
 	^ annotations
@@ -99,6 +115,16 @@ CCDeployment >> apiVersion: anObject [
 { #category : #accessing }
 CCDeployment >> asString [
 	^ self name
+]
+
+{ #category : #accessing }
+CCDeployment >> container [
+	^ container
+]
+
+{ #category : #accessing }
+CCDeployment >> container: aContainer [
+	container := aContainer
 ]
 
 { #category : #accessing }

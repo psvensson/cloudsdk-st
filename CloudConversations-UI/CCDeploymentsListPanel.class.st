@@ -59,7 +59,6 @@ CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 		andZone: zone.
 	operation
 		onSuccessDo: [ :result | 
-			Transcript show:'got result';cr.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
@@ -115,8 +114,6 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 { #category : #initialization }
 CCDeploymentsListPanel >> initialize [
 	super initialize.
-	"self initializeDeploymentsList."
-	"self initializeTable."
 	self initializeButtons
 ]
 
@@ -124,27 +121,10 @@ CCDeploymentsListPanel >> initialize [
 CCDeploymentsListPanel >> initializeButtons [
 	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
 	reloadButton
-		color: Color green darker darker;
+		color: Color green darker darker darker;
 		target: self;
 		actionSelector: #reloadResults.
 	self addMorph: reloadButton.
-]
-
-{ #category : #initialization }
-CCDeploymentsListPanel >> initializeDeploymentsList [
-	deploymentsList := PluggableIconListMorph new.
-	deploymentsList
-		color: Color gray;
-		top: 35;
-		"left: 10;
-		width: 220;"
-			"height: 400;"
-		borderWidth: 10;
-		hResizing: #shrinkWrap;
-		"vResizing: #shrinkWrap ;"
-			getIconSelector: #icon.
-	self addMorph: deploymentsList.
-	
 ]
 
 { #category : #initialization }
@@ -170,4 +150,9 @@ CCDeploymentsListPanel >> selectedDeploymentIndex [
 { #category : #accessing }
 CCDeploymentsListPanel >> selectedDeploymentIndex: anObject [
 	selectedDeploymentIndex := anObject
+]
+
+{ #category : #rendering }
+CCDeploymentsListPanel >> updateList [
+	self reloadResults 
 ]

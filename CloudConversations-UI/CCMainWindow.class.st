@@ -25,7 +25,8 @@ Class {
 		'templatePanelMorph',
 		'busyIcon',
 		'loadingtext',
-		'deploymentPanelMorph'
+		'deploymentPanelMorph',
+		'containersPanelMorph'
 	],
 	#classInstVars : [
 		'models'
@@ -213,12 +214,18 @@ CCMainWindow >> initializePanels [
 		templates: self class models templates;
 		top: 5;
 		left: 430.
-	deploymentPanelMorph := CCDeploymentsPanelMorph new.	
-		deploymentPanelMorph 
-		top: 5; left: 740.
+	containersPanelMorph := CCContainersPanelMorph new.
+	containersPanelMorph
+		top: 5;
+		left: 740.
+	deploymentPanelMorph := CCDeploymentsPanelMorph new.
+	deploymentPanelMorph
+		top: 5;
+		left: 1050.
 	self addMorph: templatePanelMorph.
 	self addMorph: accountPanelMorph.
-	self addMorph: deploymentPanelMorph 
+	self addMorph: containersPanelMorph.
+	self addMorph: deploymentPanelMorph
 ]
 
 { #category : #'initialization - private' }

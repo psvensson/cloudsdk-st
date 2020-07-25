@@ -34,7 +34,7 @@ CCListPanel >> initializeLayout [
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
 		cellInset: 10 @ 20;
-		width: 340;
+		"width: 280;"
 		hResizing: #spaceFill;
 		vResizing: #shrinkWrap;
 		themeChanged;
@@ -49,7 +49,7 @@ CCListPanel >> initializeList [
 		top: 35;
 		"left: 10;"
 		"width:220;"
-		width: 340;
+		width: 280;
 		borderWidth: 10;
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
@@ -102,6 +102,7 @@ CCListPanel >> selectListRow [
 	^ selectedIndex 
 ]
 
-{ #category : #initialization }
-CCListPanel >> updateList [ 
+{ #category : #rendering }
+CCListPanel >> updateList [
+	self subclassResponsibility  
 ]

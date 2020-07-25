@@ -10,7 +10,7 @@ Class {
 
 { #category : #accessing }
 CCDeploymentDetail >> addDeploymentPropsAndValueTo: aMorph [
-	#(apiVersion containerConcurrency timeoutSeconds name traffic uid generation creationTimestamp namespace url)
+	#(apiVersion containerConcurrency timeoutSeconds container name uid generation creationTimestamp namespace url)
 		do: [ :key | 
 			| row |
 			row := self deploymentPropertyRow: key.

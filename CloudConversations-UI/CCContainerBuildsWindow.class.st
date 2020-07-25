@@ -125,7 +125,6 @@ CCContainerBuildsWindow >> initialize [
 	| title |
 	super initialize.
 	self initializeLayout.
-	self initializeContainerList.
 	self initializeTable .
 	title := TextMorph new.
 	title contents: 'Result of Docker Container builds'.
