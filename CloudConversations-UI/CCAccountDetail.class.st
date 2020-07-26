@@ -21,10 +21,10 @@ CCAccountDetail >> account: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> actionsRow [
-	| showContainersButton showDeploymentsButton row showContainerbuildsButton renameButton |
-	row := Morph new.	
+	|  row showContainerbuildsButton renameButton |
+	row := Morph new.
 	row
-		color: (Color gray);
+		color: Color gray;
 		layoutPolicy: RowLayout new;
 		listDirection: #topToBottom;
 		cellInset: 6 @ 0;
@@ -37,29 +37,14 @@ CCAccountDetail >> actionsRow [
 		color: Color darkGray;
 		target: self;
 		actionSelector: #showContainerBuilds.
-	showContainersButton := SimpleButtonMorph
-		newWithLabel: 'Containers'.
-	showContainersButton
-		color: Color darkGray;
-		target: self;
-		actionSelector: #showContainers.	
-	"showDeploymentsButton := SimpleButtonMorph
-		newWithLabel: 'Deployments'.
-	showDeploymentsButton
-		color: Color orange;
-		target: self;
-		actionSelector: #showDeployments."
 	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
 	renameButton
 		color: Color darkGray;
 		target: self;
-		actionSelector: #renameAccount.		
-	
+		actionSelector: #renameAccount.
 	row addMorph: renameButton.
 	"row addMorph: showDeploymentsButton."
 	row addMorph: showContainerbuildsButton.
-	row addMorph: showContainersButton.
-	
 	^ row
 ]
 

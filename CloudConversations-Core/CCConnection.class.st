@@ -132,11 +132,13 @@ CCConnection >> secureJSONCallTo: url withFile: file as: fileName [
 
 { #category : #accessing }
 CCConnection >> sendEndConnect [
+	
 	onEndConnect ifNotNil: [ onEndConnect value ]
 ]
 
 { #category : #accessing }
 CCConnection >> sendStartConnect [
+	
 	onStartConnect ifNotNil: [ onStartConnect value ]
 ]
 

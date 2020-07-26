@@ -83,6 +83,7 @@ CCContainersListPanel >> getContainerListFromCloud [
 	future := containerConnection listContainers.
 	future
 		onSuccessDo: [ :clist | 
+			CCMainController getMainWindow hideBusyIcon.
 			(clist includesKey: #errors)
 				ifTrue: [ | msg |
 					msg := (clist at: #errors) at: 1.
@@ -133,6 +134,7 @@ CCContainersListPanel >> initializeTable [
 
 { #category : #initialization }
 CCContainersListPanel >> reloadResults [
+	CCMainController getMainWindow showBusyIcon.
 	self getContainerListFromCloud
 	
 ]

@@ -57,7 +57,7 @@ CCGoogleContainers >> getBuildStepForCloudRunDeploy: serviceAccount filename: fi
 CCGoogleContainers >> getBuildStepForCloudVMDeploy: projectId filename: filename imagename: img [
 	| rv zone |
 	zone := CCMainWindow models selectedZone .
-	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","instances", "create-with-container","',filename ,'","--container-image",',img,',"--zone","',zone,'","--tags","',filename,',pharo"]}'.
+	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","instances", "create-with-container","',filename ,'","--container-image",',img,',"--zone","',zone,'","--tags","',filename,',pharo", "--labels", "deployname=',filename,',deploytype=pharo"]}'.
 	Transcript show:'cloud VM build step: ',rv;cr.
 	^ rv
 ]
@@ -66,7 +66,7 @@ CCGoogleContainers >> getBuildStepForCloudVMDeploy: projectId filename: filename
 CCGoogleContainers >> getBuildStepForCloudVMFirewall: projectId filename: filename imagename: img [
 	| rv zone |
 	zone := CCMainWindow models selectedZone .
-	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","firewall-rules", "create","',filename ,'","--allow","tcp:80,443,8080","--target-tags","',filename,'"]}'.
+	rv := '{"name":"gcr.io/cloud-builders/gcloud","args":["compute","firewall-rules", "create","',filename ,'","--allow","tcp:80,443,8080","--target-tags","',filename,', "--labels", "deployname=',filename,',deploytype=pharo"]}'.
 	Transcript show:'cloud VM build step: ',rv;cr.
 	^ rv
 ]

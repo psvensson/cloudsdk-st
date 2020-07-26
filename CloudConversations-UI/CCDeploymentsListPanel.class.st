@@ -59,6 +59,7 @@ CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 		andZone: zone.
 	operation
 		onSuccessDo: [ :result | 
+			CCMainController getMainWindow hideBusyIcon.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
@@ -90,6 +91,7 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 		andEndpoint: endpoint.
 	future
 		onSuccessDo: [ :result | 
+			CCMainController getMainWindow hideBusyIcon.
 			(result includesKey: #error)
 				ifTrue: [ | msg |
 					msg := result at: #error.
@@ -138,6 +140,7 @@ CCDeploymentsListPanel >> initializeTable [
 CCDeploymentsListPanel >> reloadResults [
 	runDeployments  := OrderedCollection new.
 	computeEngineDeployments := OrderedCollection new.
+	CCMainController getMainWindow showBusyIcon.
 	self getGoogleRunDeployments .
 	self getGoogleComputeEngineDeployments .
 ]

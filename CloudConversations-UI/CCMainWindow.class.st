@@ -26,7 +26,8 @@ Class {
 		'busyIcon',
 		'loadingtext',
 		'deploymentPanelMorph',
-		'containersPanelMorph'
+		'containersPanelMorph',
+		'loadingIcon'
 	],
 	#classInstVars : [
 		'models'
@@ -104,7 +105,8 @@ CCMainWindow >> addTabs [
 
 { #category : #accessing }
 CCMainWindow >> hideBusyIcon [
-	self removeMorph: hat.
+	self removeMorph: loadingIcon .
+	Transcript show: 'hiding busy icon';cr.
 	loadingtext contents: ''.
 ]
 
@@ -196,7 +198,7 @@ CCMainWindow >> initializeImages [
 	teacup := ImageMorph withForm: (CCImages spriteImage: 'teacup').
 	"hat position: self position - 100."
 	hat resize: 100@100.
-	
+	loadingIcon := CCImages animatedImage: 'loading1'.
 	"self addMorph: hat."
 	hat form rotateBy: 45.
 	hat rotationDegrees: 45.	
@@ -271,9 +273,11 @@ CCMainWindow >> initializeTools [
 
 { #category : #accessing }
 CCMainWindow >> showBusyIcon [
-	hat top: 400; left: 200.
-	self addMorph: hat .
+	
+	self addMorph: loadingIcon  .
+	loadingIcon top: 1220;left:88.
 	loadingtext contents: 'loading..'.
+	Transcript show: 'showing busy icon';cr.
 	self changed.
 ]
 
