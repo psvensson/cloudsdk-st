@@ -67,7 +67,7 @@ CCContainersListPanel >> getContainerFor: aContainerName [
 { #category : #initialization }
 CCContainersListPanel >> getContainerListFromCloud [
 	| connection future |
-	connection := CCMainController getConnectionForAccount: account.
+	connection := CCMainController getConnectionForAccount: CCMainController lastUsedAccount .
 	connection
 		ifNotNil: [ connection connect.
 			containerConnection := CCGoogleContainers with: connection.

@@ -51,8 +51,7 @@ CCDeploymentsListPanel >> deployments: d [
 { #category : #listing }
 CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 	| connection operation |
-	account
-		ifNotNil: [ connection := CCMainController getConnectionForAccount: account.
+	 connection := CCMainController getConnectionForAccount: CCMainController lastUsedAccount .
 			zone := CCMainWindow models selectedZone.
 			connection connect.
 			operation := CCGoogleComputeEngineDeployments
@@ -78,14 +77,13 @@ CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 				onFailureDo: [ :e | 
 					Transcript
 						show: 'list compute engine instance error: ' e asString;
-						cr ] ]
+						cr ] 
 ]
 
 { #category : #listing }
 CCDeploymentsListPanel >> getGoogleRunDeployments [
 	| connection future |
-	account
-		ifNotNil: [ connection := CCMainController getConnectionForAccount: account.
+	 connection := CCMainController getConnectionForAccount: CCMainController lastUsedAccount .
 			endpoint := CCMainWindow models selectedEndpoint.
 			connection connect.
 			future := CCGoogleRunDeployments
@@ -112,7 +110,7 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 				onFailureDo: [ :fail | 
 					Transcript
 						show: 'failed to get google run list: ' , fail asString;
-						cr ] ]
+						cr ] 
 ]
 
 { #category : #initialization }
