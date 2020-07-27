@@ -172,35 +172,14 @@ CCTemplate >> regenerateContent [
 	content := "self firstPartDockerfile , self dependenciesPartDockerfile
 		, self secondPartDockerfile"
 		'######################################
-# Based on Ubuntu image
+# Based on a pre-built Pharo 8 Debian image
 ######################################
-FROM jgoerzen/debian-base-minimal
+FROM psvensson/pharo8-base
 
 ######################################
 # Basic project infos
 ######################################
 LABEL maintainer="',Author fullName,'"
-
-######################################
-# Update Ubuntu apt and install some tools
-######################################
-RUN  apt-get update \
-  && apt-get install -y wget \
-  && apt-get install -y curl \
-  && apt-get install -y git \
-  && apt-get install -y unzip \
-  && rm -rf /var/lib/apt/lists/*
-
-######################################
-# Have an own directory for the tool
-######################################
-RUN mkdir webapp
-WORKDIR webapp
-
-######################################
-# Download Pharo using Zeroconf & start script
-######################################
-RUN curl -L https://get.pharo.org/64/ | bash
 
 COPY service_account.json service_account.json
 RUN export certificate="$(cat service_account.json)"
