@@ -134,7 +134,7 @@ CCTemplate >> initialize [
 { #category : #accessing }
 CCTemplate >> loadFile [
 	loadfile
-		ifNil: [ loadfile := self dependenciesPartDockerfile ,'\nZnServer startDefaultOn: 8080.
+		ifNil: [ loadfile := self dependenciesPartDockerfile ,'ZnServer startDefaultOn: 8080.
 SmalltalkImage current snapshot: true andQuit: true' ].
 	^ loadfile
 ]
@@ -186,6 +186,7 @@ LABEL maintainer="',Author fullName,'"
 ######################################
 RUN  apt-get update \
   && apt-get install -y wget \
+  && apt-get install -y curl \
   && apt-get install -y git \
   && apt-get install -y unzip \
   && rm -rf /var/lib/apt/lists/*
@@ -199,17 +200,16 @@ WORKDIR webapp
 ######################################
 # Download Pharo using Zeroconf & start script
 ######################################
-RUN wget -O- https://get.pharo.org/64/80+vm | bash
+RUN curl -L https://get.pharo.org/64/ | bash
 
 COPY service_account.json service_account.json
 RUN export certificate="$(cat service_account.json)"
 COPY load.st load.st
 COPY setup.sh setup.sh
 RUN chmod +x setup.sh
-RUN ./setup.sh; echo 0
+RUN setup.sh; echo 0
 
 RUN ./pharo Pharo.image load.st; echo 0
-
 
 ######################################
 # Expose port 8080 of Zinc outside the container
@@ -219,8 +219,7 @@ EXPOSE 8080
 ######################################
 # Finally run headless as server
 ######################################
-ENTRYPOINT ./pharo
-CMD ["--headless", "Pharo.image", "--no-quit"]'
+ENTRYPOINT ["./pharo","--headless", "Pharo.image", "--no-quit"]'
 
 
 ]

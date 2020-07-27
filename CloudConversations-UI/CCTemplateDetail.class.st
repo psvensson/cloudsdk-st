@@ -252,13 +252,14 @@ CCTemplateDetail >> showBuildProcess: buildResult [
 	1 seconds wait.
 	buildTime := buildTime + 1.
 	Transcript
-		show: 'getting build status..';
+		show: 'getting build status.  .  .';
 		cr.
 	(containers getBuildResultFor: buildId)
 		onSuccessDo: [ :result | 
-			| text fail success |
+			| text fail success cancel |
 			fail := 0.
 			success := 0.
+			cancel := 0.
 			text := 'Build time: ' , buildTime asString , 's  '.
 			result
 				keysAndValuesDo: [ :step :status | 
@@ -266,15 +267,20 @@ CCTemplateDetail >> showBuildProcess: buildResult [
 					status = 'SUCCESS'
 						ifTrue: [ success := success + 1 ].
 					status = 'FAILURE'
-						ifTrue: [ fail := fail + 1 ] ].
+						ifTrue: [ fail := fail + 1 ] .
+					status = 'CANCELLED'
+						ifTrue: [ 
+							Transcript show:'cacnelled';cr.
+							cancel := cancel + 1 ] ].
 			mainWindow statusBar contents: text.
+			cancel = 0 ifTrue: [ 
 			(fail > 0 or: success = result keys size)
 				ifTrue: [ mainWindow containersPanelMorph update.
 					mainWindow deploymentPanelMorph update.
 					10 seconds wait.
 					mainWindow hideBusyIcon ]
 				ifFalse: [ mainWindow showBusyIcon.
-					buildProcessBlock value ] ] ].
+					buildProcessBlock value ] ] ]].
 	buildProcessBlock value
 ]
 

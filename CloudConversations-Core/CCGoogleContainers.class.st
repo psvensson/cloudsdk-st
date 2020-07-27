@@ -106,7 +106,7 @@ CCGoogleContainers >> getBuildStepForCloudVMFirewall: projectId filename: filena
 
 { #category : #accessing }
 CCGoogleContainers >> getBuildStepForDockerBuild: projectId filename: filename imagename: img [
-	^ '{"name":"gcr.io/cloud-builders/docker","args":["build","-t",',img,',"."]}'
+	^ '{"name":"gcr.io/cloud-builders/docker","args":["build","--ulimit","rtprio=2","-t",',img,',"."]}'
 ]
 
 { #category : #accessing }

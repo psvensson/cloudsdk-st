@@ -38,8 +38,13 @@ CCDeployment class >> from: cdict type: type [
 
 { #category : #'instance creation' }
 CCDeployment class >> fromCloudRun: cdict [
-	| c spec |
+	| c spec m url |
 	spec := self getSpec: cdict.
+	m := (((cdict at: #status) at: #conditions) at: 1) asString.
+	url := (cdict at: #status) at: #url ifAbsent: [ '' ].
+	Transcript
+		show: 'CCDeployment::fromCloudRun message -> ' , m;
+		cr.
 	c := self new.
 	c
 		dict: cdict;
@@ -56,7 +61,7 @@ CCDeployment class >> fromCloudRun: cdict [
 		generation: ((cdict at: #metadata) at: #generation);
 		creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
 		namespace: ((cdict at: #metadata) at: #namespace);
-		url: ((cdict at: #status) at: #url).
+		url: url.
 	^ c
 ]
 
