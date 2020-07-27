@@ -4,14 +4,18 @@ Class {
 	#instVars : [
 		'loadingIcon',
 		'loadingText',
-		'alpha'
+		'alpha',
+		'showCount'
 	],
 	#category : #'CloudConversations-UI-Main'
 }
 
 { #category : #'class initialization' }
 CCStatusBar >> contents: text [ 
-	loadingText contents: text
+	Transcript show:'statusBar setting text to: ',text;cr.
+	loadingText contents: text.
+	self changed
+	
 ]
 
 { #category : #'class initialization' }
@@ -21,22 +25,34 @@ CCStatusBar >> fullDrawOn: aCanvas [
 ]
 
 { #category : #'class initialization' }
-CCStatusBar >> hide [ 
+CCStatusBar >> hide [
 	alpha := 0.
-	self changed
+	showCount := showCount - 1.
+	showCount = 0
+		ifTrue: [ self contents: ''.
+			self changed ]
 ]
 
 { #category : #'class initialization' }
 CCStatusBar >> initialize [
 	super initialize.
+	showCount := 0.
 	loadingIcon := CCImages animatedImage: 'loading1'.
 	loadingText := TextMorph new contents: ''.
-	self addMorph: loadingIcon.
-	self addMorph: loadingText
+	self
+		layoutPolicy: TableLayout new;
+		color: Color transparent;
+		"listDirection: #topToBottom;"
+		width:300;
+		hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap;
+		addMorph: loadingIcon;
+		addMorph: loadingText
 ]
 
 { #category : #'class initialization' }
 CCStatusBar >> show [
 	alpha := 1.0.
+	showCount := showCount + 1.
 	self changed
 ]

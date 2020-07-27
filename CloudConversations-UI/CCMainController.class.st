@@ -113,9 +113,8 @@ CCMainController class >> getConnectionForAccount: account [
 		ifFalse: [ account cloudType = 'google'
 				ifTrue: [ connection := CCGoogleConnection with: account ] ].
 	connections at: account name put: connection.
-	connection onStartConnect: [ mainWindow showBusyIcon ].
-	connection onEndConnect: [ mainWindow hideBusyIcon ].
-	Transcript show: 'CCMainController>>getConnectionFroAccount sett start/end blocks';cr.
+	connection onStartConnect: [ "mainWindow showBusyIcon" ].
+	connection onEndConnect: [ "mainWindow hideBusyIcon" ].
 	lastUsedConnection := connection.
 	^ connection
 ]

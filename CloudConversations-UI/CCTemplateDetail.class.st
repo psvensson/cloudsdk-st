@@ -16,7 +16,8 @@ Class {
 		'loadeditor',
 		'loadtextMorph',
 		'deleteButton',
-		'templateDelete'
+		'templateDelete',
+		'buildProcessBlock'
 	],
 	#category : #'CloudConversations-UI-Templates'
 }
@@ -68,7 +69,8 @@ CCTemplateDetail >> createContainer [
 		To: storage
 		andCreate: template
 		type: type)
-		onSuccessDo: [ :result |CCMainController getMainWindow hideBusyIcon. result inspect.
+		onSuccessDo: [ :result | 
+			self showBuildProcess: result
 			"TODO: start polling process to show buidl step progress" ].
 	CCMainController getMainWindow showBusyIcon.
 	UIManager default
@@ -237,17 +239,43 @@ CCTemplateDetail >> saveLabel [
 
 { #category : #accessing }
 CCTemplateDetail >> showBuildProcess: buildResult [
-	| buildId logUrl connection containers |
+	| buildId logUrl connection containers buildTime mainWindow |
+	mainWindow := CCMainController getMainWindow.
 	buildId := ((buildResult at: #metadata) at: #build) at: #id.
 	logUrl := ((buildResult at: #metadata) at: #build) at: #logUrl.
 	connection := CCMainController
 		getConnectionForAccount: CCMainController lastUsedAccount.
 	connection connect.
 	containers := CCGoogleContainers with: connection.
-	
-	CCGoogleContainers with: connection.
+	buildTime := 0.
+	buildProcessBlock := [ CCGoogleContainers with: connection.
+	1 seconds wait.
+	buildTime := buildTime + 1.
+	Transcript
+		show: 'getting build status..';
+		cr.
 	(containers getBuildResultFor: buildId)
-		onSuccessDo: [ :result | result inspect ]
+		onSuccessDo: [ :result | 
+			| text fail success |
+			fail := 0.
+			success := 0.
+			text := 'Build time: ' , buildTime asString , 's  '.
+			result
+				keysAndValuesDo: [ :step :status | 
+					text := text , step , ': ' , status , ' '.
+					status = 'SUCCESS'
+						ifTrue: [ success := success + 1 ].
+					status = 'FAILURE'
+						ifTrue: [ fail := fail + 1 ] ].
+			mainWindow statusBar contents: text.
+			(fail > 0 or: success = result keys size)
+				ifTrue: [ mainWindow containersPanelMorph update.
+					mainWindow deploymentPanelMorph update.
+					10 seconds wait.
+					mainWindow hideBusyIcon ]
+				ifFalse: [ mainWindow showBusyIcon.
+					buildProcessBlock value ] ] ].
+	buildProcessBlock value
 ]
 
 { #category : #accessing }

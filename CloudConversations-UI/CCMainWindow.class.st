@@ -103,10 +103,29 @@ CCMainWindow >> addTabs [
 ]
 
 { #category : #accessing }
+CCMainWindow >> containersPanelMorph [
+	^ containersPanelMorph
+]
+
+{ #category : #accessing }
+CCMainWindow >> containersPanelMorph: anObject [
+	containersPanelMorph := anObject
+]
+
+{ #category : #accessing }
+CCMainWindow >> deploymentPanelMorph [
+	^ deploymentPanelMorph
+]
+
+{ #category : #accessing }
+CCMainWindow >> deploymentPanelMorph: anObject [
+	deploymentPanelMorph := anObject
+]
+
+{ #category : #accessing }
 CCMainWindow >> hideBusyIcon [
 	statusBar hide.
 	Transcript show: 'hiding busy icon';cr.
-	statusBar contents: ''.
 ]
 
 { #category : #initialization }
@@ -278,12 +297,21 @@ CCMainWindow >> initializeTools [
 CCMainWindow >> showBusyIcon [
 	"loadingIcon top: 1220;left:88."
 
-	statusBar contents: 'loading..'.
 	statusBar show.
 	Transcript
 		show: 'showing busy icon';
 		cr.
 	self changed
+]
+
+{ #category : #accessing }
+CCMainWindow >> statusBar [
+	^ statusBar
+]
+
+{ #category : #accessing }
+CCMainWindow >> statusBar: anObject [
+	statusBar := anObject
 ]
 
 { #category : #'initialization - private' }

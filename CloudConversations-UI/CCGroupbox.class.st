@@ -38,6 +38,7 @@ CCGroupbox >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom;
+		wrapCentering: #topLeft;
 		width:300;
 		hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap
@@ -46,4 +47,9 @@ CCGroupbox >> initializeLayout [
 { #category : #initialization }
 CCGroupbox >> modelName [
 	self subclassResponsibility  
+]
+
+{ #category : #initialization }
+CCGroupbox >> update [
+	panel updateList
 ]

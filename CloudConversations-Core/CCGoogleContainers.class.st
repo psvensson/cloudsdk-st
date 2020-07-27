@@ -64,13 +64,14 @@ CCGoogleContainers >> getBuildResultFor: buildId [
 		onSuccessDo: [ :result | 
 			| rv steps |
 			rv := Dictionary new.
-			steps := result at: #steps.
+			steps := result at: #steps ifAbsent: [  ].
 			steps
-				do: [ :step | 
-					| stat type |
-					stat := step at: #status.
-					type := (step at: #args) first.
-					rv at: type put: stat ].
+				ifNotNil: [ steps
+						do: [ :step | 
+							| stat type |
+							stat := step at: #status ifAbsent: [ 'PENDING' ].
+							type := (step at: #args) first.
+							rv at: type put: stat ] ].
 			future deploySuccess: rv ].
 	^ future
 ]

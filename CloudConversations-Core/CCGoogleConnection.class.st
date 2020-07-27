@@ -165,8 +165,8 @@ CCGoogleConnection class >> zones [
 CCGoogleConnection >> connect [
 	| jwt |
 	jwt := self class createJWTForServiceAccount: serviceAccount.
-	Transcript show:'CCGoogleConnection connect called for service account ',serviceAccount name;cr.
+	"Transcript show:'CCGoogleConnection connect called for service account ',serviceAccount name;cr."
 	token := self class requestAccessTokenForJWT: jwt.
-	Transcript show: token asString;cr.
+	"Transcript show: token asString;cr."
 	^ token isEmpty not
 ]
