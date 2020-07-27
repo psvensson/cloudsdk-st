@@ -28,6 +28,8 @@ CCDetailPanel >> initializeLayout [
 		layoutPolicy: TableLayout new;
 		"wrapDirection: #leftToRight;"
 		listDirection: #topToBottom;
+		"listCentering: #justified;"
+		cellPositioning: #topLeft;
 		wrapCentering: #topLeft;
 		hResizing: #spaceFill;
 		vResizing: #shrinkWrap;
