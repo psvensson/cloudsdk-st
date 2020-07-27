@@ -68,7 +68,8 @@ CCTemplateDetail >> createContainer [
 		To: storage
 		andCreate: template
 		type: type)
-		onSuccessDo: [ : result |CCMainController getMainWindow hideBusyIcon ].
+		onSuccessDo: [ :result |CCMainController getMainWindow hideBusyIcon. result inspect.
+			"TODO: start polling process to show buidl step progress" ].
 	CCMainController getMainWindow showBusyIcon.
 	UIManager default
 		informUser: 'Container created and deploy started.'
@@ -232,6 +233,21 @@ CCTemplateDetail >> saveEditor [
 { #category : #accessing }
 CCTemplateDetail >> saveLabel [
 	^ 'Save'
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> showBuildProcess: buildResult [
+	| buildId logUrl connection containers |
+	buildId := ((buildResult at: #metadata) at: #build) at: #id.
+	logUrl := ((buildResult at: #metadata) at: #build) at: #logUrl.
+	connection := CCMainController
+		getConnectionForAccount: CCMainController lastUsedAccount.
+	connection connect.
+	containers := CCGoogleContainers with: connection.
+	
+	CCGoogleContainers with: connection.
+	(containers getBuildResultFor: buildId)
+		onSuccessDo: [ :result | result inspect ]
 ]
 
 { #category : #accessing }

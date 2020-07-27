@@ -42,6 +42,20 @@ CCGoogleContainersTest >> testCreate [
 				cr ]
 ]
 
+{ #category : #test }
+CCGoogleContainersTest >> testGet [
+	| id serviceAccount status connection containers |
+	id := '053bbf78-6049-406b-937f-5f23c52083fe'.
+	serviceAccount := CCServiceAccount
+		withCertificateAsJSONString: certificateString.
+	connection := CCGoogleConnection with: serviceAccount.
+	status := connection connect.
+	self assert: status equals: true.
+	containers := CCGoogleContainers with: connection.
+	(containers get: id)
+		onSuccessDo: [ :result | result inspect]
+]
+
 { #category : #tests }
 CCGoogleContainersTest >> testList [
 	| serviceAccount status connection containers repositories |

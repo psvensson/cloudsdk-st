@@ -30,5 +30,5 @@ CCClickableTextMorph >> mouseDown: evt [
 
 { #category : #'event handling' }
 CCClickableTextMorph >> mouseUp: evt [
-    action value
+    "action value"
 ]

@@ -42,27 +42,23 @@ CCDeploymentDetail >> deployment: anObject [
 
 { #category : #accessing }
 CCDeploymentDetail >> deploymentPropertyRow: prop [
-	| propline method valstr |
-	propline := CCClickableTextMorph new.
-	prop = 'url'
-		ifTrue: [ propline
-				underlined; fillStyle: Color white;
-				color: Color blue;
-				action: [ Transcript
-						show: 'callback';
-						cr.
-					WebBrowser openOn: valstr  ] ].
-	"TODO: add mousedown event handler and open os web browser"
+	| propline method valstr text |
 	method := prop asSymbol.
 	valstr := '--'.
 	(item respondsTo: method)
 		ifTrue: [ valstr := item perform: method ].
+	text := prop , ': ' , valstr asString.
+	propline := prop = 'url'
+		ifFalse: [ TextMorph new
+				contents: text;
+				
+				yourself ]
+		ifTrue: [ CCUrlClickableTextMorph content: text url: valstr ].
 	propline
 		layoutPolicy: TableLayout new;
 		wrapCentering: #topLeft;
 		wrapDirection: #leftToRight;
 		listDirection: #leftToRight;
-		contents: prop , ': ' , valstr asString;
 		hResizing: #spaceFill;
 		vResizing: #spaceFill.
 	^ propline

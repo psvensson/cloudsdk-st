@@ -44,6 +44,38 @@ CCGoogleContainers >> buildDataFor: img serviceAccount: serviceAccount filename:
 ]
 
 { #category : #accessing }
+CCGoogleContainers >> get: buildId [
+	| projectId url |
+	"list all containers present on the cloud provider"
+	"GET https://cloudbuild.googleapis.com/v1/projects/{projectId}/builds"
+	"Transcript show: token;cr."
+	projectId := connection serviceAccount projectId.
+	url := 'https://cloudbuild.googleapis.com/v1/projects/' , projectId
+		, '/builds/' , buildId.
+	Transcript show: url;cr.
+	^ connection secureJSONCallTo: url
+]
+
+{ #category : #'as yet unclassified' }
+CCGoogleContainers >> getBuildResultFor: buildId [
+	| future |
+	future := TKTFuture new.
+	(self get: buildId)
+		onSuccessDo: [ :result | 
+			| rv steps |
+			rv := Dictionary new.
+			steps := result at: #steps.
+			steps
+				do: [ :step | 
+					| stat type |
+					stat := step at: #status.
+					type := (step at: #args) first.
+					rv at: type put: stat ].
+			future deploySuccess: rv ].
+	^ future
+]
+
+{ #category : #accessing }
 CCGoogleContainers >> getBuildStepForCloudRunDeploy: serviceAccount filename: filename imagename: img [
 	| rv projectId email |
 	projectId := serviceAccount projectId.
