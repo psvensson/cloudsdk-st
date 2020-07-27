@@ -52,7 +52,10 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 		ifFalse: [ TextMorph new
 				contents: text;
 				yourself ]
-		ifTrue: [ CCUrlClickableTextMorph content: text url: valstr ].
+		ifTrue: [ (valstr includesSubstring: '://')
+				ifFalse: [ valstr := 'http://' , valstr.
+					text := prop , ': ' , valstr asString ].
+			CCUrlClickableTextMorph content: text url: valstr ].
 	propline
 		layoutPolicy: TableLayout new;
 		wrapCentering: #topLeft;

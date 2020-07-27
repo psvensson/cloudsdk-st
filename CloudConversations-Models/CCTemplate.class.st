@@ -174,7 +174,7 @@ CCTemplate >> regenerateContent [
 		'######################################
 # Based on Ubuntu image
 ######################################
-FROM ubuntu
+FROM jgoerzen/debian-base-minimal
 
 ######################################
 # Basic project infos
