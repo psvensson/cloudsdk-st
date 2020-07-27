@@ -133,30 +133,16 @@ CCMainWindow >> initialize [
 	super initialize.
 	statusBar := CCStatusBar new.
 	CCMainController setMainWindow: self.
-	"self layoutPolicy: TableLayout new."
 	self
-		"listDirection: #leftToRight;
-		wrapCentering: #topLeft;
-		wrapDirection: #topToBottom;
-		hResizing: #shrinkWrap;
-		vResizing: #shrinkWrap;"
-		"width: 880;"
-		color: Color transparent ;
+		color: Color transparent;
 		cellInset: 10.
-	"wrapCentering: #center;"
 	self initializeImages.
-	"self initializeFileMenu."
-	"self initializeTools."
 	self initializeDialogs.
-	"self initializeDock."
-	"self initializeTextEditor.	"
-	"self initializeTabs."
 	self initializePanels.
-	
 	self addMorph: statusBar.
-	statusBar top: 405;left: 10.
-	"self addMorph: loadingtext."
-	
+	statusBar
+		top: 405;
+		left: 10.
 	self
 		themeChanged;
 		openInWorld

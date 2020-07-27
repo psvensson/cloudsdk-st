@@ -34,17 +34,7 @@ CCContainersListPanel >> account [
 { #category : #accessing }
 CCContainersListPanel >> account: anObject [
 	account := anObject.
-	self getContainerListFromCloud
-]
-
-{ #category : #accessing }
-CCContainersListPanel >> containers [
-	^ containers
-]
-
-{ #category : #accessing }
-CCContainersListPanel >> containers: anObject [
-	containers := anObject
+	account ifNotNil: [ self getContainerListFromCloud ]
 ]
 
 { #category : #accessing }
@@ -78,38 +68,36 @@ CCContainersListPanel >> getContainerFor: aContainerName [
 CCContainersListPanel >> getContainerListFromCloud [
 	| connection future |
 	connection := CCMainController getConnectionForAccount: account.
-	connection connect.
-	containerConnection := CCGoogleContainers with: connection.
-	future := containerConnection listContainers.
-	future
-		onSuccessDo: [ :clist | 
-			CCMainController getMainWindow hideBusyIcon.
-			(clist includesKey: #errors)
-				ifTrue: [ | msg |
-					msg := (clist at: #errors) at: 1.
-					UIManager default
-						inform: (msg at: #code) , ': ' , (msg at: #message) ]
-				ifFalse: [ | containerFutures |
-					containerFutures := (clist at: #child)
-						collect: [ :each | self getContainerFor: each ].
-					(CCMainController futuresAll: containerFutures)
-						onSuccessDo: [ :cs | 
-							self listCollection: cs.
-							cs isEmpty
-								ifFalse: [ self itemSelected: 1 ].
-								 ] ] ];
-		onFailureDo: [ :fail | 
-			Transcript
-				show: 'failed to get container list: ' , fail asString;
-				cr ]
+	connection
+		ifNotNil: [ connection connect.
+			containerConnection := CCGoogleContainers with: connection.
+			future := containerConnection listContainers.
+			future
+				onSuccessDo: [ :clist | 
+					CCMainController getMainWindow hideBusyIcon.
+					(clist includesKey: #errors)
+						ifTrue: [ | msg |
+							msg := (clist at: #errors) at: 1.
+							UIManager default
+								inform: (msg at: #code) , ': ' , (msg at: #message) ]
+						ifFalse: [ | containerFutures |
+							containerFutures := (clist at: #child)
+								collect: [ :each | self getContainerFor: each ].
+							(CCMainController futuresAll: containerFutures)
+								onSuccessDo: [ :cs | 
+									self listCollection: cs.
+									cs isEmpty
+										ifFalse: [ self itemSelected: 1 ] ] ] ];
+				onFailureDo: [ :fail | 
+					Transcript
+						show: 'failed to get container list: ' , fail asString;
+						cr ] ]
 ]
 
 { #category : #initialization }
 CCContainersListPanel >> initialize [
 	super initialize.	
 	self initializeButtons.
-	containers := CCMainWindow models containers.
-	
 ]
 
 { #category : #initialization }
@@ -134,6 +122,7 @@ CCContainersListPanel >> initializeTable [
 
 { #category : #initialization }
 CCContainersListPanel >> reloadResults [
+	Transcript show:'CCContainerList reloadResult';cr.
 	CCMainController getMainWindow showBusyIcon.
 	self getContainerListFromCloud
 	

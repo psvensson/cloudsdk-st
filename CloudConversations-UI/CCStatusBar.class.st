@@ -37,6 +37,7 @@ CCStatusBar >> hide [
 CCStatusBar >> initialize [
 	super initialize.
 	showCount := 0.
+	alpha := 0.
 	loadingIcon := CCImages animatedImage: 'loading1'.
 	loadingText := TextMorph new contents: ''.
 	self

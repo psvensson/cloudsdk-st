@@ -107,15 +107,16 @@ CCMainController class >> getAccountForCertificate: cert kind: kind [
 
 { #category : #adding }
 CCMainController class >> getConnectionForAccount: account [
-	connections ifNil: [ connections := Dictionary new ].
-	connection := (connections includesKey: account)
-		ifTrue: [ connections at: account ]
-		ifFalse: [ account cloudType = 'google'
-				ifTrue: [ connection := CCGoogleConnection with: account ] ].
-	connections at: account name put: connection.
-	connection onStartConnect: [ "mainWindow showBusyIcon" ].
-	connection onEndConnect: [ "mainWindow hideBusyIcon" ].
-	lastUsedConnection := connection.
+	account
+		ifNotNil: [ connections ifNil: [ connections := Dictionary new ].
+			connection := (connections includesKey: account)
+				ifTrue: [ connections at: account ]
+				ifFalse: [ account cloudType = 'google'
+						ifTrue: [ connection := CCGoogleConnection with: account ] ].
+			connections at: account name put: connection.
+			connection onStartConnect: [ "mainWindow showBusyIcon" ].
+			connection onEndConnect: [ "mainWindow hideBusyIcon" ].
+			lastUsedConnection := connection ].
 	^ connection
 ]
 

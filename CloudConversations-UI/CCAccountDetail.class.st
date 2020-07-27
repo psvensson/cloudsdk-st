@@ -108,18 +108,13 @@ CCAccountDetail >> initialize [
 CCAccountDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
-		"wrapCentering: #topLeft;"
-		"wrapDirection: #leftToRight;"
 		listDirection: #topToBottom  ;
 		listCentering: #topLeft;
 		hResizing: #spaceFill;
 		vResizing: #spaceFill;
-		"hResizing: #shrinkWrap;"
-		"vResizing: #shrinkWrap;"
 		height:300;
 		top: 30;
 		color: Color yellow ;
-		"wrapDirection: #leftToRight ;"
 		cellInset: 10;
 		color: Color gray darker
 ]
