@@ -24,10 +24,9 @@ Class {
 		'accountPanelMorph',
 		'templatePanelMorph',
 		'busyIcon',
-		'loadingtext',
 		'deploymentPanelMorph',
 		'containersPanelMorph',
-		'loadingIcon'
+		'statusBar'
 	],
 	#classInstVars : [
 		'models'
@@ -105,14 +104,16 @@ CCMainWindow >> addTabs [
 
 { #category : #accessing }
 CCMainWindow >> hideBusyIcon [
-	self removeMorph: loadingIcon .
+	statusBar hide.
 	Transcript show: 'hiding busy icon';cr.
-	loadingtext contents: ''.
+	statusBar contents: ''.
 ]
 
 { #category : #initialization }
 CCMainWindow >> initialize [
 	super initialize.
+	statusBar := CCStatusBar new.
+	CCMainController setMainWindow: self.
 	"self layoutPolicy: TableLayout new."
 	self
 		"listDirection: #leftToRight;
@@ -132,9 +133,11 @@ CCMainWindow >> initialize [
 	"self initializeTextEditor.	"
 	"self initializeTabs."
 	self initializePanels.
-	loadingtext := TextMorph new contents: ''.
+	
+	self addMorph: statusBar.
+	statusBar top: 405;left: 10.
 	"self addMorph: loadingtext."
-	CCMainController setMainWindow: self.
+	
 	self
 		themeChanged;
 		openInWorld
@@ -198,7 +201,7 @@ CCMainWindow >> initializeImages [
 	teacup := ImageMorph withForm: (CCImages spriteImage: 'teacup').
 	"hat position: self position - 100."
 	hat resize: 100@100.
-	loadingIcon := CCImages animatedImage: 'loading1'.
+	
 	"self addMorph: hat."
 	hat form rotateBy: 45.
 	hat rotationDegrees: 45.	
@@ -273,12 +276,14 @@ CCMainWindow >> initializeTools [
 
 { #category : #accessing }
 CCMainWindow >> showBusyIcon [
-	
-	self addMorph: loadingIcon  .
-	loadingIcon top: 1220;left:88.
-	loadingtext contents: 'loading..'.
-	Transcript show: 'showing busy icon';cr.
-	self changed.
+	"loadingIcon top: 1220;left:88."
+
+	statusBar contents: 'loading..'.
+	statusBar show.
+	Transcript
+		show: 'showing busy icon';
+		cr.
+	self changed
 ]
 
 { #category : #'initialization - private' }

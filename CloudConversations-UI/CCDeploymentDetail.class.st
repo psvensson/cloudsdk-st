@@ -51,7 +51,6 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 	propline := prop = 'url'
 		ifFalse: [ TextMorph new
 				contents: text;
-				
 				yourself ]
 		ifTrue: [ CCUrlClickableTextMorph content: text url: valstr ].
 	propline
