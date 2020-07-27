@@ -66,6 +66,7 @@ CCDeploymentDetail >> deploymentPropertyRow: prop [
 { #category : #accessing }
 CCDeploymentDetail >> initialize [
 	super initialize.
+	self showDeployment
 	
 ]
 
@@ -76,22 +77,16 @@ CCDeploymentDetail >> initializeButtons [
 
 { #category : #rendering }
 CCDeploymentDetail >> renderDetail [
-	self removeAllMorphs.
-	item
-		ifNil: [ | text |
-			text := TextMorph new.
-			text contents: '* No Deployment Selected'.
-			self addMorph: text ]
-		ifNotNil: [ self addDeploymentPropsAndValueTo: self ]
+	self showDeployment 
 ]
 
 { #category : #accessing }
 CCDeploymentDetail >> showDeployment [
 	self removeAllMorphs.
-	deployment isNil
+	item isNil
 		ifFalse: [ self addDeploymentPropsAndValueTo: self ]
 		ifTrue: [ | text |
 			text := TextMorph new.
-			text contents: '* No Deplyment Selected'.
+			text contents: 'No Depolyment Selected'.
 			self addMorph: text ]
 ]

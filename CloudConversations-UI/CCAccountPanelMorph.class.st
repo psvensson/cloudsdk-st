@@ -33,12 +33,12 @@ CCAccountPanelMorph >> initialize [
 	accountDetail := CCAccountDetail new.	
 	self
 		layoutPolicy: TableLayout new;
-		"width: 550;"
+		width: 410;
 		"vResizing: #shrinkWrap ;"
 		"listDirection: #topToBottom;"
 		"listCentering: #justified ;"
 			"cellInset: 5;"
-			hResizing: #shrinkWrap;
+			hResizing: #spaceFill;
 		vResizing: #shrinkWrap.
 	"hResizing: #spaceFill;
 		vResizing: #spaceFill."
