@@ -73,7 +73,7 @@ CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 								collect: [ :each | CCDeployment from: each type: 'computeengine' ].
 							self listCollection: runDeployments , computeEngineDeployments.
 							listCollection isEmpty
-								ifFalse: [ self deploymentSelected: 1 ] ] ];
+								ifFalse: [ self itemSelected: 1 ] ] ];
 				onFailureDo: [ :e | 
 					Transcript
 						show: 'list compute engine instance error: ' e asString;
@@ -106,7 +106,7 @@ CCDeploymentsListPanel >> getGoogleRunDeployments [
 							"self class savedContainers: deployments"
 							self listCollection: runDeployments , computeEngineDeployments.
 							listCollection isEmpty
-								ifFalse: [ self deploymentSelected: 1 ] ] ];
+								ifFalse: [ self itemSelected: 1 ] ] ];
 				onFailureDo: [ :fail | 
 					Transcript
 						show: 'failed to get google run list: ' , fail asString;

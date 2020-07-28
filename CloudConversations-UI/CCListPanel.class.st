@@ -49,8 +49,9 @@ CCListPanel >> initializeList [
 		top: 35;
 		"left: 10;"
 		"width:220;"
-		width: 280;
+		width: 300;
 		borderWidth: 10;
+		"hResizing: #shrinkWrap;"
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
 		getIconSelector: #icon.

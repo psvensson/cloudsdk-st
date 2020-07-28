@@ -80,6 +80,7 @@ CCDeploymentDetail >> initializeButtons [
 
 { #category : #rendering }
 CCDeploymentDetail >> renderDetail [
+	Transcript show:'CCDeploymentDetail::renderDetail item is ',item asString;cr.
 	self showDeployment 
 ]
 
