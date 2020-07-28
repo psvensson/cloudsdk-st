@@ -54,6 +54,7 @@ CCListPanel >> initializeList [
 		"hResizing: #shrinkWrap;"
 		"hResizing: #shrinkWrap;
 		vResizing: #shrinkWrap;"
+		wrapSelector: #wrapSelector;
 		getIconSelector: #icon.
 	self addMorph: list.
 	list updateList

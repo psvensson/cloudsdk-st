@@ -184,3 +184,31 @@ CCContainer >> timeUploaded [
 CCContainer >> timeUploaded: anObject [
 	timeUploaded := anObject
 ]
+
+{ #category : #rendering }
+CCContainer >> wrapSelector [
+	| icon morph text |
+	icon := CCImages iconFrom: 'docker4'.
+	text := TextMorph new
+		contents: name;
+		color: Color white.
+	morph := Morph new.
+	morph
+		color: Color transparent;
+		layoutPolicy: TableLayout new;
+		listDirection: #leftToRight;
+		cellInset: 2 @ 20;
+		"width: 280;"
+			cellPositioning: #topLeft;
+		hResizing: #spaceFill;
+		vResizing: #shrinkWrap.
+	morph
+		addMorph: text;
+		addMorph: icon.
+	^ morph
+]
+
+{ #category : #rendering }
+CCContainer >> wrapSelector: anItem index: anIndex [
+	Transcript show: 'CCContainer:.wrapSeelctor called for ',anItem asString,' index ',anIndex asString;cr.
+]
