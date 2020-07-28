@@ -10,6 +10,16 @@ Class {
 	#category : #'CloudConversations-UI-Common'
 }
 
+{ #category : #rendering }
+CCListPanel >> asynchronousResolver: item [
+	self subclassResponsibility  
+]
+
+{ #category : #rendering }
+CCListPanel >> asynchronouslyResolveSelectedItems [
+	self subclassResponsibility  
+]
+
 { #category : #initialization }
 CCListPanel >> deleteItem [
 ]
@@ -69,8 +79,12 @@ CCListPanel >> itemSelected: anIndex [
 		ifFalse: [ ^ self ].
 	selectedIndex := anIndex.
 	item := listCollection at: selectedIndex.
-	selectedCallback ifNotNil: [ selectedCallback value: item ].
-	self highlightSelectedItem.
+	selectedCallback
+		ifNotNil: [ self asynchronouslyResolveSelectedItems
+				ifTrue: [ (self asynchronousResolver: item)
+						onSuccessDo: [ :res | selectedCallback value: res ] ]
+				ifFalse: [ selectedCallback value: item ] ].
+	self highlightSelectedItem
 ]
 
 { #category : #initialization }

@@ -37,6 +37,16 @@ CCContainersListPanel >> account: anObject [
 	account ifNotNil: [ self getContainerListFromCloud ]
 ]
 
+{ #category : #rendering }
+CCContainersListPanel >> asynchronousResolver: item [
+	^  self getContainerFor: item
+]
+
+{ #category : #rendering }
+CCContainersListPanel >> asynchronouslyResolveSelectedItems [
+	^ true
+]
+
 { #category : #accessing }
 CCContainersListPanel >> deleteContainer [
 	Transcript show:'delte container (unimplemented)';cr.
@@ -48,16 +58,15 @@ CCContainersListPanel >> deployContainer [
 ]
 
 { #category : #initialization }
-CCContainersListPanel >> getContainerFor: aContainerName [
+CCContainersListPanel >> getContainerFor: aContainerProxy [
 	| containerVersions cdict container future |
 	future := TKTFuture new.
-	0.3 seconds wait.
-	(containerConnection listRepositoryTags: aContainerName)
+	(containerConnection listRepositoryTags: (aContainerProxy name))
 		onSuccessDo: [ :tags | 
 			containerVersions := tags at: #manifest ifAbsent: [  ].
 			containerVersions
 				ifNotNil: [ cdict := CCContainer getLatestContainerVersion: containerVersions.
-					cdict at: #name put: aContainerName.
+					cdict at: #name put: aContainerProxy name.
 					cdict at: #tags put: (tags at: #tags).
 					cdict at: #manifest put: containerVersions.
 					container := CCContainer from: cdict.
@@ -68,7 +77,8 @@ CCContainersListPanel >> getContainerFor: aContainerName [
 { #category : #initialization }
 CCContainersListPanel >> getContainerListFromCloud [
 	| connection future |
-	connection := CCMainController getConnectionForAccount: CCMainController lastUsedAccount .
+	connection := CCMainController
+		getConnectionForAccount: CCMainController lastUsedAccount.
 	connection
 		ifNotNil: [ connection connect.
 			containerConnection := CCGoogleContainers with: connection.
@@ -77,22 +87,25 @@ CCContainersListPanel >> getContainerListFromCloud [
 				onSuccessDo: [ :clist | 
 					CCMainController getMainWindow hideBusyIcon.
 					(clist includesKey: #errors)
-						ifTrue: [ | msg |
-							msg := (clist at: #errors) at: 1.
-							UIManager default
-								inform: (msg at: #code) , ': ' , (msg at: #message) ]
-						ifFalse: [ | containerFutures |
-							containerFutures := (clist at: #child)
-								collect: [ :each | self getContainerFor: each ].
-							(CCMainController futuresAll: containerFutures)
-								onSuccessDo: [ :cs | 
-									self listCollection: cs.
-									cs isEmpty
-										ifFalse: [ self itemSelected: 1 ] ] ] ];
-				onFailureDo: [ :fail | 
-					Transcript
-						show: 'failed to get container list: ' , fail asString;
-						cr ] ]
+						ifTrue: [ self handleError: clist ]
+						ifFalse: [ self handleFetchedContainerList: clist ] ];
+				onFailureDo: [ :fail | self reportProblem: fail ] ]
+]
+
+{ #category : #accessing }
+CCContainersListPanel >> handleError: clist [
+	| msg |
+	msg := (clist at: #errors) at: 1.
+	UIManager default inform: (msg at: #code) , ': ' , (msg at: #message)
+]
+
+{ #category : #accessing }
+CCContainersListPanel >> handleFetchedContainerList: clist [
+	| cs |
+	cs := clist at: #child.
+	self listCollection: (cs collect: [:name | CCContainerProxy new name: name; yourself]).
+	cs isEmpty
+		ifFalse: [ self itemSelected: 1 ]
 ]
 
 { #category : #initialization }
@@ -127,6 +140,13 @@ CCContainersListPanel >> reloadResults [
 	CCMainController getMainWindow showBusyIcon.
 	self getContainerListFromCloud
 	
+]
+
+{ #category : #accessing }
+CCContainersListPanel >> reportProblem: fail [
+	Transcript
+		show: 'failed to get container list: ' , fail asString;
+		cr
 ]
 
 { #category : #initialization }

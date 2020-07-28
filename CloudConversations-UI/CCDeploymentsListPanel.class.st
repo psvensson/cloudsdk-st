@@ -28,6 +28,16 @@ CCDeploymentsListPanel >> account: anObject [
 	account ifNotNil: [self reloadResults ]
 ]
 
+{ #category : #rendering }
+CCDeploymentsListPanel >> asynchronousResolver: item [
+	
+]
+
+{ #category : #rendering }
+CCDeploymentsListPanel >> asynchronouslyResolveSelectedItems [
+	^  false
+]
+
 { #category : #accessing }
 CCDeploymentsListPanel >> deploymentSelected: aDeploymentIndex [
 	|  aDeployment |

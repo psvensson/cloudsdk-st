@@ -176,10 +176,11 @@ Cloud Resource Manager API has not been used in project 973408038350 before or i
 "
 
 	| projectId url |
-	Transcript show:'listContainers';cr.
 	projectId := connection serviceAccount projectId.
-	Transcript show:'projectId=',projectId ;cr.
-	url := 'https://gcr.io/v2/',projectId,'/tags/list'.
+	Transcript
+		show: 'listContainers. projectId=' , projectId;
+		cr.
+	url := 'https://gcr.io/v2/' , projectId , '/tags/list'.
 	"url := 'https://gcr.io/v2/_catalog'."
 	^ connection secureJSONCallTo: url
 ]
