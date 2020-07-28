@@ -106,6 +106,7 @@ CCAccountsPanel >> initializeAccountsList [
 		borderWidth: 10;
 		hResizing: #spaceFill;
 		"vResizing: #spaceFill;"
+		wrapSelector: #wrapSelector;
 		getIconSelector: #icon.
 		
 	self addMorph: accountList

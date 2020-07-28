@@ -199,7 +199,7 @@ CCContainer >> wrapSelector [
 		listDirection: #leftToRight;
 		cellInset: 2 @ 20;
 		"width: 280;"
-			cellPositioning: #topLeft;
+			cellPositioning: #center;
 		hResizing: #spaceFill;
 		vResizing: #shrinkWrap.
 	morph

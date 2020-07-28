@@ -35,8 +35,9 @@ CCListPanel >> initializeLayout [
 		listDirection: #topToBottom;
 		cellInset: 10 @ 20;
 		"width: 280;"
+		height:400;
 		hResizing: #spaceFill;
-		vResizing: #shrinkWrap;
+		vResizing: #spaceFill;
 		themeChanged;
 		color: Color gray darker
 ]
@@ -49,11 +50,12 @@ CCListPanel >> initializeList [
 		top: 35;
 		"left: 10;"
 		"width:220;"
+		height:280;
 		width: 300;
 		borderWidth: 10;
 		"hResizing: #shrinkWrap;"
-		"hResizing: #shrinkWrap;
-		vResizing: #shrinkWrap;"
+		"hResizing: #shrinkWrap;"
+		"vResizing: #shrinkWrap;"
 		wrapSelector: #wrapSelector;
 		getIconSelector: #icon.
 	self addMorph: list.

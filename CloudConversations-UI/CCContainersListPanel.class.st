@@ -51,6 +51,7 @@ CCContainersListPanel >> deployContainer [
 CCContainersListPanel >> getContainerFor: aContainerName [
 	| containerVersions cdict container future |
 	future := TKTFuture new.
+	0.3 seconds wait.
 	(containerConnection listRepositoryTags: aContainerName)
 		onSuccessDo: [ :tags | 
 			containerVersions := tags at: #manifest ifAbsent: [  ].
