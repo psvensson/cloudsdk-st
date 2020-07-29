@@ -45,7 +45,7 @@ CCDeployment class >> fromCloudRun: cdict [
 	Transcript
 		show: 'CCDeployment::fromCloudRun message -> ' , m;
 		cr.
-	c := self new.
+	c := self new name: '-undefined-'; url: ''.
 	(((cdict at: #spec) at: #template) at: #metadata)
 		at: #name
 		ifPresent: [ c
