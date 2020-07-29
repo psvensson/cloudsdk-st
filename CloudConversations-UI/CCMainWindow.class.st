@@ -214,11 +214,6 @@ CCMainWindow >> initializeImages [
 
 { #category : #'initialization - private' }
 CCMainWindow >> initializePanels [
-	accountPanelMorph := CCAccountPanelMorph new.
-	accountPanelMorph
-		accounts: self class models accounts;
-		top: 5;
-		left: 10.
 	templatePanelMorph := CCTemplatesPanelMorph new.
 	templatePanelMorph
 		templates: self class models templates;
@@ -232,6 +227,11 @@ CCMainWindow >> initializePanels [
 	deploymentPanelMorph
 		top: 5;
 		left: 1050.
+	accountPanelMorph := CCAccountPanelMorph new.
+	accountPanelMorph
+		accounts: self class models accounts;
+		top: 5;
+		left: 10.
 	self addMorph: templatePanelMorph.
 	self addMorph: accountPanelMorph.
 	self addMorph: containersPanelMorph.

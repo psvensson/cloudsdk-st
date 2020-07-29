@@ -31,7 +31,7 @@ CCContainerProxy >> name: anObject [
 { #category : #accessing }
 CCContainerProxy >> wrapSelector [
 	| icon morph text |
-	icon := CCImages iconFrom: 'docker4'.
+	icon := CCImages iconFrom: 'docker5'.
 	text := TextMorph new
 		contents: name;
 		color: Color white.

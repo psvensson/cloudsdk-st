@@ -79,36 +79,10 @@ CCTemplate >> dumpAsFiles [
 
 { #category : #accessing }
 CCTemplate >> firstPartDockerfile [
-	^ '######################################
-# Based on Ubuntu image
-######################################
-USER root
-FROM ubuntu
-
-######################################
-# Basic project infos
-######################################
+	^ '
+FROM psvensson/pharo8-base
 LABEL maintainer="',Author fullName,'"
 
-######################################
-# Update Ubuntu apt and install some tools
-######################################
-RUN  apt-get update \
-  && apt-get install -y wget \
-  && apt-get install -y git \
-  && apt-get install -y unzip \
-  && rm -rf /var/lib/apt/lists/*
-
-######################################
-# Have an own directory for the tool
-######################################
-RUN mkdir webapp
-WORKDIR webapp
-
-######################################
-# Download Pharo using Zeroconf & start script
-######################################
-RUN wget -O- https://get.pharo.org/64/70+vm | bash
 '
 ]
 
@@ -169,44 +143,14 @@ CCTemplate >> name: anObject [
 { #category : #accessing }
 CCTemplate >> regenerateContent [
 	loadfile := nil.
-	content := "self firstPartDockerfile , self dependenciesPartDockerfile
-		, self secondPartDockerfile"
-		'######################################
-# Based on a pre-built Pharo 8 Debian image
-######################################
-FROM psvensson/pharo8-base
-
-######################################
-# Basic project infos
-######################################
-LABEL maintainer="',Author fullName,'"
-
-COPY service_account.json service_account.json
-RUN export certificate="$(cat service_account.json)"
-COPY load.st load.st
-COPY setup.sh setup.sh
-RUN chmod +x setup.sh
-RUN setup.sh; echo 0
-
-RUN ./pharo Pharo.image load.st; echo 0
-
-######################################
-# Expose port 8080 of Zinc outside the container
-######################################
-EXPOSE 8080
-
-######################################
-# Finally run headless as server
-######################################
-ENTRYPOINT ["./pharo","--headless", "Pharo.image", "--no-quit"]'
-
-
+	content := self firstPartDockerfile , self dependenciesPartDockerfile
+		, self secondPartDockerfile
 ]
 
 { #category : #accessing }
 CCTemplate >> secondPartDockerfile [
 	^ '
-RUN ./pharo --headless Pharo.image eval --save "ZnServer startDefaultOn: 8080"
+RUN ./pharo --headless Pharo.image load.st;echo 0
 ######################################
 # Expose port 8080 of Zinc outside the container
 ######################################
@@ -215,20 +159,7 @@ EXPOSE 8080
 ######################################
 # Finally run headless as server
 ######################################
-CMD ./pharo --headless Pharo.image --no-quit'
-]
-
-{ #category : #accessing }
-CCTemplate >> setupFile [
-	^ '#!/bin/sh\n cat <<END | tee /etc/security/limits.d/pharo.conf\n
-Step #0: *      hard    rtprio  2\n
-Step #0: *      soft    rtprio  2\n
-Step #0: END'
-]
-
-{ #category : #accessing }
-CCTemplate >> startFile [
-	^ '#!/bin/bash\n./pharo --headless Pharo.image --no-quit'
+ENTRYPOINT ["./pharo", "--headless", "Pharo.image", "--no-quit"]'
 ]
 
 { #category : #accessing }
@@ -236,8 +167,6 @@ CCTemplate >> zipArchiveForBuildWith: aServiceAccount [
 	| dict |
 	dict := Dictionary new.
 	dict at: #Dockerfile put: self content.
-	dict at: 'setup.sh' put: self setupFile .
-	dict at: 'startup.sh' put: self startFile .
 	dict at: 'service_account.json' put: aServiceAccount jsonStringCertificate .
 	dict at: 'load.st' put: self depFile , self loadFile.
 	^ CCStorage createZipFileOf: dict

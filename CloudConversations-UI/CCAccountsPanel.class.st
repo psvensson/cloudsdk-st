@@ -14,7 +14,7 @@ Class {
 
 { #category : #accessing }
 CCAccountsPanel >> accountSelected: anIndex [
-	| selectedAccount |
+	| selectedAccount mainWindow |
 	accountSelectedIndex := anIndex.
 	accountList selectionIndex: anIndex.
 	Transcript
@@ -22,8 +22,11 @@ CCAccountsPanel >> accountSelected: anIndex [
 		cr.
 	anIndex > 0
 		ifTrue: [ selectedAccount := accounts at: anIndex ].
-	onSelectedAccount isNil
-		ifFalse: [ onSelectedAccount value: selectedAccount ]
+	onSelectedAccount ifNil: [ ^ self ].
+	onSelectedAccount value: selectedAccount.
+	mainWindow := CCMainController getMainWindow.
+	mainWindow containersPanelMorph update.
+	mainWindow deploymentPanelMorph update
 ]
 
 { #category : #accessing }
