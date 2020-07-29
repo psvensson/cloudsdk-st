@@ -21,11 +21,7 @@ BaselineOfCloudConversations >> baseline: spec [
 				with: [ spec repository: 'github://noha/JSONWebToken:master/source' ].
 			spec
 				baseline: 'TaskIt'
-				with: [ spec repository: 'github://sbragagnolo/taskit' ].
-			spec
-				baseline: 'Roassal2'
-				with:
-					[ spec repository: 'github://ObjectProfile/Roassal2/src' ] ]
+				with: [ spec repository: 'github://sbragagnolo/taskit' ] ]
 ]
 
 { #category : #baselines }

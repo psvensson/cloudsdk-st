@@ -46,22 +46,24 @@ CCDeployment class >> fromCloudRun: cdict [
 		show: 'CCDeployment::fromCloudRun message -> ' , m;
 		cr.
 	c := self new.
-	c
-		dict: cdict;
-		type: (cdict at: #type);
-		annotations: ((cdict at: #metadata) at: #annotations);
-		apiVersion: (cdict at: #apiVersion);
-		containerConcurrency: (spec at: #containerConcurrency);
-		container: (self getContainer: cdict);
-		timeoutSeconds: ((((cdict at: #spec) at: #template) at: #spec) at: #timeoutSeconds);
-		name: ((((cdict at: #spec) at: #template) at: #metadata) at: #name);
-		annotations: ((((cdict at: #spec) at: #template) at: #metadata) at: #annotations);
-		traffic: ((cdict at: #spec) at: #traffic);
-		uid: ((cdict at: #metadata) at: #uid);
-		generation: ((cdict at: #metadata) at: #generation);
-		creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
-		namespace: ((cdict at: #metadata) at: #namespace);
-		url: url.
+	(((cdict at: #spec) at: #template) at: #metadata)
+		at: #name
+		ifPresent: [ c
+				dict: cdict;
+				type: (cdict at: #type);
+				annotations: ((cdict at: #metadata) at: #annotations);
+				apiVersion: (cdict at: #apiVersion);
+				containerConcurrency: (spec at: #containerConcurrency);
+				container: (self getContainer: cdict);
+				timeoutSeconds: ((((cdict at: #spec) at: #template) at: #spec) at: #timeoutSeconds);
+				name: ((((cdict at: #spec) at: #template) at: #metadata) at: #name);
+				annotations: ((((cdict at: #spec) at: #template) at: #metadata) at: #annotations);
+				traffic: ((cdict at: #spec) at: #traffic);
+				uid: ((cdict at: #metadata) at: #uid);
+				generation: ((cdict at: #metadata) at: #generation);
+				creationTimestamp: ((cdict at: #metadata) at: #creationTimestamp);
+				namespace: ((cdict at: #metadata) at: #namespace);
+				url: url ].
 	^ c
 ]
 
