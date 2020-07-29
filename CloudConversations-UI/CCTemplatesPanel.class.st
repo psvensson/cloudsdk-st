@@ -34,7 +34,7 @@ CCTemplatesPanel >> createNewTemplate [
 CCTemplatesPanel >> deleteTemplate [
 	| really |
 	really := UIManager default
-		confirm: 'Do you really waant to delete this Service Account Certificate?'
+		confirm: 'Do you really want to delete this Service Account Certificate?'
 		orCancel: [ ^ false ].
 	templates remove: (templates at: selectedTemplateIndex).
 	self updateList
