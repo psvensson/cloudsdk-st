@@ -86,15 +86,20 @@ CCAccountsPanel >> fileCertificate [
 { #category : #initialization }
 CCAccountsPanel >> initialize [
 	super initialize.
-	newAccountButton := SimpleButtonMorph newWithLabel: 'New Account'.
+	"newAccountButton := SimpleButtonMorph newWithLabel: 'New Account'.
 	newAccountButton color: Color orange.
 	newAccountButton
 		target: self;
-		actionSelector: #showCertificateDialog.
-	self initializeAccountsList .
+		actionSelector: #showCertificateDialog."
+	newAccountButton := CCMainController
+		buildButtonText: #newAccountLabel
+		action: #showCertificateDialog
+		pointSize: 12
+		color: Color green
+		model: self.
+	self initializeAccountsList.
 	self initializeLayout.
-	self addMorph: newAccountButton.
-	
+	self addMorph: newAccountButton
 ]
 
 { #category : #initialization }
@@ -130,6 +135,11 @@ CCAccountsPanel >> initializeLayout [
 		vResizing: #spaceFill;
 		themeChanged;
 		color: Color gray darker
+]
+
+{ #category : #accessing }
+CCAccountsPanel >> newAccountLabel [
+	^'New Account'
 ]
 
 { #category : #accessing }

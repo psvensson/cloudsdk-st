@@ -37,13 +37,16 @@ CCContainer class >> from: cdict [
 { #category : #initialization }
 CCContainer class >> getLatestContainerVersion: containerVersions [
 	| values curriedVersions |
+	containerVersions ifEmpty: [ ^ #() ].
 	curriedVersions := Dictionary new.
-	containerVersions keysAndValuesDo: [ :key :value | 
-		value at: #reference put: key.
-		curriedVersions at: key put: value ].
+	containerVersions
+		keysAndValuesDo: [ :key :value | 
+			value at: #reference put: key.
+			curriedVersions at: key put: value ].
 	values := containerVersions values.
-	values sort: [ :a :b | (a at: #timeCreatedMs) > (b at: #timeCreatedMs) ].
-	^ values first.
+	values
+		sort: [ :a :b | (a at: #timeCreatedMs) > (b at: #timeCreatedMs) ].
+	^ values first
 ]
 
 { #category : #accessing }

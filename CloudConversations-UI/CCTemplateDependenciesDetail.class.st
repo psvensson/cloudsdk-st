@@ -13,6 +13,11 @@ Class {
 }
 
 { #category : #accessing }
+CCTemplateDependenciesDetail >> addDependencyLabel [
+	^ 'Add Dependency'
+]
+
+{ #category : #accessing }
 CCTemplateDependenciesDetail >> dependencies [ 
 	^ template dependencies 
 ]
@@ -48,16 +53,14 @@ CCTemplateDependenciesDetail >> initializeButtons [
 		cellInset: 5;
 		color: Color transparent;
 		vResizing: #spaceFill.
-	newButton := SimpleButtonMorph newWithLabel: 'Add Dependency'.
-	newButton
-		target: self;
-		actionSelector: #newDependency.
-		"hResizing: #spaceFill;
-		vResizing: #spaceFill."
-	removeButton := SimpleButtonMorph newWithLabel: 'Remove Dependency'.
-	removeButton
-		target: self;
-		actionSelector: #removeDependency.
+	newButton := CCMainController
+		buildButtonText: #addDependencyLabel 
+		action: #newDependency
+		model: self.
+	removeButton := CCMainController
+		buildButtonText: #removeDependencyLabel 
+		action: #removeDependency
+		model: self.
 	self addMorph: row.
 	row addMorph: newButton .
 	row addMorph: removeButton .
@@ -160,6 +163,11 @@ CCTemplateDependenciesDetail >> removeDependency [
 { #category : #initialization }
 CCTemplateDependenciesDetail >> removeDependency: dependency [
 	Transcript show: 'remvoeRequirement called for ',dependency asString;cr.
+]
+
+{ #category : #accessing }
+CCTemplateDependenciesDetail >> removeDependencyLabel [
+	^ 'Remove Dependency'
 ]
 
 { #category : #accessing }

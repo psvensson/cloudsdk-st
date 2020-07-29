@@ -65,7 +65,7 @@ CCContainersListPanel >> getContainerFor: aContainerProxy [
 		onSuccessDo: [ :tags | 
 			containerVersions := tags at: #manifest ifAbsent: [  ].
 			containerVersions
-				ifNotNil: [ cdict := CCContainer getLatestContainerVersion: containerVersions.
+				ifNotEmpty: [ cdict := CCContainer getLatestContainerVersion: containerVersions.
 					cdict at: #name put: aContainerProxy name.
 					cdict at: #tags put: (tags at: #tags).
 					cdict at: #manifest put: containerVersions.
@@ -77,7 +77,7 @@ CCContainersListPanel >> getContainerFor: aContainerProxy [
 { #category : #initialization }
 CCContainersListPanel >> getContainerListFromCloud [
 	| connection future |
-	connection := CCMainController
+	connection := CCMainController 
 		getConnectionForAccount: CCMainController lastUsedAccount.
 	connection
 		ifNotNil: [ connection connect.
@@ -86,9 +86,10 @@ CCContainersListPanel >> getContainerListFromCloud [
 			future
 				onSuccessDo: [ :clist | 
 					CCMainController getMainWindow hideBusyIcon.
-					(clist includesKey: #errors)
-						ifTrue: [ self handleError: clist ]
-						ifFalse: [ self handleFetchedContainerList: clist ] ];
+					clist
+						ifNotNil: [ (clist includesKey: #errors)
+								ifTrue: [ self handleError: clist ]
+								ifFalse: [ self handleFetchedContainerList: clist ] ] ];
 				onFailureDo: [ :fail | self reportProblem: fail ] ]
 ]
 
@@ -116,11 +117,10 @@ CCContainersListPanel >> initialize [
 
 { #category : #initialization }
 CCContainersListPanel >> initializeButtons [
-	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
-	reloadButton
-		color: Color green darker darker;
-		target: self;
-		actionSelector: #reloadResults.
+	reloadButton := CCMainController
+		buildButtonText: #reloadButtonLabel 
+		action: #reloadResults
+		model: self.
 	self addMorph: reloadButton.
 	
 ]
@@ -132,6 +132,11 @@ CCContainersListPanel >> initializeTable [
 		top: 35.
 		"left: 250"
 	self addMorph: table
+]
+
+{ #category : #accessing }
+CCContainersListPanel >> reloadButtonLabel [
+	^ 'Reload'
 ]
 
 { #category : #initialization }

@@ -21,7 +21,7 @@ CCAccountDetail >> account: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> actionsRow [
-	|  row showContainerbuildsButton renameButton |
+	| row "showContainerbuildsButton" renameButton |
 	row := Morph new.
 	row
 		color: Color gray;
@@ -31,20 +31,13 @@ CCAccountDetail >> actionsRow [
 		layoutInset: 5 @ 5;
 		top: 10;
 		hResizing: #spaceFill.
-	showContainerbuildsButton := SimpleButtonMorph
-		newWithLabel: 'Build results'.
-	showContainerbuildsButton
-		color: Color darkGray;
-		target: self;
-		actionSelector: #showContainerBuilds.
-	renameButton := SimpleButtonMorph newWithLabel: 'Rename'.
-	renameButton
-		color: Color darkGray;
-		target: self;
-		actionSelector: #renameAccount.
+	renameButton := CCMainController
+		buildButtonText: #renameLabel
+		action: #renameAccount
+		model: self.
 	row addMorph: renameButton.
 	"row addMorph: showDeploymentsButton."
-	row addMorph: showContainerbuildsButton.
+	"row addMorph: showContainerbuildsButton."
 	^ row
 ]
 
@@ -70,6 +63,11 @@ CCAccountDetail >> deleteAccount [
 ]
 
 { #category : #accessing }
+CCAccountDetail >> deleteLabel [
+	^ 'Delete'
+]
+
+{ #category : #accessing }
 CCAccountDetail >> icon [
 	^ CCImages imageMorphFrom: (account cloudType )
 ]
@@ -78,22 +76,24 @@ CCAccountDetail >> icon [
 CCAccountDetail >> iconNameRow [
 	| row icon nameMorph textstring deleteAccountButton |
 	row := Morph new.
-	row layoutPolicy: RowLayout new;
-		color: (Color gray darker );
-		cellInset:6@0;
-		layoutInset: 5@5; 
+	row
+		layoutPolicy: RowLayout new;
+		color: Color gray darker;
+		cellInset: 6 @ 0;
+		layoutInset: 5 @ 5;
 		listDirection: #leftToRight;
 		hResizing: #spaceFill.
-	icon := (CCImages imageMorphFrom: account cloudType) resize: 32 @ 32.	
+	icon := (CCImages imageMorphFrom: account cloudType) resize: 32 @ 32.
 	textstring := account name.
 	nameMorph := TextMorph new contents: textstring.
-	deleteAccountButton := SimpleButtonMorph newWithLabel: 'Delete'.
-	deleteAccountButton 
-		color: (Color red);
-		target: self; actionSelector: #deleteAccount  .
+	deleteAccountButton := CCMainController
+		buildButtonText: #deleteLabel
+		action: #deleteAccount
+		pointSize: 9
+		model: self.
 	row addMorph: nameMorph.
 	row addMorph: icon.
-	row addMorph: deleteAccountButton .
+	row addMorph: deleteAccountButton.
 	^ row
 ]
 
@@ -109,9 +109,9 @@ CCAccountDetail >> initializeLayout [
 	self
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom  ;
-		listCentering: #topLeft;
-		hResizing: #spaceFill;
-		vResizing: #spaceFill;
+		cellPositioning: #topLeft;
+		hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap ;
 		height:300;
 		top: 30;
 		color: Color yellow ;
@@ -127,18 +127,30 @@ CCAccountDetail >> onAccountUpdate: aBlock [
 
 { #category : #accessing }
 CCAccountDetail >> projectIdMorph [
-	| projectMorph row |
-	row := Morph new.
-	row layoutPolicy: RowLayout new;
-		color: (Color gray darker );
-		"cellInset:6@0;"
-		layoutInset: 5@0;
-		listDirection: #leftToRight;
-		hResizing: #spaceFill.
-	projectMorph := TextMorph new contents: 'Project: ',account projectId .
-	projectMorph hResizing: #spaceFill.
-	row addMorph: projectMorph .
-	^ row 
+	|  m |
+	Transcript
+		show: 'account for project selected: ' , account projectId;
+		cr.
+	m := Morph new.
+	m
+		layoutInset: 8 @ 8;
+		color: Color transparent;
+		layoutPolicy: TableLayout new;
+		listDirection: #leftToRight.
+	m
+		addMorph:
+			(CCMainController
+				getTextMorph: account projectId
+				color: Color green darker
+				pointSize: 14).	
+	m
+		addMorph:
+			(CCMainController
+				getTextMorph: 'Project: '
+				color: Color white
+				pointSize: 14).
+	
+	^ m
 ]
 
 { #category : #accessing }
@@ -152,29 +164,22 @@ CCAccountDetail >> renameAccount [
 ]
 
 { #category : #accessing }
+CCAccountDetail >> renameLabel [
+	^ 'Rename'
+]
+
+{ #category : #accessing }
 CCAccountDetail >> showAccount [
-	self
-		removeAllMorphs;
-		layoutPolicy: TableLayout new;
-		listDirection: #topToBottom;
-		listCentering: #topLeft;
-		"wrapCentering: #center;"
-		"layoutInset: 4;"
-		vResizing: #shrinkWrap ;
-		cellInset: 8;
-		top:30;
-		hResizing: #spaceFill ;
-		color: Color gray darker.
+	self removeAllMorphs.
 	account isNil
 		ifFalse: [ self
 				addMorph: self iconNameRow;
 				addMorph: self actionsRow;
-				addMorph: self projectIdMorph. ]
-		ifTrue: [ 
-			| text |
+				addMorph: self projectIdMorph ]
+		ifTrue: [ | text |
 			text := TextMorph new.
 			text contents: 'No Account Selected'.
-			self addMorph: text  ]
+			self addMorph: text ]
 ]
 
 { #category : #accessing }

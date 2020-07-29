@@ -131,11 +131,10 @@ CCDeploymentsListPanel >> initialize [
 
 { #category : #listing }
 CCDeploymentsListPanel >> initializeButtons [
-	reloadButton := SimpleButtonMorph newWithLabel: 'Reload'.
-	reloadButton
-		color: Color green darker darker darker;
-		target: self;
-		actionSelector: #reloadResults.
+	reloadButton := reloadButton := CCMainController
+		buildButtonText: #reloadButtonLabel 
+		action: #reloadResults
+		model: self.
 	self addMorph: reloadButton.
 ]
 
@@ -144,6 +143,11 @@ CCDeploymentsListPanel >> initializeTable [
 	table := CCDeploymentDetail new.
 	
 	self addMorph: table
+]
+
+{ #category : #accessing }
+CCDeploymentsListPanel >> reloadButtonLabel [
+	^ 'Reload'
 ]
 
 { #category : #initialization }

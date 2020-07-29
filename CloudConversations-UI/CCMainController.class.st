@@ -30,6 +30,55 @@ Class {
 	#category : #'CloudConversations-UI-Main'
 }
 
+{ #category : #'as yet unclassified' }
+CCMainController class >> buildButtonText: text action: action model: model [
+	| b |
+	b := PluggableButtonMorph
+		on: model
+		getState: nil
+		action: action
+		label: text
+		menu: nil.
+	b font: (LogicalFont familyName: 'Source Sans Pro' pointSize: 12).
+	"backgroundColor: Color lightGreen"
+	"hResizing: #spaceFill"
+	"vResizing: #spaceFill"
+	^ b
+]
+
+{ #category : #'as yet unclassified' }
+CCMainController class >> buildButtonText: text action: action pointSize: pt color: c model: model [
+	| b |
+	b := PluggableButtonMorph
+		on: model
+		getState: nil
+		action: action
+		label: text
+		menu: nil.
+	b
+		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: pt);
+		hResizing: #shrinkWrap;
+		vResizing: #shrinkWrap.
+	
+	^ b
+]
+
+{ #category : #'as yet unclassified' }
+CCMainController class >> buildButtonText: text action: action pointSize: pt model: model [
+	| b |
+	b := PluggableButtonMorph
+		on: model
+		getState: nil
+		action: action
+		label: text
+		menu: nil.
+	b font: (LogicalFont familyName: 'Source Sans Pro' pointSize: pt).
+	"backgroundColor: Color lightGreen"
+	"hResizing: #spaceFill"
+	"vResizing: #spaceFill"
+	^ b
+]
+
 { #category : #accessing }
 CCMainController class >> connection [
 	^ connection
@@ -123,6 +172,16 @@ CCMainController class >> getConnectionForAccount: account [
 { #category : #accessing }
 CCMainController class >> getMainWindow [
 	^ mainWindow 
+]
+
+{ #category : #accessing }
+CCMainController class >> getTextMorph: text color: c pointSize: pt [
+	| m |
+	m := text asMorph.
+	m
+		color: c;
+		font: (LogicalFont familyName: 'Source Sans Pro' pointSize: pt).
+	^ m
 ]
 
 { #category : #accessing }

@@ -25,15 +25,10 @@ Class {
 { #category : #examples }
 CCTemplateDetail class >> createButton: label target: target selector: selector [
 	| button |
-	button := PluggableButtonMorph
-		on: target
-		getState: nil
+	button := CCMainController
+		buildButtonText: label
 		action: selector
-		label: label
-		menu: nil.
-	button
-		labelMorph color: Color orange;
-		vResizing: #spaceFill.
+		model: target.
 	^ button
 ]
 

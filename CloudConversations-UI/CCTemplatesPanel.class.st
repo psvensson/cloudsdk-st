@@ -52,11 +52,10 @@ CCTemplatesPanel >> initialize [
 	| newTemplateButton |
 	super initialize.
 	self initializeLayout.
-	newTemplateButton := SimpleButtonMorph newWithLabel: 'New Template'.
-	newTemplateButton color: Color orange.
-	newTemplateButton
-		target: self;
-		actionSelector: #createNewTemplate.
+	newTemplateButton := CCMainController
+		buildButtonText: #newTemplateLabel
+		action: #createNewTemplate
+		model: self.
 	
 	self addDependenciesDetail.
 	self initializeTemplatesList.	
@@ -98,6 +97,11 @@ CCTemplatesPanel >> initializeTemplatesList [
 			getIconSelector: #icon.
 	self addMorph: templatesList.
 	templatesList updateList
+]
+
+{ #category : #initialization }
+CCTemplatesPanel >> newTemplateLabel [
+	^ 'New Template' 
 ]
 
 { #category : #initialization }
