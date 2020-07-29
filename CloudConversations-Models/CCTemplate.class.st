@@ -64,7 +64,7 @@ CCTemplate >> dependenciesPartDockerfile [
 			| istr |
 			istr := dep installString
 				ifNil: [ '' ]
-				ifNotNil: [ dep installString , '\n' ].
+				ifNotNil: [ dep installString , ' ' ].
 			rv := rv , istr ].
 	^ rv
 ]
@@ -143,13 +143,13 @@ CCTemplate >> name: anObject [
 { #category : #accessing }
 CCTemplate >> regenerateContent [
 	loadfile := nil.
-	content := self firstPartDockerfile , self dependenciesPartDockerfile
-		, self secondPartDockerfile
+	content := self firstPartDockerfile , self secondPartDockerfile
 ]
 
 { #category : #accessing }
 CCTemplate >> secondPartDockerfile [
 	^ '
+COPY load.st load.st
 RUN ./pharo --headless Pharo.image load.st;echo 0
 ######################################
 # Expose port 8080 of Zinc outside the container

@@ -17,7 +17,9 @@ Class {
 		'loadtextMorph',
 		'deleteButton',
 		'templateDelete',
-		'buildProcessBlock'
+		'buildProcessBlock',
+		'regenerateeButton',
+		'regenerateButton'
 	],
 	#category : #'CloudConversations-UI-Templates'
 }
@@ -117,14 +119,18 @@ CCTemplateDetail >> initialize [
 
 { #category : #accessing }
 CCTemplateDetail >> initializeButtons [
-	deleteButton := self class
-		createButton: #deleteLabel
+	regenerateButton := self class
+		createButton: #regenerateLabel
 		target: self
-		selector: #deleteTemplate.
+		selector: #regenerateTemplate.
 	saveButton := self class
 		createButton: #saveLabel
 		target: self
 		selector: #saveEditor.
+	deleteButton := self class
+		createButton: #deleteLabel
+		target: self
+		selector: #deleteTemplate.	
 	containerButton := self class
 		createButton: #deployLabel
 		target: self
@@ -150,6 +156,7 @@ CCTemplateDetail >> initializeButtons [
 	self addMorph: deleteButton.
 	self addMorph: copyButton.
 	self addMorph: editButton.
+	self addMorph: regenerateButton.
 	self addMorph: loadeditButton.
 	self addMorph: renameButton.
 	self addMorph: containerButton
@@ -197,6 +204,16 @@ CCTemplateDetail >> openEditor [
 CCTemplateDetail >> openLoadEditor [
 	loadtextMorph contents: template loadFile .
 	loadtextMorph   openInWindow .
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> regenerateLabel [
+	^ 'Recreate'
+]
+
+{ #category : #accessing }
+CCTemplateDetail >> regenerateTemplate [
+	template regenerateContent 
 ]
 
 { #category : #accessing }
