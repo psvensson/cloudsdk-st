@@ -218,7 +218,7 @@ CCGoogleContainers >> uploadFile: zipfile as: name To: storage andCreate: aTempl
 	| bucket projectId filename |
 	filename := (name copyReplaceAll: ' ' with: '') asLowercase  .
 	projectId := connection serviceAccount projectId.
-	bucket := projectId , '.appspot.com'.
+	bucket := CCGoogleStorage getBucketNameFor:  projectId .
 	storage upload: zipfile as: filename , '.zip'.
 	^ self startBuildProcessFor: connection serviceAccount filename: filename bucket: bucket type: type.
 	

@@ -252,6 +252,11 @@ CCTemplateDetail >> saveLabel [
 { #category : #accessing }
 CCTemplateDetail >> showBuildProcess: buildResult [
 	| buildId logUrl connection containers buildTime mainWindow |
+	buildResult at: #error ifPresent: [ | err |
+		err := buildResult at: #error.
+		UIManager default
+								inform: (err at: #status) , ': ' , (err at: #message) .
+		^ self ].
 	mainWindow := CCMainController getMainWindow.
 	buildId := ((buildResult at: #metadata) at: #build) at: #id.
 	logUrl := ((buildResult at: #metadata) at: #build) at: #logUrl.

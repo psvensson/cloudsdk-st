@@ -93,34 +93,38 @@ CCDeploymentsListPanel >> getGoogleComputeEngineDeployments [
 { #category : #listing }
 CCDeploymentsListPanel >> getGoogleRunDeployments [
 	| connection future |
-	 connection := CCMainController getConnectionForAccount: CCMainController lastUsedAccount .
-			endpoint := CCMainWindow models selectedEndpoint.
-			connection connect.
-			future := CCGoogleRunDeployments
-				listServicesForConnection: connection
-				andEndpoint: endpoint.
-			future
-				onSuccessDo: [ :result | 
-					CCMainController getMainWindow hideBusyIcon.
-					(result includesKey: #error)
-						ifTrue: [ | msg |
-							msg := result at: #error.
-							UIManager default
-								inform: (msg at: #status) , ': ' , (msg at: #message) ]
-						ifFalse: [ | rlist |
-							rlist := (result includesKey: #items)
-								ifTrue: [ result at: #items ]
-								ifFalse: [ #() ].
-							runDeployments := rlist
-								collect: [ :each | CCDeployment from: each type: 'cloudrun' ].
-							"self class savedContainers: deployments"
-							self listCollection: runDeployments , computeEngineDeployments.
-							listCollection isEmpty
-								ifFalse: [ self itemSelected: 1 ] ] ];
-				onFailureDo: [ :fail | 
+	connection := CCMainController
+		getConnectionForAccount: CCMainController lastUsedAccount.
+	endpoint := CCMainWindow models selectedEndpoint.
+	connection connect.
+	future := CCGoogleRunDeployments
+		listServicesForConnection: connection
+		andEndpoint: endpoint.
+	future
+		onSuccessDo: [ :result | 
+			CCMainController getMainWindow hideBusyIcon.
+			(result includesKey: #error)
+				ifTrue: [ | msg |
+					msg := result at: #error.
 					Transcript
-						show: 'failed to get google run list: ' , fail asString;
-						cr ] 
+						show: (msg at: #message);
+						cr.
+					UIManager default
+						inform: (msg at: #status) , ': ' , (msg at: #message) ]
+				ifFalse: [ | rlist |
+					rlist := (result includesKey: #items)
+						ifTrue: [ result at: #items ]
+						ifFalse: [ #() ].
+					runDeployments := rlist
+						collect: [ :each | CCDeployment from: each type: 'cloudrun' ].
+					"self class savedContainers: deployments"
+					self listCollection: runDeployments , computeEngineDeployments.
+					listCollection isEmpty
+						ifFalse: [ self itemSelected: 1 ] ] ];
+		onFailureDo: [ :fail | 
+			Transcript
+				show: 'failed to get google run list: ' , fail asString;
+				cr ]
 ]
 
 { #category : #initialization }
