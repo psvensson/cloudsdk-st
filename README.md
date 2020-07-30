@@ -25,7 +25,7 @@ Metacello new
   - A downloaded JSON file for a service account (use 'create key' on 'IAM & Admin' -> 'service accounts' -> (the service account) -> 'edit'). The default App Engine service account works well for this. The list of accounts for your project can be found here; (https://console.cloud.google.com/iam-admin/serviceaccounts)
   - Granting access for Google Cloud build to deploy to Google Cloud Run, by setting 'Cloud Run Admin, Compute Instance Admin and Service Account User' to enabled here; (https://console.cloud.google.com/cloud-build/settings).
   - If creating a new project from scratch, visist the Compute Engine page at least once to see that everything is active; (https://console.cloud.google.com/compute/instance).
-  - Go to Googel Cloud Storage for the project and create a storage bucket with the same name as your project id (If you're project is called 'foobar', create a new bucket named 'foobar' as well); https://console.cloud.google.com/storage.
+  - Go to Google Cloud Storage for the project and create a storage bucket with the same name as your project id (If you're project is called 'foobar', create a new bucket named 'foobar' as well); https://console.cloud.google.com/storage.
   - Enabling the Cloud resource manager API, here; (https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/overview)
   - Enabling the Cloud Run API, here; (https://console.developers.google.com/apis/api/run.googleapis.com/overview)
   
