@@ -22,7 +22,7 @@ Metacello new
 # Prerequisites
 
   - A Google Cloud project
-  - A downloaded JSON file for a service account (use 'create key' on 'IAM & Admin' -> 'service accounts' -> (the service account) -> 'edit'). The default App Engine service account works well for this. The list of accounts for your project can be found here; (https://console.cloud.google.com/iam-admin/serviceaccounts)
+  - A downloaded JSON file for a service account (use 'create key' on 'IAM & Admin' -> 'service accounts' -> (the service account) -> 'edit'). The default Compute Engine service account works well for this. The list of accounts for your project can be found here; (https://console.cloud.google.com/iam-admin/serviceaccounts)
   - Granting access for Google Cloud build to deploy to Google Cloud Run, by setting 'Cloud Run Admin, Compute Instance Admin and Service Account User' to enabled here; (https://console.cloud.google.com/cloud-build/settings).
   - If creating a new project from scratch, visist the Compute Engine page at least once to see that everything is active; (https://console.cloud.google.com/compute/instance).
   - Go to Google Cloud Storage for the project and create a storage bucket with the same name as your project id (If you're project is called 'foobar', create a new bucket named 'foobar' as well); https://console.cloud.google.com/storage.
