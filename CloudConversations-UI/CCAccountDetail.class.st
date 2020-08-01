@@ -137,9 +137,9 @@ CCAccountDetail >> initializeLayout [
 		layoutPolicy: TableLayout new;
 		listDirection: #topToBottom  ;
 		cellPositioning: #topLeft;
-		hResizing: #shrinkWrap;
+		hResizing: #spaceFill;
 		vResizing: #shrinkWrap ;
-		height:300;
+		"width:410;"
 		top: 30;
 		color: Color yellow ;
 		cellInset: 10;

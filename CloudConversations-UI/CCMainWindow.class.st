@@ -217,20 +217,20 @@ CCMainWindow >> initializePanels [
 	templatePanelMorph := CCTemplatesPanelMorph new.
 	templatePanelMorph
 		templates: self class models templates;
-		top: 5;
+		top: 15;
 		left: 430.
 	containersPanelMorph := CCContainersPanelMorph new.
 	containersPanelMorph
-		top: 5;
+		top: 15;
 		left: 740.
 	deploymentPanelMorph := CCDeploymentsPanelMorph new.
 	deploymentPanelMorph
-		top: 5;
+		top: 15;
 		left: 1050.
 	accountPanelMorph := CCAccountPanelMorph new.
 	accountPanelMorph
 		accounts: self class models accounts;
-		top: 5;
+		top: 15;
 		left: 10.
 	self addMorph: templatePanelMorph.
 	self addMorph: accountPanelMorph.
