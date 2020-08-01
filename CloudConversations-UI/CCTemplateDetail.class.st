@@ -311,4 +311,5 @@ CCTemplateDetail >> template: anObject [
 	template := anObject.
 	Transcript show: '--- TemplateDetail template set for: ',anObject asString;cr.
 	textMorph contents: template content .
+	CCMainController lastUsedTemplate: anObject 
 ]

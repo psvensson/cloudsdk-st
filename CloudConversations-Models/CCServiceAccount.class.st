@@ -10,7 +10,8 @@ Class {
 		'certificate',
 		'cloudType',
 		'name',
-		'jsonStringCertificate'
+		'jsonStringCertificate',
+		'bucket'
 	],
 	#category : #'CloudConversations-Models'
 }
@@ -28,6 +29,17 @@ CCServiceAccount class >> withCertificateAsJSONString: aString [
 { #category : #accessing }
 CCServiceAccount >> asString [
 	^ self name 
+]
+
+{ #category : #accessing }
+CCServiceAccount >> bucket [
+	bucket ifNil: [ bucket := self projectId ].
+	^ bucket
+]
+
+{ #category : #accessing }
+CCServiceAccount >> bucket: anObject [
+	bucket := anObject
 ]
 
 { #category : #accessing }
@@ -75,7 +87,7 @@ CCServiceAccount >> jsonStringCertificate: anObject [
 
 { #category : #accessing }
 CCServiceAccount >> name [
-	^ name isNil ifTrue: [certificate at: #client_email] ifFalse: [ name ]
+	^ name isNil ifTrue: [certificate at: #project_id] ifFalse: [ name ]
 ]
 
 { #category : #accessing }

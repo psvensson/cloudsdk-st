@@ -21,21 +21,25 @@ CCAccountDetail >> account: anObject [
 
 { #category : #accessing }
 CCAccountDetail >> actionsRow [
-	| row "showContainerbuildsButton" renameButton |
-	row := Morph new.
-	row
-		color: Color gray;
-		layoutPolicy: RowLayout new;
-		listDirection: #topToBottom;
-		cellInset: 6 @ 0;
-		layoutInset: 5 @ 5;
-		top: 10;
-		hResizing: #spaceFill.
+	| row "showContainerbuildsButton" renameButton renameBucketButton deleteButton |
+	row := self createRow.
+	deleteButton := CCMainController
+		buildButtonText: #deleteLabel
+		action: #deleteAccount
+		model: self.
+	
 	renameButton := CCMainController
 		buildButtonText: #renameLabel
 		action: #renameAccount
 		model: self.
+	
+	renameBucketButton := CCMainController
+		buildButtonText: #renameBucketLabel
+		action: #renameAccountBucket
+		model: self.
+	row addMorph: renameBucketButton.
 	row addMorph: renameButton.
+	row addMorph: deleteButton.
 	"row addMorph: showDeploymentsButton."
 	"row addMorph: showContainerbuildsButton."
 	^ row
@@ -52,6 +56,20 @@ CCAccountDetail >> allAccounts: anObject [
 ]
 
 { #category : #accessing }
+CCAccountDetail >> createRow [
+	| row |
+	row := Morph new.
+	row
+		layoutPolicy: RowLayout new;
+		color: Color gray darker;
+		cellInset: 6 @ 0;
+		layoutInset: 5 @ 5;
+		listDirection: #leftToRight
+		"hResizing: #spaceFill".
+	^ row	
+]
+
+{ #category : #accessing }
 CCAccountDetail >> deleteAccount [
 	| really listItemWrappers |
 	really := UIManager default
@@ -64,7 +82,23 @@ CCAccountDetail >> deleteAccount [
 
 { #category : #accessing }
 CCAccountDetail >> deleteLabel [
-	^ 'Delete'
+	^ 'Remove'
+]
+
+{ #category : #accessing }
+CCAccountDetail >> googleStorageBucketRow [
+	| row nameMorph textstring renameAccountButton |
+	row := self createRow.
+	textstring := account bucket.
+	nameMorph := TextMorph new contents: textstring.
+	renameAccountButton := CCMainController
+		buildButtonText: #renameBucketLabel
+		action: #renameAccountBucket
+		pointSize: 9
+		model: self.
+	row addMorph: nameMorph.
+	row addMorph: renameAccountButton.
+	^ row
 ]
 
 { #category : #accessing }
@@ -75,14 +109,7 @@ CCAccountDetail >> icon [
 { #category : #accessing }
 CCAccountDetail >> iconNameRow [
 	| row icon nameMorph textstring deleteAccountButton |
-	row := Morph new.
-	row
-		layoutPolicy: RowLayout new;
-		color: Color gray darker;
-		cellInset: 6 @ 0;
-		layoutInset: 5 @ 5;
-		listDirection: #leftToRight;
-		hResizing: #spaceFill.
+	row := self createRow.
 	icon := (CCImages imageMorphFrom: account cloudType) resize: 32 @ 32.
 	textstring := account name.
 	nameMorph := TextMorph new contents: textstring.
@@ -164,8 +191,23 @@ CCAccountDetail >> renameAccount [
 ]
 
 { #category : #accessing }
+CCAccountDetail >> renameAccountBucket [
+	account
+		bucket:
+			(UIManager default
+				request: 'Change bucket name to:'
+				initialAnswer: account bucket ).
+	accountUpdate value.
+]
+
+{ #category : #accessing }
+CCAccountDetail >> renameBucketLabel [
+	^ 'Rename Bucket'
+]
+
+{ #category : #accessing }
 CCAccountDetail >> renameLabel [
-	^ 'Rename'
+	^ 'Rename project'
 ]
 
 { #category : #accessing }
@@ -173,9 +215,11 @@ CCAccountDetail >> showAccount [
 	self removeAllMorphs.
 	account isNil
 		ifFalse: [ self
-				addMorph: self iconNameRow;
+				"addMorph: self googleStorageBucketRow;"
+				"addMorph: self iconNameRow;"
 				addMorph: self actionsRow;
-				addMorph: self projectIdMorph ]
+				addMorph: self projectIdMorph.
+				CCMainController lastUsedAccount: account ]
 		ifTrue: [ | text |
 			text := TextMorph new.
 			text contents: 'No Account Selected'.

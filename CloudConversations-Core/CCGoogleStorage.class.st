@@ -28,7 +28,7 @@ CCGoogleStorage >> list [
 		show: 'CCGoogleSTorage.list (unimplemented)';
 		cr.
 	projectId := connection serviceAccount projectId.
-	url := 'https://storage.googleapis.com/storage/v1/b/' , self class getBucketNameFor:  projectId.
+	url := 'https://storage.googleapis.com/storage/v1/b/' , connection serviceAccount bucket.
 	"Transcript show: url;cr."
 	(connection secureJSONCallTo: url)
 		onSuccessDo: [ :result | future deploySuccess: (result at: #items) ].
@@ -39,7 +39,7 @@ CCGoogleStorage >> list [
 CCGoogleStorage >> upload: fileContent as: fileName [
 	| url projectId bucket |
 	projectId := connection serviceAccount projectId.
-	bucket := self class getBucketNameFor: projectId.
+	bucket := connection serviceAccount bucket.
 	url := 'https://storage.googleapis.com/upload/storage/v1/b/' , bucket
 		, '/o?uploadType=media&name=' , fileName.
 	^ connection secureJSONCallTo: url withFile: fileContent as: fileName

@@ -218,7 +218,7 @@ CCGoogleContainers >> uploadFile: zipfile as: name To: storage andCreate: aTempl
 	| bucket projectId filename |
 	filename := (name copyReplaceAll: ' ' with: '') asLowercase  .
 	projectId := connection serviceAccount projectId.
-	bucket := CCGoogleStorage getBucketNameFor:  projectId .
+	bucket := connection serviceAccount bucket .
 	storage upload: zipfile as: filename , '.zip'.
 	^ self startBuildProcessFor: connection serviceAccount filename: filename bucket: bucket type: type.
 	

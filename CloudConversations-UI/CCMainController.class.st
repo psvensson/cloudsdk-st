@@ -22,7 +22,7 @@ Class {
 		'accounts',
 		'lastUsedAccount',
 		'lastUsedConnection',
-		'lasUsedContainer',
+		'lastUsedTemplate',
 		'lastUsedContainer',
 		'lastUsedStorage',
 		'mainWindow'
@@ -191,6 +191,7 @@ CCMainController class >> lastUsedAccount [
 
 { #category : #accessing }
 CCMainController class >> lastUsedAccount: anObject [
+Transcript show:'----- CCMainController lastUsedAccount: setting account to ',anObject asString;cr.
 	lastUsedAccount := anObject
 ]
 
@@ -227,6 +228,17 @@ CCMainController class >> lastUsedStorage [
 						title: 'No default connection' ]
 				ifNotNil: [ lastUsedStorage := CCStorage with: lastUsedConnection ] ].
 	^ lastUsedStorage
+]
+
+{ #category : #accessing }
+CCMainController class >> lastUsedTemplate [
+	
+	^ lastUsedTemplate
+]
+
+{ #category : #accessing }
+CCMainController class >> lastUsedTemplate: anObject [
+	lastUsedTemplate := anObject
 ]
 
 { #category : #accessing }
