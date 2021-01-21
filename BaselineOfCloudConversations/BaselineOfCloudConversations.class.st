@@ -19,9 +19,9 @@ BaselineOfCloudConversations >> baseline: spec [
 			spec
 				baseline: 'JSONWebToken'
 				with: [ spec repository: 'github://noha/JSONWebToken/source' ].
-			spec
+			"spec
 				baseline: 'TaskIt'
-				with: [ spec repository: 'github://sbragagnolo/taskit' ] ]
+				with: [ spec repository: 'github://sbragagnolo/taskit' ]" ]
 ]
 
 { #category : #baselines }
